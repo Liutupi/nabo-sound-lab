@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="12" height="80" viewBox="0 0 12 80">
+<rect x="2" y="6" width="7" height="71" rx="0" fill="#8A5CFF" stroke="#171027" stroke-width="1" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="7" y="7" width="1" height="68" rx="0" fill="#4E338B" stroke="none" stroke-width="1" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="3" y="10" width="1" height="62" rx="0" fill="#35F0DC" stroke="none" stroke-width="1" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="0.5" y="1" width="10.0" height="7" rx="1" fill="#FFC94A" stroke="#171027" stroke-width="1" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="1" y="8" width="9" height="4" rx="0" fill="#9D7930" stroke="#171027" stroke-width="1" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="3,2 8,2" fill="none" stroke="#35F0DC" stroke-width="1" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="1" y="74" width="9" height="5" rx="1" fill="#FFC94A" stroke="#171027" stroke-width="1" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="3,19 8,19" fill="none" stroke="#171027" stroke-width="1" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="3,59 8,59" fill="none" stroke="#171027" stroke-width="1" stroke-linejoin="round" stroke-linecap="round"/>
+</svg>

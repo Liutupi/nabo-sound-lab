@@ -1,0 +1,1104 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NABO 声音实验室</title>
+<style>
+/* 原型：左边是 1:1 比例（放大 2 倍）的 AI Passport 屏幕 + 右侧三键，右边是音源、调参和当前工具说明 */
+@font-face{font-family:"NaboDisp";src:url("fonts/ZCOOLQingKeHuangYou-Regular.ttf")}
+@font-face{font-family:"NaboMono";src:url("fonts/SpaceMono-Bold.ttf")}
+:root{
+  --bg:#0a0716; --panel:#130e27; --line:#2b2350; --fg:#ece8ff; --mute:#9d93c8;
+  --mag:#ff3da6; --cyan:#35f0dc; --gold:#ffc94a;
+  --body:"Microsoft YaHei","PingFang SC","Noto Sans SC",system-ui,sans-serif;
+  --mono:"NaboMono",Consolas,ui-monospace,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--fg)}
+body{font-family:var(--body);font-size:14px;line-height:1.6;padding:24px 16px}
+.wrap{display:flex;gap:32px;align-items:flex-start;justify-content:center;flex-wrap:wrap;max-width:1100px;margin:0 auto}
+.device{display:flex;align-items:center;gap:10px}
+.badge{padding:18px;border-radius:28px;background:#1b1530;border:1px solid var(--line);box-shadow:0 0 0 6px #120d22,0 20px 60px #0008}
+canvas#lcd{display:block;width:480px;height:640px;image-rendering:pixelated;border-radius:6px;background:#000;max-width:calc(100vw - 120px);height:auto;aspect-ratio:3/4}
+.keys{display:flex;flex-direction:column;gap:14px}
+.keys button{width:54px;height:54px;border-radius:14px;border:1px solid var(--line);background:#1d1736;color:var(--fg);font:600 15px var(--mono);cursor:pointer;touch-action:none;user-select:none}
+.keys button[data-k=up]{border-color:var(--cyan);color:var(--cyan)}.keys button[data-k=down]{border-color:#5cff8a;color:#5cff8a}.keys button[data-k=ok]{border-color:#ece8ff}
+.keys button:active,.keys button.on{background:var(--cyan);color:#0a0716}
+.side{width:420px;max-width:100%}
+h1{font:400 30px "NaboDisp",var(--body);margin:0 0 2px;letter-spacing:1px}
+h1 small{font:600 12px var(--mono);color:var(--mute);margin-left:8px;letter-spacing:2px}
+.sub{color:var(--mute);margin:0 0 18px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:14px}
+.card h2{font-size:13px;color:var(--mute);margin:0 0 10px;font-weight:600;letter-spacing:1px}
+.src{display:flex;gap:8px;flex-wrap:wrap}
+.src button,.src a{flex:1;min-width:110px;padding:9px 10px;border-radius:9px;border:1px solid var(--line);background:#1d1736;color:var(--fg);font:inherit;cursor:pointer}
+.new-toys a{font-size:16px;text-align:center;text-decoration:none}.new-toys a:hover{border-color:var(--cyan);color:var(--cyan)}
+.src button.on{border-color:var(--cyan);color:var(--cyan);box-shadow:inset 0 0 0 1px var(--cyan)}
+.status{margin-top:8px;font-size:12px;color:var(--mute)}
+.row{display:flex;align-items:center;gap:10px;margin:6px 0;font-size:13px}
+.row label{width:84px;color:var(--mute)}
+.row input[type=range]{flex:1;accent-color:var(--cyan)}
+.row output{width:56px;text-align:right;font-family:var(--mono);font-size:12px}
+.live{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.live div{background:#0e0a1e;border-radius:8px;padding:6px 8px}
+.live b{display:block;font:600 16px var(--mono);color:var(--cyan)}
+.live span{font-size:11px;color:var(--mute)}
+#info h3{margin:0 0 4px;font-size:17px}
+#info p{margin:0 0 10px;color:var(--mute)}
+#info table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:10px}
+#info td{padding:4px 0;border-top:1px solid var(--line);vertical-align:top}
+#info td:first-child{width:92px;color:var(--gold);font-family:var(--mono);font-size:12px}
+#info ul{margin:0;padding-left:18px;color:var(--mute);font-size:12.5px}
+.kbd{font-size:12px;color:var(--mute)}
+code{font-family:var(--mono);font-size:12px;color:var(--cyan)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="device">
+    <div class="badge"><canvas id="lcd" width="240" height="320"></canvas></div>
+    <div class="keys">
+      <button data-k="up">▲</button>
+      <button data-k="ok">OK</button>
+      <button data-k="down">▼</button>
+    </div>
+  </section>
+  <section class="side">
+    <h1>NABO 声音实验室<small>SOUND LAB · 0.1.2 原型</small></h1>
+    <p class="sub">工牌离线固件的浏览器原型。屏幕 240×320，三键操作，算法流程按固件设计写（16 kHz、每 20 ms 一帧）。</p>
+    <div class="card new-toys">
+      <h2>新增声音玩具 · 可直接进入</h2>
+      <nav class="src" aria-label="新增声音玩具">
+        <a href="new-games.html?game=flight">哼歌飞行</a>
+        <a href="new-games.html?game=clap">拍手节奏</a>
+        <a href="new-games.html?game=sampler">采样琴</a>
+      </nav>
+    </div>
+    <div class="card">
+      <h2>音源</h2>
+      <div class="src">
+        <button data-src="mic">🎤 麦克风</button>
+        <button data-src="demo">🎵 演示音乐</button>
+        <button data-src="sweep">〰 扫频</button>
+      </div>
+      <div class="status" id="status">先选一个音源。麦克风需要允许浏览器使用；没有麦克风也可以用演示音乐。</div>
+    </div>
+    <div class="card">
+      <h2>调参</h2>
+      <div class="row"><label>输入增益</label><input id="gain" type="range" min="0.5" max="8" step="0.1" value="1"><output id="gainO">1.0×</output></div>
+      <div class="row"><label>dB 校准</label><input id="cal" type="range" min="80" max="130" step="1" value="110"><output id="calO">+110</output></div>
+      <div class="row"><label>安静阈值</label><input id="quiet" type="range" min="35" max="85" step="1" value="60"><output id="quietO">60 dB</output></div>
+      <div class="row"><label>RGB565</label><input id="rgb" type="checkbox" checked><span class="kbd">模拟工牌屏的 16 位色深</span></div>
+    </div>
+    <div class="card">
+      <h2>实时数据</h2>
+      <div class="live">
+        <div><b id="vDb">--</b><span>音量 dBFS</span></div>
+        <div><b id="vF0">--</b><span>音高 Hz</span></div>
+        <div><b id="vBpm">--</b><span>BPM</span></div>
+        <div><b id="vChord">--</b><span>和弦</span></div>
+        <div><b id="vFps">--</b><span>fps</span></div>
+        <div><b id="vCpu">--</b><span>分析 ms/帧</span></div>
+      </div>
+    </div>
+    <div class="card" id="info"></div>
+    <p class="kbd">键盘：<code>↑</code> <code>↓</code> 对应上下键，<code>Enter</code> / <code>空格</code> 是 OK（复读 NABO 要按住），<code>Esc</code> 或双击 <code>↑</code> 返回菜单。</p>
+  </section>
+</div>
+<script>
+'use strict';
+// ================= 基础 =================
+const W=240,H=320;
+const cv=document.getElementById('lcd'),c=cv.getContext('2d');
+const C={bg:'#0a0716',panel:'#151030',line:'#2b2350',white:'#ece8ff',dim:'#8a80b8',dark:'#4a4170',
+  mag:'#ff3da6',cyan:'#35f0dc',gold:'#ffc94a',green:'#5cff8a',red:'#ff4d5e',purple:'#8a5cff',blue:'#3d8bff'};
+const F={disp:'"NaboDisp","Microsoft YaHei",sans-serif',mono:'"NaboMono",Consolas,monospace',sans:'"Microsoft YaHei","PingFang SC",sans-serif'};
+const clamp=(v,a,b)=>v<a?a:v>b?b:v, lerp=(a,b,t)=>a+(b-a)*t;
+const hex=h=>[parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)];
+const rgb=(r,g,b)=>`rgb(${r|0},${g|0},${b|0})`;
+function mix(h1,h2,t){const a=hex(h1),b=hex(h2);return rgb(lerp(a[0],b[0],t),lerp(a[1],b[1],t),lerp(a[2],b[2],t))}
+function grad(stops,n){const out=[];for(let i=0;i<n;i++){const p=i/(n-1)*(stops.length-1),k=Math.min(stops.length-2,Math.floor(p));out.push(mix(stops[k],stops[k+1],p-k))}return out}
+const BARC=grad([C.cyan,C.blue,C.purple,C.mag,C.gold],32);
+const PC12=grad(['#ff4d5e','#ff9a3d','#ffc94a','#c8ff4a','#5cff8a','#35f0dc','#3dc8ff','#3d8bff','#8a5cff','#c35cff','#ff3da6','#ff5c8a'],12);
+function T(s,x,y,size,col,align='center',font=F.disp){c.font=`${size}px ${font}`;c.fillStyle=col;c.textAlign=align;c.textBaseline='middle';c.fillText(s,x,y)}
+function rr(x,y,w,h,r){c.beginPath();c.roundRect(x,y,w,h,r)}
+
+// NABO 精灵：沿用赛博算命机的 sheet（12 列、12 fps）
+const IMG={},FR={'N-IDLE':34,'N-NOD':41,'N-WOW':19,'N-WELCOME':30};
+[['N-IDLE',76],['N-IDLE',120],['N-NOD',76],['N-WOW',76],['N-WELCOME',120]].forEach(([id,s])=>{const im=new Image();im.onload=()=>im.ok=true;im.src=`sprites/${id}/${s}/sheet.png`;IMG[id+s]=im});
+function nabo(id,cx,cy,t,o={}){
+  const size=o.size||76,sx=o.sx||1,sy=o.sy||1,im=IMG[id+size]||IMG['N-IDLE'+size],n=FR[id];
+  let f=Math.floor(t*12/1000);f=o.once?clamp(f,0,n-1):((f%n)+n)%n;
+  const w=size*sx,h=size*sy,bottom=cy+size/2;
+  if(im&&im.ok)c.drawImage(im,(f%12)*size,Math.floor(f/12)*size,size,size,cx-w/2,bottom-h,w,h);
+  else{ // 素材缺失时的占位
+    c.fillStyle=C.white;c.beginPath();c.ellipse(cx,bottom-h*0.45,w*0.32,h*0.36,0,0,7);c.fill();
+    c.fillStyle=C.bg;c.fillRect(cx-w*0.22,bottom-h*0.5,w*0.18,h*0.1);c.fillRect(cx+w*0.04,bottom-h*0.5,w*0.18,h*0.1);
+  }
+}
+
+// ================= 音频输入 =================
+let SR=16000,HOP=320,AC=null,inBus=null,proc=null,src={kind:'none',stop:null};
+const S={gain:1,cal:110,quiet:60,rgb:true,muteUntil:0,toast:'',toastT:0,a4:440,calm:false,sens:0};
+const RN=8192,ring=new Float32Array(RN);let wp=0,hopAcc=0;
+const rec={on:false,buf:null,n:0};
+function pushBlock(x,muted){
+  for(let i=0;i<x.length;i++){
+    const v=muted?0:x[i]*S.gain;
+    if(rec.on&&rec.n<rec.buf.length)rec.buf[rec.n++]=x[i]*S.gain;
+    ring[wp]=v;wp=(wp+1)&(RN-1);
+    if(++hopAcc>=HOP){hopAcc=0;analyzeHop()}
+  }
+}
+function lastN(n,out){const p=(wp-n+RN)&(RN-1);for(let i=0;i<n;i++)out[i]=ring[(p+i)&(RN-1)];return out}
+async function ensureAC(){
+  if(!AC){
+    AC=new (window.AudioContext||window.webkitAudioContext)({sampleRate:16000});
+    SR=AC.sampleRate;HOP=Math.round(SR*0.02);
+    inBus=AC.createGain();
+    proc=AC.createScriptProcessor(512,1,1);
+    proc.onaudioprocess=e=>{if(AC.currentTime>=S.muteUntil)pushBlock(e.inputBuffer.getChannelData(0),false);e.outputBuffer.getChannelData(0).fill(0)}; // 发声时整帧跳过分析（固件同），不送 0，避免恢复时出现假起音
+    inBus.connect(proc);proc.connect(AC.destination);
+    setupDSP();
+  }
+  if(AC.state==='suspended')await AC.resume();
+}
+function stopSource(){if(src.stop)src.stop();src={kind:'none',stop:null}}
+async function useSource(kind){
+  await ensureAC();stopSource();
+  const st=document.getElementById('status');
+  if(kind==='mic'){
+    try{
+      const ms=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}});
+      const n=AC.createMediaStreamSource(ms);n.connect(inBus);
+      src={kind,stop:()=>{n.disconnect();ms.getTracks().forEach(t=>t.stop())}};
+      st.textContent=`麦克风已打开，采样率 ${SR} Hz。关掉了浏览器的回声消除、降噪和自动增益，尽量接近工牌的原始输入。`;
+    }catch(e){st.textContent='麦克风打不开：'+e.message+'。可以先用演示音乐。';return}
+  }else if(kind==='demo'){src={kind,stop:startDemo()};st.textContent='演示音乐：118 BPM，C–Am–F–G 循环，有鼓、贝斯和琶音，可用来测节拍、和弦、频谱。'}
+  else if(kind==='sweep'){src={kind,stop:startSweep()};st.textContent='扫频：80 Hz → 1600 Hz 正弦，8 秒一轮，可用来测调音器和音高曲线。'}
+  document.querySelectorAll('[data-src]').forEach(b=>b.classList.toggle('on',b.dataset.src===kind));
+}
+// 演示音乐（只用来测试，不进固件）
+let noiseBuf=null;
+function startDemo(){
+  if(!noiseBuf){noiseBuf=AC.createBuffer(1,SR/2,SR);const d=noiseBuf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1}
+  const out=AC.createGain();out.gain.value=0.55;out.connect(inBus);out.connect(AC.destination);
+  const bpm=118,s16=60/bpm/4,chords=[[48,52,55],[45,48,52],[41,45,48],[43,47,50]];
+  let next=AC.currentTime+0.1,step=0;
+  const env=(g,t,a,d,v)=>{g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(v,t+a);g.gain.exponentialRampToValueAtTime(0.0001,t+a+d)};
+  const tone=(m,t,dur,type,v)=>{const o=AC.createOscillator(),g=AC.createGain();o.type=type;o.frequency.value=440*2**((m-69)/12);env(g,t,0.005,dur,v);o.connect(g).connect(out);o.start(t);o.stop(t+dur+0.05)};
+  const noise=(t,type,f,dur,v)=>{const s=AC.createBufferSource(),fl=AC.createBiquadFilter(),g=AC.createGain();s.buffer=noiseBuf;fl.type=type;fl.frequency.value=f;env(g,t,0.002,dur,v);s.connect(fl).connect(g).connect(out);s.start(t);s.stop(t+dur+0.05)};
+  const kick=t=>{const o=AC.createOscillator(),g=AC.createGain();o.frequency.setValueAtTime(150,t);o.frequency.exponentialRampToValueAtTime(45,t+0.12);env(g,t,0.002,0.3,0.9);o.connect(g).connect(out);o.start(t);o.stop(t+0.4)};
+  const id=setInterval(()=>{while(next<AC.currentTime+0.25){
+    const ch=chords[Math.floor(step/16)%4],st=step%16;
+    if(st%4===0)kick(next);
+    if(st%4===2)noise(next,'highpass',5000,0.05,0.2);
+    if(st===4||st===12)noise(next,'bandpass',1800,0.15,0.5);
+    if(st%2===0)tone(ch[(st/2)%3]+24,next,s16*1.6,'square',0.07);
+    if(st===0)tone(ch[0]-12,next,s16*14,'triangle',0.3);
+    next+=s16;step++}},50);
+  return()=>{clearInterval(id);out.disconnect()};
+}
+function startSweep(){
+  const o=AC.createOscillator(),g=AC.createGain(),mon=AC.createGain();g.gain.value=0.4;mon.gain.value=0.25;
+  o.connect(g);g.connect(inBus);g.connect(mon);mon.connect(AC.destination);
+  const sched=()=>{const t=AC.currentTime;o.frequency.cancelScheduledValues(t);o.frequency.setValueAtTime(80,t);o.frequency.exponentialRampToValueAtTime(1600,t+8)};
+  o.start();sched();const id=setInterval(sched,8000);
+  return()=>{clearInterval(id);o.stop();g.disconnect();mon.disconnect()};
+}
+
+// ================= DSP（固件 nabo_mic 的参考实现） =================
+function makeFFT(n){
+  const lev=Math.log2(n),rev=new Uint32Array(n),co=new Float32Array(n/2),si=new Float32Array(n/2);
+  for(let i=0;i<n;i++){let r=0;for(let b=0;b<lev;b++)r|=((i>>b)&1)<<(lev-1-b);rev[i]=r}
+  for(let i=0;i<n/2;i++){co[i]=Math.cos(2*Math.PI*i/n);si[i]=-Math.sin(2*Math.PI*i/n)}
+  return(re,im)=>{
+    for(let i=0;i<n;i++){const j=rev[i];if(j>i){let t=re[i];re[i]=re[j];re[j]=t;t=im[i];im[i]=im[j];im[j]=t}}
+    for(let size=2;size<=n;size<<=1){const half=size>>1,step=n/size;
+      for(let i=0;i<n;i+=size)for(let j=0;j<half;j++){const k=j*step,a=i+j,b=a+half,
+        tr=re[b]*co[k]-im[b]*si[k],ti=re[b]*si[k]+im[b]*co[k];re[b]=re[a]-tr;im[b]=im[a]-ti;re[a]+=tr;im[a]+=ti}}
+  };
+}
+const hann=n=>Float32Array.from({length:n},(_,i)=>0.5-0.5*Math.cos(2*Math.PI*i/n));
+const A={hop:0,db:-100,dbS:-100,peakDb:-100,bands:new Float32Array(32),peaks:new Float32Array(32),raw:new Float32Array(32),
+  fluxHist:new Float32Array(30),fh:0,onsetWall:-1e9,onsets:[],env:new Float32Array(300),ep:0,bpm:0,bpmConf:0,
+  f0:0,f0Conf:0,pitchHist:new Float32Array(200),ph:0,chroma:new Float32Array(12),chord:'',chordConf:0,
+  dbHist:new Float32Array(500),dh:0,ms:0};
+const WF={cols:120,h:256,buf:new Uint8Array(120*256),row:0,frozen:false};
+let D=null;
+function bandEdges(n,lo,hi,df,nb){const e=[];for(let i=0;i<=n;i++)e.push(lo*(hi/lo)**(i/n));
+  const r=[];for(let i=0;i<n;i++){let a=Math.round(e[i]/df),b=Math.round(e[i+1]/df)-1;a=clamp(a,1,nb-1);b=clamp(Math.max(a,b),a,nb-1);r.push([a,b])}return r}
+function setupDSP(){
+  D={f512:makeFFT(512),f1024:makeFFT(1024),w512:hann(512),w1024:hann(1024),
+    b512:new Float32Array(512),re:new Float32Array(512),im:new Float32Array(512),mag:new Float32Array(256),
+    b2048:new Float32Array(2048),re2:new Float32Array(2048),im2:new Float32Array(2048),
+    b1024:new Float32Array(1024),yd:new Float32Array(512)};
+  const df=SR/512;D.bands=bandEdges(32,60,7000,df,256);D.cols=bandEdges(WF.cols,60,8000,df,256);
+}
+function analyzeHop(){
+  const t0=performance.now();A.hop++;
+  const b=lastN(512,D.b512);
+  let s=0;for(let i=512-HOP;i<512;i++)s+=b[i]*b[i];
+  A.db=20*Math.log10(Math.sqrt(s/HOP)+1e-7);A.dbS=A.db>A.dbS?A.db:A.dbS*0.9+A.db*0.1;
+  A.dbHist[A.dh]=A.db;A.dh=(A.dh+1)%500;
+  // 512 点 FFT（Hann 窗）
+  for(let i=0;i<512;i++){D.re[i]=b[i]*D.w512[i];D.im[i]=0}
+  D.f512(D.re,D.im);
+  for(let k=0;k<256;k++)D.mag[k]=Math.hypot(D.re[k],D.im[k])/128;
+  // 32 个对数频段：快起慢落 + 峰值帽
+  let flux=0;
+  for(let i=0;i<32;i++){const[a,z]=D.bands[i];let m=0;for(let k=a;k<=z;k++)if(D.mag[k]>m)m=D.mag[k];
+    const v=clamp((20*Math.log10(m+1e-7)+72+S.sens)/62,0,1);
+    flux+=Math.max(0,v-A.raw[i]);A.raw[i]=v;
+    A.bands[i]=v>A.bands[i]?v:Math.max(v,A.bands[i]-0.035);
+    A.peaks[i]=A.bands[i]>A.peaks[i]?A.bands[i]:Math.max(A.bands[i],A.peaks[i]-0.01)}
+  // 起音检测（频谱通量 + 自适应阈值）
+  let mean=0;for(let i=0;i<30;i++)mean+=A.fluxHist[i];mean/=30;
+  A.fluxHist[A.fh]=flux;A.fh=(A.fh+1)%30;
+  const tA=A.hop*HOP/SR;
+  if(flux>mean*1.7+0.45&&A.db>-55&&(!A.onsets.length||tA-A.onsets[A.onsets.length-1]>0.13)){
+    A.onsets.push(tA);if(A.onsets.length>16)A.onsets.shift();A.onsetWall=performance.now();onOnset()}
+  A.env[A.ep]=flux;A.ep=(A.ep+1)%300;
+  if(A.hop%25===3)estimateBpm(); // 第 3 帧起每 0.5 s，避开音级帧（固件同）
+  // 声纹瀑布一行
+  if(!WF.frozen){WF.row=(WF.row-1+WF.h)%WF.h;const o=WF.row*WF.cols;
+    for(let j=0;j<WF.cols;j++){const[a,z]=D.cols[j];let m=0;for(let k=a;k<=z;k++)if(D.mag[k]>m)m=D.mag[k];
+      WF.buf[o+j]=clamp(Math.round((20*Math.log10(m+1e-7)+82+S.sens)/66*31),0,31)}}
+  // 音高（YIN，1024 点，每 40 ms）
+  if(A.hop%2===0){
+    if(A.db>-52){const r=yin(lastN(1024,D.b1024));A.f0=r.f;A.f0Conf=r.c}else{A.f0=0;A.f0Conf=0}}
+  A.pitchHist[A.ph]=A.f0>0?69+12*Math.log2(A.f0/S.a4):NaN;A.ph=(A.ph+1)%200;
+  // 音级（2048 点，每 100 ms）
+  if(A.hop%5===0)chromaStep();
+  A.ms=A.ms*0.95+(performance.now()-t0)*0.05;
+}
+function yin(x){
+  const Wn=512,tmin=Math.floor(SR/1100),tmax=Math.min(Wn-1,Math.ceil(SR/60)),d=D.yd;
+  let run=0;d[0]=1;
+  for(let tau=1;tau<=tmax;tau++){let s=0;for(let i=0;i<Wn;i++){const v=x[i]-x[i+tau];s+=v*v}run+=s;d[tau]=run>0?s*tau/run:1}
+  let best=-1;
+  for(let tau=tmin;tau<tmax;tau++){if(d[tau]<0.15){while(tau+1<tmax&&d[tau+1]<d[tau])tau++;best=tau;break}}
+  if(best<0)return{f:0,c:0};
+  const a=d[best-1],b=d[best],cc=d[best+1],den=a-2*b+cc,sh=den!==0?0.5*(a-cc)/den:0;
+  return{f:SR/(best+clamp(sh,-1,1)),c:1-b};
+}
+function estimateBpm(){
+  const n=300,e=new Float32Array(n);let m=0;
+  for(let i=0;i<n;i++){e[i]=A.env[(A.ep+i)%n];m+=e[i]}m/=n;for(let i=0;i<n;i++)e[i]-=m;
+  const hs=HOP/SR,L0=Math.round(60/200/hs),L1=Math.round(60/60/hs),r=new Float32Array(L1+2);
+  let r0=0;for(let i=0;i<n;i++)r0+=e[i]*e[i];if(r0<1e-6)return;
+  let best=0,bl=0;
+  for(let L=L0;L<=L1+1;L++){let s=0;for(let i=L;i<n;i++)s+=e[i]*e[i-L];r[L]=s;
+    const w=Math.exp(-0.5*(Math.log2(L*hs/0.5)/0.9)**2);if(L<=L1&&s*w>best){best=s*w;bl=L}}
+  if(!bl)return;
+  const a=r[bl-1]||0,b=r[bl],cc=r[bl+1]||0,den=a-2*b+cc,L=bl+(den?clamp(0.5*(a-cc)/den,-0.5,0.5):0);
+  const bpm=60/(L*hs),conf=b/r0;A.bpmConf=conf;
+  if(conf>0.08)A.bpm=A.bpm&&Math.abs(bpm-A.bpm)<6?A.bpm*0.7+bpm*0.3:bpm;
+}
+const NN=['C','C♯','D','D♯','E','F','F♯','G','G♯','A','A♯','B'];
+function chromaStep(){
+  // 先 2:1 降采样到 8 kHz，再做 1024 点 FFT：分辨率仍是 7.8 Hz，固件工作区减半
+  const b=lastN(2048,D.b2048);for(let i=0;i<1024;i++){D.re2[i]=(b[2*i]+b[2*i+1])*0.5*D.w1024[i];D.im2[i]=0}
+  D.f1024(D.re2,D.im2);
+  const ch=new Float32Array(12),df=SR/2/1024;
+  for(let k=Math.ceil(80/df);k<Math.min(512,1500/df);k++){const m=Math.hypot(D.re2[k],D.im2[k]);
+    const pc=((Math.round(69+12*Math.log2(k*df/440))%12)+12)%12;ch[pc]+=m}
+  let mx=0;for(let i=0;i<12;i++)mx=Math.max(mx,ch[i]);
+  for(let i=0;i<12;i++)A.chroma[i]=A.chroma[i]*0.6+(A.db>-50&&mx>0?ch[i]/mx:0)*0.4;
+  let nrm=0;for(let i=0;i<12;i++)nrm+=A.chroma[i]**2;nrm=Math.sqrt(nrm);
+  let best=0,name='';
+  if(nrm>0.3)for(let r=0;r<12;r++)for(const[q,iv]of[['',4],['m',3]]){
+    const s=(A.chroma[r]+A.chroma[(r+iv)%12]+A.chroma[(r+7)%12])/Math.sqrt(3)/nrm;if(s>best){best=s;name=NN[r]+q}}
+  A.chordConf=best;A.chord=best>0.74?name:'';
+}
+
+// ================= 播放（复读、节拍器） =================
+function playPCM(x){
+  const buf=AC.createBuffer(1,x.length,SR);buf.copyToChannel(x,0);
+  const s=AC.createBufferSource();s.buffer=buf;s.connect(AC.destination);s.start();
+  S.muteUntil=AC.currentTime+x.length/SR+0.15;return AC.currentTime;
+}
+function click(accent,at){
+  const t=at||AC.currentTime+0.01,o=AC.createOscillator(),g=AC.createGain();
+  o.frequency.value=accent?1760:1320;g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(0.5,t+0.002);g.gain.exponentialRampToValueAtTime(0.0001,t+0.025);
+  o.connect(g).connect(AC.destination);o.start(t);o.stop(t+0.03);S.muteUntil=Math.max(S.muteUntil,t+0.035); // 咔嗒 25 ms，只跳过约 35 ms
+}
+// ================= 复读链路（固件 nabo_voice 的参考实现） =================
+// 录音：16 kHz → 两两平均（整数四舍五入）降到 8 kHz → IMA ADPCM 4 bit，每 256 个采样一块（块头存预测值和步长下标，可以随机访问）
+// 播放：从 8 kHz 解码结果线性插值读取（读指针速度决定音调），先按录音峰值把音量拉到 0.8（增益 ≤ 6），再做效果和5ms首尾包络，最后限幅。重复回跳和对讲机换段另作局部去咔哒。
+// 工牌没有 PSRAM，固件里全部边解码边处理（流式），不展开整段 16 kHz 音频；所以每种效果都写成“按输出下标逐点计算”的形式。
+const STEP=[7,8,9,10,11,12,13,14,16,17,19,21,23,25,28,31,34,37,41,45,50,55,60,66,73,80,88,97,107,118,130,143,157,173,190,209,230,253,279,307,337,371,408,449,494,544,598,658,724,796,876,963,1060,1166,1282,1411,1552,1707,1878,2066,2272,2499,2749,3024,3327,3660,4026,4428,4871,5358,5894,6484,7132,7845,8630,9493,10442,11487,12635,13899,15289,16818,18500,20350,22385,24623,27086,29794,32767];
+const IDXT=[-1,-1,-1,-1,2,4,6,8];
+const toI16=v=>clamp(Math.round(v*32767),-32768,32767);
+function adpcmRoundTrip(x){ // x：16 kHz 浮点 → Int16Array（8 kHz 解码结果，和固件逐样一致）
+  const n=Math.floor(x.length/2),out=new Int16Array(n);let pred=0,idx=0;
+  for(let i=0;i<n;i++){
+    const smp=(toI16(x[2*i])+toI16(x[2*i+1])+1)>>1;
+    let step=STEP[idx],diff=smp-pred,code=0;if(diff<0){code=8;diff=-diff}
+    let vp=step>>3;if(diff>=step){code|=4;diff-=step;vp+=step}step>>=1;
+    if(diff>=step){code|=2;diff-=step;vp+=step}step>>=1;if(diff>=step){code|=1;vp+=step}
+    pred=clamp(pred+(code&8?-vp:vp),-32768,32767);idx=clamp(idx+IDXT[code&7],0,88);out[i]=pred}
+  return out;
+}
+const adpcmBytes=n8=>Math.ceil(n8/256)*132; // 每块 4 字节块头 + 128 字节数据
+function voiceGainQ8(d){let pk=0;for(const v of d)pk=Math.max(pk,Math.abs(v));return pk?Math.min(1536,Math.floor(26214*256/pk)):256}
+// 从 8 kHz 解码结果读一个点（t 以 8 kHz 采样为单位），乘增益，返回 -1..1 左右的浮点
+function srcAt(d,g,t){if(t<0)return 0;const i=Math.floor(t),f=t-i,a=i<d.length?d[i]:0,b=i+1<d.length?d[i+1]:0;return(a+(b-a)*f)*g/256/32768}
+const rd=(d,g,n,pos)=>{const o=new Float32Array(n);for(let i=0;i<n;i++)o[i]=srcAt(d,g,pos(i));return o};
+// 调制延迟：颤音、外星人、合唱团都用它（固件里是一段环形缓冲 + 正弦表）
+function vib(x,hz,depth){const D=SR*depth,base=D+2,o=new Float32Array(x.length);
+  for(let i=0;i<x.length;i++){const p=i-base-D*Math.sin(2*Math.PI*hz*i/SR),k=Math.floor(p),f=p-k;o[i]=k<0?0:lerp(x[k],x[k+1]||0,f)}return o}
+const VOICES=[
+  {n:'花栗鼠',d:'快 1.5 倍，音调升高',fx:(d,g)=>rd(d,g,Math.floor(d.length*4/3),i=>i*0.75)},
+  {n:'大叔',d:'慢 0.72 倍，音调降低',fx:(d,g)=>rd(d,g,Math.floor(d.length*200/72),i=>i*0.36)},
+  {n:'机器人',d:'70 Hz 环形调制 + 降位',fx:(d,g)=>rd(d,g,d.length*2,i=>i*0.5).map((v,i)=>Math.round(v*Math.sin(2*Math.PI*70*i/SR)*1.2*16)/16)},
+  {n:'倒放',d:'把你的话倒过来说',fx:(d,g)=>{const n=d.length*2;return rd(d,g,n,i=>(n-1-i)*0.5)}},
+  {n:'山谷回声',d:'180 ms 回声，反馈 0.45',fx:(d,g)=>{const x=rd(d,g,d.length*2,i=>i*0.5),dl=Math.round(SR*0.18),y=new Float32Array(x.length+SR),o=new Float32Array(y.length);
+    for(let i=0;i<y.length;i++){y[i]=(x[i]||0)+(i>=dl?y[i-dl]*0.45:0);o[i]=y[i]*0.6}return o}},
+  {n:'没电了',d:'越说越慢、越说越低，最后没电',fx:(d,g)=>{ // 读指针速度从 1.0 掉到 0.4，末尾再淡出
+    const n=d.length*2,o=[];let p=0;while(p<n-1){const q=p/n;o.push(srcAt(d,g,p*0.5)*(q>0.85?(1-q)/0.15:1));p+=1-0.6*q*q}return Float32Array.from(o)}},
+  {n:'颤音',d:'6 Hz 颤音，像在发抖',fx:(d,g)=>vib(rd(d,g,d.length*2,i=>i*0.5),6,0.0045)},
+  {n:'外星人',d:'升调 + 快速颤音',fx:(d,g)=>vib(rd(d,g,Math.floor(d.length*200/135),i=>i*0.675),11,0.002)},
+  {n:'对讲机',d:'窄带 + 失真 + 呲啦声',fx:(d,g)=>{const x=rd(d,g,d.length*2,i=>i*0.5),tail=Math.floor(SR*0.3),o=new Float32Array(x.length+tail),R=mulberry32(1234);let hp=0,lp=0,px=0;
+    for(let i=0;i<x.length;i++){hp=0.9*(hp+x[i]-px);px=x[i];lp+=0.45*(hp-lp);o[i]=Math.tanh(lp*4)*0.6*Math.min(1,(x.length-1-i)/80)}
+    for(let k=0;k<tail;k++)o[x.length+k]=(R()*2-1)*0.25*(1-k/tail)*Math.min(1,k/80);return o}},
+  {n:'合唱团',d:'三个 NABO 一起说',fx:(d,g)=>{const x=rd(d,g,d.length*2,i=>i*0.5),a=vib(x,0.8,0.012),b=vib(x,1.3,0.018);
+    return x.map((v,i)=>(v+a[i]*0.8+b[i]*0.8+srcAt(d,g,i*0.63)*0.5)*0.4)}},
+  {n:'卡带结巴',d:'随机重复片段，像卡带',fx:(d,g)=>{const x=rd(d,g,d.length*2,i=>i*0.5),seg=Math.round(SR*0.11),o=[];let s=1;
+    for(let i=0;i<x.length;i+=seg){const ch=x.subarray(i,i+seg);s=(s*16807)%2147483647;const rep=s%4===0?3:1;
+      for(let r=0;r<rep;r++)for(let j=0;j<ch.length;j++){let e=48;if(rep===3&&r>0)e=Math.min(e,j);if(rep===3&&r<rep-1)e=Math.min(e,ch.length-1-j);o.push(ch[j]*e/48)}}return Float32Array.from(o)}},
+  {n:'原声',d:'只经过 8 kHz ADPCM，听听工牌的录音音质',fx:(d,g)=>rd(d,g,d.length*2,i=>i*0.5)},
+];
+function renderVoice(raw,v){const d=adpcmRoundTrip(raw),g=voiceGainQ8(d),x=d.length?VOICES[v].fx(d,g):new Float32Array();return{d,g,out:x.map((s,i)=>clamp(s*Math.min(1,i/80,(x.length-1-i)/80),-1,1))}}
+
+// ================= 屏幕 =================
+let scr=null;const nowMs=()=>performance.now();
+function header(title,mode){c.fillStyle=C.bg;c.fillRect(0,0,W,H);c.fillStyle=C.panel;c.fillRect(0,0,W,24);
+  T(title,8,13,15,C.white,'left');if(mode)T(mode,232,12,11,C.cyan,'right',F.sans)}
+function hint(s){c.fillStyle=C.panel;c.fillRect(0,304,W,16);T(s,120,312,10,C.dim,'center',F.sans)}
+// 按键颜色规范：▲ 青色 = 调（数值 / 选项），▼ 绿色 = 换（模式 / 样式），OK 白色 = 做（主动作）；双击 ▲ 返回
+const KC={'▲':C.cyan,'▼':C.green,'OK':C.white,'▲▼':C.cyan,'▲▲':C.dark};
+function hintK(parts,back=true){c.fillStyle=C.panel;c.fillRect(0,304,W,16);
+  const it=parts.filter(Boolean);if(back)it.push(['▲▲','返回']);
+  const m=(s,f)=>{c.font=`10px ${f}`;return c.measureText(s).width};
+  const ws=it.map(([k,l])=>m(k,F.mono)+3+m(l,F.sans)),tot=ws.reduce((a,b)=>a+b,0)+10*(it.length-1);let x=Math.max(4,120-tot/2);
+  it.forEach(([k,l],i)=>{T(k,x,312,10,KC[k]||C.dim,'left',F.mono);T(l,x+m(k,F.mono)+3,312,10,k==='▲▲'?C.dark:C.dim,'left',F.sans);x+=ws[i]+10})}
+function mulberry32(a){return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const store={get(k,d){try{const v=localStorage.getItem('nabo-lab-'+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem('nabo-lab-'+k,JSON.stringify(v))}catch(e){}}};
+const SENS=[0,6,12,-12,-6];
+function cycleSens(){S.sens=SENS[(SENS.indexOf(S.sens)+1)%SENS.length];toast('灵敏度 '+(S.sens>0?'+':'')+S.sens+' dB')}
+function syncSliders(){for(const[id,v]of[['cal',S.cal],['quiet',S.quiet]]){const el=document.getElementById(id);if(el&&+el.value!==v){el.value=v;el.dispatchEvent(new Event('input'))}}}
+function drawQR(x,y,s){const n=25,m=s/n,r=mulberry32(7);c.fillStyle=C.white;c.fillRect(x-m*2,y-m*2,s+m*4,s+m*4);c.fillStyle='#000';
+  const fin=(i,j)=>(i<8&&j<8)||(i>=n-8&&j<8)||(i<8&&j>=n-8);
+  for(let i=0;i<n;i++)for(let j=0;j<n;j++){if(fin(i,j)){r();continue}if(r()<0.5)c.fillRect(x+i*m,y+j*m,Math.ceil(m),Math.ceil(m))}
+  for(const[i,j]of[[0,0],[n-7,0],[0,n-7]]){c.fillRect(x+i*m,y+j*m,7*m,7*m);c.fillStyle=C.white;c.fillRect(x+(i+1)*m,y+(j+1)*m,5*m,5*m);c.fillStyle='#000';c.fillRect(x+(i+2)*m,y+(j+2)*m,3*m,3*m)}}
+
+function needSrc(){if(src.kind!=='none')return;rr(20,136,200,46,8);c.fillStyle='#000a';c.fill();
+  T('先在右侧选择音源',120,152,14,C.gold);T('麦克风 / 演示音乐 / 扫频',120,170,10,C.dim,'center',F.sans)}
+function toast(s){S.toast=s;S.toastT=nowMs()}
+function onOnset(){if(scr&&scr.onset)scr.onset()}
+
+const MODEFUL={m:0,up(){cycleSens()},down(){this.m=(this.m+1)%this.modes.length}};
+
+const SPEC={...MODEFUL,id:'spec',name:'频谱仪',en:'SPECTRUM',ic:'▮▮',modes:['LED 柱','镜像','NABO 环'],frozen:false,fb:new Float32Array(32),
+  ok(){this.frozen=!this.frozen;if(this.frozen)this.fb.set(A.bands);toast(this.frozen?'已冻结':'继续')},
+  draw(t){header(this.name,this.modes[this.m]);const B=this.frozen?this.fb:A.bands,P=A.peaks;
+    if(this.m===0){const base=298,mh=262;
+      for(let i=0;i<32;i++){const x=Math.round(i*7.5)+1,segs=Math.floor(B[i]*mh/5);
+        for(let s=0;s<segs;s++){const fr=s*5/mh;c.fillStyle=fr>0.82?C.gold:fr>0.58?C.mag:fr>0.32?C.purple:C.cyan;c.fillRect(x,base-(s+1)*5+1,6,4)}
+        c.fillStyle=C.white;c.fillRect(x,base-P[i]*mh-2,6,2)}}
+    else if(this.m===1){const mid=160;
+      for(let i=0;i<32;i++){const x=Math.round(i*7.5)+1,h=Math.max(1,B[i]*128);c.fillStyle=BARC[i];c.fillRect(x,mid-h,6,h);
+        c.fillStyle=mix(BARC[i].replace(/rgb\((\d+),(\d+),(\d+)\)/,(_,r,g,b)=>'#'+[r,g,b].map(v=>(+v).toString(16).padStart(2,'0')).join('')),C.bg,0.6);c.fillRect(x,mid+3,6,h*0.75)}
+      c.fillStyle=C.white;c.fillRect(0,mid,W,1)}
+    else{const bass=(B[0]+B[1]+B[2]+B[3])/4,cx=120,cy=166,r0=50+bass*8;c.lineWidth=4;c.lineCap='butt';
+      for(let j=0;j<64;j++){const b=j<32?j:63-j,a=-Math.PI/2+(j+0.5)*Math.PI*2/64,r1=r0+5+B[b]*62;
+        c.strokeStyle=BARC[b];c.beginPath();c.moveTo(cx+Math.cos(a)*r0,cy+Math.sin(a)*r0);c.lineTo(cx+Math.cos(a)*r1,cy+Math.sin(a)*r1);c.stroke()}
+      const k=1+bass*0.14;nabo('N-IDLE',cx,cy,t,{sx:k,sy:k})}
+    if(this.frozen)T('❄ 冻结',8,36,10,C.gold,'left',F.sans);
+    hintK([['▲','灵敏度'],['▼','样式'],['OK','冻结']])},
+  info:{d:'32 段对数频谱（60 Hz–7 kHz），三种样式。NABO 环样式里 NABO 跟着低音缩放。',
+    k:[['▲ / ▼','切换样式：LED 柱 / 镜像 / NABO 环'],['OK','冻结当前画面'],['双击 ▲','回菜单']],
+    fw:['512 点 Q15 定点 FFT，每 20 ms 一次，需真机测耗时','LED 柱只重画变化的格子（脏矩形）','镜像倒影用预先调暗的颜色，不做 alpha 混合']}};
+
+const LUTS=[grad(['#0a0716','#2b1a6b','#8a2be2','#ff3da6','#ffc94a','#ffffff'],32),grad(['#000000','#003b1a','#00a040','#5cff8a','#e0ffe8'],32),grad(['#000020','#3d1aa0','#ff2d55','#ff9a3d','#fff04a'],32)];
+const LUTRGB=LUTS.map(l=>l.map(s=>s.match(/\d+/g).map(Number)));
+let wfImg=null;
+const WATER={...MODEFUL,id:'water',name:'声纹瀑布',en:'WATERFALL',ic:'≋',modes:['霓虹','矩阵','热成像'],
+  ok(){WF.frozen=!WF.frozen;toast(WF.frozen?'已冻结':'继续')},
+  draw(t){header(this.name,this.modes[this.m]);if(!wfImg)wfImg=c.createImageData(240,WF.h);
+    const d=wfImg.data,L=LUTRGB[this.m];
+    for(let y=0;y<WF.h;y++){const o=((WF.row+y)%WF.h)*WF.cols;
+      for(let j=0;j<WF.cols;j++){const col=L[WF.buf[o+j]],p=(y*240+j*2)*4;d[p]=d[p+4]=col[0];d[p+1]=d[p+5]=col[1];d[p+2]=d[p+6]=col[2];d[p+3]=d[p+7]=255}}
+    c.putImageData(wfImg,0,26);
+    c.fillStyle=C.panel;c.fillRect(0,283,W,20);
+    for(const f of[100,250,500,1000,2000,4000,8000]){const x=240*Math.log(f/60)/Math.log(8000/60);c.fillStyle=C.dim;c.fillRect(x,283,1,4);
+      T(f>=1000?f/1000+'k':''+f,clamp(x,8,230),294,9,C.dim,'center',F.mono)}
+    if(WF.frozen)T('❄ 冻结',8,36,10,C.gold,'left',F.sans);
+    hintK([['▲','灵敏度'],['▼','配色'],['OK','冻结']])},
+  info:{d:'时间–频率图：最新的一行在最上面往下流。吹口哨是一条线，说话是一串横纹，拍手是一道竖线。',
+    k:[['▲ / ▼','切换配色：霓虹 / 矩阵 / 热成像'],['OK','冻结（可以拍照）']],
+    fw:['用 ST7789 硬件垂直滚动（深潜同款），每 20 ms 只画新的一行 240 像素','32 级调色板直接写 RGB565，不需要整帧缓冲','120 列 × 2 像素']}};
+
+const SCOPE={...MODEFUL,id:'scope',name:'示波器',en:'SCOPE',ic:'∿',modes:['波形','圆形','李萨如'],g:4,z:1,trail:[],frozen:false,sb:new Float32Array(1024),
+  ok(){this.frozen=!this.frozen;toast(this.frozen?'已冻结':'继续')},
+  up(){this.z=this.z===4?1:this.z*2;this.trail=[];toast('时间轴 ×'+this.z)},down(){MODEFUL.down.call(this);this.trail=[]},
+  draw(t){header(this.name,this.modes[this.m]);const x=this.frozen?this.sb:lastN(1024,this.sb);
+    let pk=0;for(let i=0;i<1024;i++)pk=Math.max(pk,Math.abs(x[i]));this.g=lerp(this.g,0.9/Math.max(pk,0.015),0.15);const g=this.g;
+    c.fillStyle=C.line;for(let gx=0;gx<=240;gx+=30)for(let gy=40;gy<=290;gy+=6)c.fillRect(gx,gy,1,1);
+    for(let gy=40;gy<=290;gy+=31)for(let gx=0;gx<240;gx+=6)c.fillRect(gx,gy,1,1);
+    const pts=[];
+    if(this.m===0){let s0=1;for(let i=1;i<500;i++)if(x[i-1]<0&&x[i]>=0){s0=i;break}
+      for(let k=0;k<240;k++)pts.push([k,164-clamp(x[s0+Math.floor(k*2/this.z)]*g,-1,1)*118])}
+    else if(this.m===1){for(let k=0;k<=360;k++){const a=k/360*Math.PI*2-Math.PI/2,r=72+clamp(x[k*2]*g,-1,1)*40;pts.push([120+Math.cos(a)*r,166+Math.sin(a)*r])}}
+    else{for(let k=0;k<600;k++)pts.push([120+clamp(x[k]*g,-1,1)*104,166-clamp(x[k+9]*g,-1,1)*104])}
+    if(!this.frozen){this.trail.unshift(pts);if(this.trail.length>4)this.trail.pop()}
+    const col=[C.cyan,C.green,C.mag][this.m];
+    for(let i=this.trail.length-1;i>=0;i--){const p=this.trail[i];c.strokeStyle=i?mix(col,C.bg,0.45+i*0.13):col;c.lineWidth=i?1:2;
+      c.beginPath();p.forEach(([a,b],k)=>k?c.lineTo(a,b):c.moveTo(a,b));c.stroke()}
+    if(this.m===1)nabo('N-IDLE',120,166,t);
+    T(`×${g.toFixed(1)}`,232,36,10,C.dim,'right',F.mono);
+    hintK([['▲','时间轴'],['▼','显示'],['OK','冻结']])},
+  info:{d:'看声音的原始波形。波形模式会找过零点对齐（触发），所以哼一个音时波形是稳住不动的。',
+    k:[['▲ / ▼','切换：波形 / 圆形（NABO 在中间）/ 李萨如'],['OK','冻结']],
+    fw:['自动增益：跟着峰值缓慢调整','余辉用 4 层预先调暗的颜色','整条线每帧重画，脏矩形是整块区域；需测 fps']}};
+
+const TUNE_STR={1:[['E2',40],['A2',45],['D3',50],['G3',55],['B3',59],['E4',64]],2:[['G4',67],['C4',60],['E4',64],['A4',69]]};
+const TUNER={...MODEFUL,id:'tuner',name:'调音器',en:'TUNER',ic:'♮',modes:['半音','吉他','尤克里里'],cs:0,seen:0,okSince:0,label:'',oct:'',hz:0,ph:0,tgt:-1,
+  up(){const L=[440,442,443,432,415];S.a4=L[(L.indexOf(S.a4)+1)%L.length];toast('A4 = '+S.a4+' Hz')},ok(){toast('A4 = '+S.a4+' Hz')},
+  draw(t){header(this.name,this.modes[this.m]);const now=nowMs();
+    if(A.f0>0&&A.f0Conf>0.8){const midi=69+12*Math.log2(A.f0/S.a4);let ref,lab,oct='';
+      if(this.m===0){ref=Math.round(midi);lab=NN[((ref%12)+12)%12];oct=''+(Math.floor(ref/12)-1);this.tgt=-1}
+      else{const L=TUNE_STR[this.m];let bi=0;L.forEach((s,i)=>{if(Math.abs(midi-s[1])<Math.abs(midi-L[bi][1]))bi=i});ref=L[bi][1];lab=L[bi][0][0];oct=L[bi][0].slice(1);this.tgt=bi}
+      const cents=(midi-ref)*100;this.cs=now-this.seen>400?cents:lerp(this.cs,cents,0.35);this.seen=now;this.label=lab;this.oct=oct;this.hz=A.f0}
+    const live=now-this.seen<600,cs=clamp(this.cs,-50,50),inTune=live&&Math.abs(this.cs)<5;
+    if(inTune){if(!this.okSince)this.okSince=now}else this.okSince=0;
+    const cx=120,cy=196,R=100;
+    for(let k=-50;k<=50;k+=5){const a=-Math.PI/2+k/50*Math.PI/3,big=k%10===0,r1=R-(big?12:6);
+      c.strokeStyle=Math.abs(k)<=5?C.green:big?C.dim:C.dark;c.lineWidth=big?2:1;c.beginPath();c.moveTo(cx+Math.cos(a)*R,cy+Math.sin(a)*R);c.lineTo(cx+Math.cos(a)*r1,cy+Math.sin(a)*r1);c.stroke()}
+    T('♭',cx-R+8,cy-62,14,C.dim);T('♯',cx+R-8,cy-62,14,C.dim);
+    if(live){const a=-Math.PI/2+cs/50*Math.PI/3,col=inTune?C.green:Math.abs(cs)<15?C.gold:C.mag;
+      c.strokeStyle=col;c.lineWidth=3;c.beginPath();c.moveTo(cx+Math.cos(a)*30,cy+Math.sin(a)*30);c.lineTo(cx+Math.cos(a)*(R-2),cy+Math.sin(a)*(R-2));c.stroke();
+      T(this.label,cx-6,cy-24,58,col);T(this.oct,cx+26,cy-8,18,col,'left',F.mono);
+      T(`${this.hz.toFixed(1)} Hz  ${this.cs>=0?'+':''}${this.cs.toFixed(0)}¢`,cx,cy+14,12,C.white,'center',F.mono)}
+    else{T('—',cx,cy-24,48,C.dark);T('弹一个音或哼一声',cx,cy+14,11,C.dim,'center',F.sans)}
+    // 频闪条：偏低往左流、偏高往右流、准了就停
+    if(live&&!S.calm)this.ph+=cs*0.06;
+    for(let i=0;i<20;i++){const x=((i*12+this.ph)%240+240)%240;c.fillStyle=inTune?C.green:live?C.purple:C.line;c.fillRect(x,230,6,8)}
+    if(S.calm&&live&&!inTune)T(cs<0?'◀ 偏低，往上调':'偏高，往下调 ▶',120,252,10,C.gold,'center',F.sans);
+    if(this.m>0){const L=TUNE_STR[this.m];L.forEach((s,i)=>{const x=150+i*(84/L.length)+(84/L.length)/2,on=i===this.tgt&&live;
+      rr(x-8,262,16,18,4);c.fillStyle=on?(inTune?C.green:C.cyan):C.panel;c.fill();T(s[0][0],x,271,11,on?C.bg:C.dim,'center',F.mono)})}
+    if(this.okSince&&now-this.okSince>500){nabo('N-NOD',46,262,now-this.okSince-500,{once:true});T('准了！',150-(this.m?0:-10),252,12,C.green,'left')}
+    else nabo('N-IDLE',46,262,t);
+    hintK([['▲','A4 '+S.a4],['▼','模式']])},
+  info:{d:'半音调音器，可调吉他和尤克里里。表针看偏多少音分，下面的频闪条偏低往左流、偏高往右流，准了就停。连续准 0.5 秒 NABO 会点头。',
+    k:[['▲ / ▼','半音 / 吉他（EADGBE）/ 尤克里里（GCEA）'],['表针','±50 音分，绿区 ±5'],['频闪条','流动方向表示偏低还是偏高']],
+    fw:['YIN 音高检测：降采样到 8 kHz、512 点，整数差分，每 40 ms 一次','吉他低音 E2 82 Hz 需要至少 2 个周期，窗口要够长','这个工具最先做，用来验证音高算法']}};
+
+const DBM={...MODEFUL,id:'db',name:'分贝计',en:'dB METER',ic:'◔',modes:['实时','峰值保持','安静提醒'],peak:-100,since:nowMs(),loudT:0,
+  ok(){this.peak=-100;toast('峰值已清零')},up(){S.quiet=S.quiet>=80?40:S.quiet+5;syncSliders();toast('安静阈值 '+S.quiet+' dB')},
+  draw(t){const now=nowMs(),v=A.dbS+S.cal;this.peak=Math.max(this.peak,v);const show=this.m===1?this.peak:v;
+    const alarm=this.m===2&&v>S.quiet;if(alarm)this.loudT=now;
+    header(this.name,this.modes[this.m]);
+    if(this.m===2&&now-this.loudT<800&&(S.calm||Math.floor(now/200)%2)){c.strokeStyle=C.red;c.lineWidth=6;c.strokeRect(3,27,234,274)}
+    const cx=120,cy=130,R=82,a0=Math.PI*0.75,sweep=Math.PI*1.5,lit=clamp((show-30)/80,0,1);
+    for(let i=0;i<40;i++){const f=i/39,a=a0+f*sweep,on=f<=lit,db=30+f*80;
+      c.strokeStyle=on?(db<55?C.green:db<75?C.gold:C.red):C.line;c.lineWidth=7;c.beginPath();c.arc(cx,cy,R,a,a+sweep/40*0.7);c.stroke()}
+    if(this.m===2){const a=a0+clamp((S.quiet-30)/80,0,1)*sweep;c.strokeStyle=C.white;c.lineWidth=2;c.beginPath();c.moveTo(cx+Math.cos(a)*(R-12),cy+Math.sin(a)*(R-12));c.lineTo(cx+Math.cos(a)*(R+10),cy+Math.sin(a)*(R+10));c.stroke()}
+    T(src.kind==='none'?'--':Math.round(show)+'',cx,cy-4,50,C.white,'center',F.mono);
+    T(this.m===1?'dB 峰值':'dB（估算）',cx,cy+30,11,C.dim,'center',F.sans);
+    const lvl=v<45?['很安静',C.green]:v<60?['正常',C.green]:v<75?['有点吵',C.gold]:v<90?['很吵',C.red]:['太吵了！',C.red];
+    T(this.m===2&&alarm?'嘘——小声点':lvl[0],cx,cy+70,16,this.m===2&&alarm?C.red:lvl[1]);
+    // 10 秒曲线
+    const gx=10,gy=228,gw=148,gh=66;c.fillStyle=C.panel;c.fillRect(gx,gy,gw,gh);c.strokeStyle=C.cyan;c.lineWidth=1;c.beginPath();
+    for(let i=0;i<gw;i++){const k=(A.dh+Math.floor(i*500/gw))%500,y=gy+gh-clamp((A.dbHist[k]+S.cal-30)/80,0,1)*gh;i?c.lineTo(gx+i,y):c.moveTo(gx+i,y)}c.stroke();
+    if(this.m===2){const y=gy+gh-clamp((S.quiet-30)/80,0,1)*gh;c.fillStyle=C.red;for(let x=gx;x<gx+gw;x+=4)c.fillRect(x,y,2,1)}
+    T('10 秒',gx+4,gy+8,9,C.dim,'left',F.sans);
+    if(v>85)nabo('N-WOW',198,262,now%1583);else nabo('N-IDLE',198,262,t);
+    hintK([['▲','阈值 '+S.quiet],['▼','模式'],this.m===1&&['OK','清零']])},
+  info:{d:'估算环境音量。安静提醒模式超过阈值会闪红框，NABO 喊“嘘”。可以放在办公室、诊室、自习室。',
+    k:[['▲ / ▼','实时 / 峰值保持 / 安静提醒'],['OK','峰值保持模式下清零'],['阈值','右侧“安静阈值”滑杆（固件里做成设置项）']],
+    fw:['数值是估算：dBFS + 校准值。固件按 ES8311 增益在真机上用手机分贝计对一次','不加 A 计权（可选：一个二阶滤波器即可）','曲线每 20 ms 推进一点']}};
+
+const BEAT={...MODEFUL,id:'beat',name:'节拍检测',en:'BPM',ic:'♩',modes:['自动检测','拍手测速'],rings:[],dots:0,bob:0,metro:null,
+  onset(){this.rings.push(nowMs());this.dots=(this.dots+1)%8;this.bob=nowMs()},
+  bpmNow(){if(this.m===0)return A.bpm;const o=A.onsets,iv=[];for(let i=o.length-1;i>0&&iv.length<6;i--){const d=o[i]-o[i-1];if(d>0.25&&d<2)iv.push(d);else break}
+    return iv.length>=3?60/(iv.reduce((a,b)=>a+b)/iv.length):0},
+  ok(){if(this.metro){clearInterval(this.metro.id);this.metro=null;toast('节拍器关');return}
+    const b=Math.round(this.bpmNow()||100);if(!AC){toast('先选音源');return}let n=0;
+    const id=setInterval(()=>{click(n%4===0);n++;this.onset()},60000/b);this.metro={id,b};toast(`节拍器 ${b} BPM`)},
+  up(){if(!this.metro){MODEFUL.up.call(this);return}const b=this.metro.b>=220?40:this.metro.b+5;clearInterval(this.metro.id);let n=0;
+    const id=setInterval(()=>{click(n%4===0);n++;this.onset()},60000/b);this.metro={id,b};toast(`节拍器 ${b} BPM`)},
+  leave(){if(this.metro){clearInterval(this.metro.id);this.metro=null}},
+  draw(t){header(this.name,this.metro?`节拍器 ${this.metro.b}`:this.modes[this.m]);const now=nowMs(),cx=120,cy=140;
+    this.rings=this.rings.filter(r=>now-r<700);
+    if(!S.calm)for(const r of this.rings){const p=(now-r)/700;c.strokeStyle=mix('#ff3da6',C.bg,p);c.lineWidth=3;c.beginPath();c.arc(cx,cy,40+p*80,0,7);c.stroke()}
+    const b=this.metro?this.metro.b:this.bpmNow();
+    T(b?Math.round(b)+'':'---',cx,cy-4,54,C.white,'center',F.mono);T('BPM',cx,cy+30,12,C.cyan,'center',F.mono);
+    if(this.m===0){const w=clamp(A.bpmConf*3,0,1);c.fillStyle=C.panel;c.fillRect(70,cy+46,100,4);c.fillStyle=C.cyan;c.fillRect(70,cy+46,100*w,4);T('把握度',cx,cy+58,9,C.dim,'center',F.sans)}
+    else T(A.onsets.length<4?'对着工牌拍几下手':'继续拍，越多越准',cx,cy+54,11,C.dim,'center',F.sans);
+    for(let i=0;i<8;i++){const on=i===(this.dots+7)%8;c.fillStyle=on?(i%4===0?C.gold:C.mag):C.line;c.beginPath();c.arc(36+i*24,226,on?6:4,0,7);c.fill()}
+    const k=Math.max(0,1-(now-this.bob)/220);nabo('N-IDLE',120,266,t,{sx:1+k*0.1,sy:1-k*0.12});
+    hintK([['▲',this.metro?'速度':'灵敏度'],['▼','模式'],['OK','节拍器']])},
+  info:{d:'听歌测速，或者拍手测速。OK 打开节拍器，按测到的速度打拍子，NABO 跟着点头。',
+    k:[['▲ / ▼','自动检测（适合放歌）/ 拍手测速'],['OK','节拍器开关（第 1 拍高音）'],['圆环','每个检测到的拍子放一圈']],
+    fw:['起音检测：32 频段的频谱通量 + 自适应阈值','BPM：6 秒起音包络做自相关，偏好 120 附近','节拍器咔嗒只有 25 ms，响的那一帧跳过分析（不送 0），避免把咔嗒当成拍子，也不会在恢复时出假起音']}};
+
+const SOLF=['do','','re','','mi','fa','','sol','','la','','si'],JIANPU=['1','#1','2','#2','3','4','#4','5','#5','6','#6','7'];
+const PITCH={...MODEFUL,id:'pitch',name:'音准曲线',en:'PITCH TRACE',ic:'〽',modes:['音名','简谱','唱名'],center:60,span:20,up(){const L=[20,12,32];this.span=L[(L.indexOf(this.span)+1)%3];toast('显示 '+this.span+' 个半音')},frozen:false,snap:null,
+  ok(){this.frozen=!this.frozen;this.snap=this.frozen?Float32Array.from(A.pitchHist):null;toast(this.frozen?'已冻结':'继续')},
+  lab(n){const pc=((n%12)+12)%12;return this.m===0?NN[pc]+(Math.floor(n/12)-1):this.m===1?JIANPU[pc]:SOLF[pc]},
+  draw(t){header(this.name,this.modes[this.m]);const ph=this.snap||A.pitchHist,p0=this.frozen?0:A.ph;
+    let recent=[];for(let i=0;i<40;i++){const v=ph[(p0-1-i+400)%200];if(v===v)recent.push(v)}
+    if(recent.length>5&&!this.frozen){recent.sort((a,b)=>a-b);this.center=lerp(this.center,recent[recent.length>>1],0.05)}
+    const top=30,bot=296,span=this.span,lo=Math.round(this.center)-span/2,py=n=>bot-(n-lo)/span*(bot-top);
+    for(let n=lo;n<=lo+span;n++){const pc=((n%12)+12)%12,white=[0,2,4,5,7,9,11].includes(pc),y=py(n);
+      c.fillStyle=pc===0?C.dim:white?C.line:'#1a1433';c.fillRect(30,y,210,1);
+      if(white&&this.lab(n))T(this.lab(n),15,y,9,pc===0?C.gold:C.dim,'center',F.mono)}
+    c.lineWidth=3;c.lineCap='round';let prev=null;
+    for(let i=0;i<200;i++){const v=ph[(p0+i)%200],x=30+i*210/200;
+      if(v===v){const y=py(v),dev=Math.abs(v-Math.round(v));
+        if(prev){c.strokeStyle=dev<0.15?C.green:dev<0.3?C.cyan:C.mag;c.beginPath();c.moveTo(prev[0],prev[1]);c.lineTo(x,y);c.stroke()}prev=[x,y]}else prev=null}
+    const cur=ph[(p0-1+200)%200];
+    if(cur===cur){rr(168,30,68,30,6);c.fillStyle=C.panel;c.fill();T(this.lab(Math.round(cur))||NN[((Math.round(cur)%12)+12)%12],202,46,18,C.white)}
+    hintK([['▲','缩放'],['▼','记谱'],['OK','冻结']])},
+  info:{d:'KTV 那种音准线：唱歌或哼歌，看自己的音高随时间怎么走。贴着横线是准，颜色越绿越准。可以切换成简谱或唱名。',
+    k:[['▲ / ▼','音名 / 简谱（1=C）/ 唱名'],['OK','冻结，看刚才那句'],['纵轴','自动跟着你的音域移动，显示 20 个半音']],
+    fw:['和调音器共用 YIN 结果','4 秒历史（200 个点）','以后可以加跟唱模式：NABO 先唱一句，你跟着唱打分']}};
+
+const FIFTHS=[0,7,2,9,4,11,6,1,8,3,10,5];
+const CHROMA={...MODEFUL,id:'chroma',name:'和弦环',en:'CHORD RING',ic:'✲',modes:['五度圈','半音'],
+  draw(t){header(this.name,this.modes[this.m]);const cx=120,cy=150,ord=this.m===0?FIFTHS:[...Array(12).keys()];
+    for(let i=0;i<12;i++){const pc=ord[i],a0=-Math.PI/2+(i-0.5)*Math.PI/6+0.03,a1=a0+Math.PI/6-0.06,v=A.chroma[pc],r1=58+v*46;
+      c.fillStyle=mix(PC12[pc].match(/\d+/g).map(Number).reduce((s,x)=>s+x.toString(16).padStart(2,'0'),'#'),C.bg,1-clamp(0.25+v*0.75,0,1));
+      c.beginPath();c.arc(cx,cy,r1,a0,a1);c.arc(cx,cy,54,a1,a0,true);c.closePath();c.fill();
+      const am=(a0+a1)/2;T(NN[pc],cx+Math.cos(am)*110,cy+Math.sin(am)*112,10,v>0.6?C.white:C.dim,'center',F.mono)}
+    if(A.chord){T(A.chord,cx,cy-6,34,C.white,'center',F.mono);T(A.chord.endsWith('m')?'小三和弦':'大三和弦',cx,cy+22,10,C.cyan,'center',F.sans)}
+    else T('…',cx,cy-6,28,C.dark);
+    const top=[...Array(12).keys()].sort((a,b)=>A.chroma[b]-A.chroma[a]).slice(0,3).filter(p=>A.chroma[p]>0.4);
+    T(top.map(p=>NN[p]).join(' · ')||'弹个和弦试试',120,282,12,C.dim,'center',F.mono);
+    nabo('N-IDLE',206,266,t,{sx:0.6,sy:0.6});
+    hintK([['▲','灵敏度'],['▼','排列']])},
+  info:{d:'12 个音级哪个亮就是在响哪个音，中间猜和弦（大三、小三）。放歌或弹吉他时，五度圈模式会看到相邻的扇区一起亮。',
+    k:[['▲ / ▼','五度圈排列 / 半音排列'],['中间','和弦名，把握不够时显示 …']],
+    fw:['2048 个采样降到 8 kHz 后做 1024 点 FFT，每 100 ms 一次（≈7.8 Hz 分辨率，低音才分得清）','内存：1024 点 int32 复数工作区 8 KB，和 512 点 FFT 共用','实验性：混响大或鼓声重时容易猜错，需要真机试']}};
+
+const ECHO={id:'echo',name:'复读 NABO',en:'ECHO NABO',ic:'◉',v:0,state:'idle',recStart:0,pcm:null,env:null,playT:0,playLen:0,bytes:0,
+  m:0,modes:['按住说','自动复读'],lastLoud:0,up(){this.v=(this.v+1)%VOICES.length;toast(VOICES[this.v].n)},down(){this.m^=1;toast(this.modes[this.m])},
+  startRec(){const pre=Math.round(SR*0.15);rec.buf=new Float32Array(SR*3);rec.buf.set(lastN(pre,new Float32Array(pre)));rec.n=pre;rec.on=true;this.state='rec';this.recStart=nowMs();this.lastLoud=nowMs()},
+  leave(){rec.on=false;if(this.state==='rec')this.state='idle'},
+  async okDown(){if(src.kind!=='mic'){toast('复读要用麦克风');return}if(this.state!=='idle')return;
+    if(this.m===1){toast('自动模式：直接说话就行');return}this.startRec()},
+  okUp(){if(this.state!=='rec')return;rec.on=false;const raw=rec.buf.subarray(0,rec.n);
+    if(rec.n<SR*0.25){this.state='idle';if(!this.m)toast('太短了，按住说话');return}
+    const R=renderVoice(raw,this.v);this.bytes=adpcmBytes(R.d.length);const x=R.out;
+    const fr=Math.round(SR*0.02),e=new Float32Array(Math.ceil(x.length/fr));for(let i=0;i<e.length;i++){let s=0;for(let k=0;k<fr;k++){const v=x[i*fr+k]||0;s+=v*v}e[i]=Math.sqrt(s/fr)}
+    this.env=e;this.pcm=x;this.playLen=x.length/SR*1000;playPCM(x);this.playT=nowMs();this.state='play'},
+  draw(t){const now=nowMs();
+    if(this.state==='rec'&&now-this.recStart>3000)this.okUp();
+    if(this.m===1&&src.kind==='mic'){if(this.state==='idle'&&AC&&AC.currentTime>S.muteUntil+0.25&&A.db>-38)this.startRec();
+      else if(this.state==='rec'){if(A.db>-46)this.lastLoud=now;else if(now-this.lastLoud>650)this.okUp()}}
+    if(this.state==='play'&&now-this.playT>this.playLen+150)this.state='idle';
+    header(this.name,this.state==='rec'?'录音中':this.state==='play'?'复读中':this.modes[this.m]);
+    const cx=120,cy=140;
+    if(this.state==='rec'){const p=(now-this.recStart)/3000,lv=clamp((A.db+60)/50,0,1);
+      c.strokeStyle=C.red;c.lineWidth=4;c.beginPath();c.arc(cx,cy,70,-Math.PI/2,-Math.PI/2+p*Math.PI*2);c.stroke();
+      c.strokeStyle=mix('#ff4d5e',C.bg,0.5);c.lineWidth=2;c.beginPath();c.arc(cx,cy,72+lv*24,0,7);c.stroke();
+      nabo('N-IDLE',cx,cy,t,{size:120});T('● REC '+((now-this.recStart)/1000).toFixed(1)+' s',cx,224,13,C.red,'center',F.mono)}
+    else if(this.state==='play'){const i=Math.floor((now-this.playT)/20),e=this.env&&this.env[i]||0,k=clamp(e*3,0,1);
+      for(let r=0;r<3;r++){c.strokeStyle=mix('#35f0dc',C.bg,0.3+r*0.25);c.lineWidth=2;c.beginPath();c.arc(cx,cy,64+r*12+k*16,0,7);c.stroke()}
+      nabo('N-IDLE',cx,cy,t,{size:120,sx:1-k*0.06,sy:1+k*0.1});T(`ADPCM ${(this.bytes/1024).toFixed(1)} KB`,cx,224,10,C.dim,'center',F.mono)}
+    else{nabo('N-IDLE',cx,cy,t,{size:120});T(src.kind==='mic'?(this.m?'直接说话，说完 NABO 就学':'按住 OK 说一句话'):'先在右侧打开麦克风',cx,224,13,C.gold)}
+    const vo=VOICES[this.v];rr(20,244,200,50,10);c.fillStyle=C.panel;c.fill();
+    T('◀',34,262,12,C.dim);T('▶',206,262,12,C.dim);T(vo.n,cx,262,18,C.cyan);T(vo.d,cx,282,10,C.dim,'center',F.sans);
+    hintK([['▲','声音'],['▼',this.m?'自动':'按住'],!this.m&&['OK','按住录音']])},
+  info:{d:'会说话的汤姆猫玩法：按住 OK 说一句（最长 3 秒），松手后 NABO 用选好的声音学回来。',
+    k:[['按住 OK','录音，松手就复读'],['▲ / ▼','花栗鼠 / 大叔 / 机器人 / 倒放 / 山谷回声 / 没电了 / 颤音 / 外星人 / 对讲机 / 合唱团 / 卡带结巴 / 原声']],
+    fw:['录音存 8 kHz IMA ADPCM：3 秒 ≈ 12 KB，没有 PSRAM 也放得下','播放时麦克风静音，防止啸叫','“原声”可以直接听到工牌录音音质，原型里就是按这个链路算的']}};
+
+// ================= 吉他工具箱 =================
+const INST={g:{n:'吉他',open:[40,45,50,55,59,64]},u:{n:'尤克里里',open:[67,60,64,69]}}; // 吉他低音弦在左；尤克里里 GCEA
+const OPEN=INST.g.open;
+const SHAPES={C:'x32010',Cm:'x35543',C7:'x32310',Cmaj7:'x32000',Cadd9:'x32030',
+  D:'xx0232',Dm:'xx0231',D7:'xx0212',Dsus4:'xx0233',
+  E:'022100',Em:'022000',E7:'020100',Em7:'022030',
+  F:'133211',Fm:'133111',Fmaj7:'xx3210',
+  G:'320003',Gm:'355333',G7:'320001',
+  A:'x02220',Am:'x02210',A7:'x02020',Am7:'x02010',Asus2:'x02200',
+  B:'x24442',Bm:'x24432',B7:'x21202'};
+const SHAPES_U={C:'0003',Cm:'0333',C7:'0001',Cmaj7:'0002',Cadd9:'0203',D:'2220',Dm:'2210',D7:'2223',Dsus4:'0233',
+  E:'4442',Em:'0432',E7:'1202',Em7:'0202',F:'2010',Fm:'1013',G:'0232',Gm:'0231',G7:'0212',
+  A:'2100',Am:'2000',A7:'0100',Am7:'0000',Asus2:'2200',B:'4322',Bm:'4222',B7:'2322'};
+const shapeOf=(n,i='g')=>(i==='u'?SHAPES_U:SHAPES)[n];
+const CHORD_LIST=Object.keys(SHAPES),UKE_LIST=Object.keys(SHAPES_U);
+const parseShape=s=>[...s].map(ch=>ch==='x'?-1:+ch);
+const chordTones=(fr,i='g')=>{const op=INST[i].open,o=[];fr.forEach((f,s)=>{if(f>=0){const pc=(op[s]+f)%12;if(!o.includes(pc))o.push(pc)}});return o};
+function splitName(n){const k=n[1]==='♯'?2:1;return[NN.indexOf(n.slice(0,k)),n.slice(k)]}
+const transName=(n,d)=>{const[r,q]=splitName(n);return NN[(r+d+120)%12]+q};
+// Karplus-Strong 拨弦：固件里只要一段整数环形缓冲，非常便宜
+function pluck(midi,out,off,amp){const N=Math.max(2,Math.round(SR/(440*2**((midi-69)/12)))),b=new Float32Array(N);
+  const R=mulberry32(midi*7919+off);for(let i=0;i<N;i++)b[i]=R()*2-1;let p=0;
+  for(let j=off;j<out.length;j++){const v=b[p],q=(p+1)%N;b[p]=0.4985*(v+b[q]);out[j]+=v*amp;p=q}}
+function strum(fr,down=true,dur=1.8,inst='g'){const op=INST[inst].open,out=new Float32Array(Math.round(SR*dur));let k=0;
+  const ord=[...fr.keys()];if(!down)ord.reverse();
+  for(const s of ord){if(fr[s]<0)continue;pluck(op[s]+fr[s],out,Math.round(k*SR*0.016),inst==='u'?0.28:0.22);k++}
+  const fade=Math.round(SR*0.25);for(let i=0;i<fade;i++)out[out.length-1-i]*=i/fade;return out}
+async function playFrets(fr,down,inst='g'){await ensureAC();playPCM(strum(fr,down,1.8,inst))}
+function drawChord(name,x,y,w,h,o={}){
+  const inst=o.inst||'g',fr=parseShape(shapeOf(name,inst)),ns=fr.length,pos=fr.filter(f=>f>0),maxf=pos.length?Math.max(...pos):0,base=maxf>4?Math.min(...pos):1;
+  const sx=w/(ns-1),fy=h/5,amp=o.amp||0,col=o.col||C.cyan;
+  if(base===1){c.fillStyle=C.white;c.fillRect(x-1,y-3,w+2,3)}else T(base+'fr',x-8,y+fy/2,10,C.dim,'right',F.mono);
+  c.fillStyle=C.dark;for(let i=0;i<=5;i++)c.fillRect(x,y+i*fy,w,1);
+  for(let s=0;s<ns;s++){c.strokeStyle=fr[s]<0?C.line:C.dim;c.lineWidth=inst==='u'?1.3:1+(5-s)*0.25;c.beginPath();
+    for(let k=0;k<=12;k++){const yy=y+k*h/12,dx=amp*Math.sin(k/12*Math.PI)*Math.sin(nowMs()/18+s*1.7)*(fr[s]<0?0:1);k?c.lineTo(x+s*sx+dx,yy):c.moveTo(x+s*sx+dx,yy)}c.stroke()}
+  let barre=null;if(pos.length){const mn=Math.min(...pos),idx=fr.map((f,i)=>f===mn?i:-1).filter(i=>i>=0),a=idx[0],b=idx[idx.length-1];
+    const ok=ns===4?idx.length>=3&&b-a>=2:idx.length>=2&&b-a>=3;
+    if(ok&&fr.slice(a,b+1).every(f=>f>=mn))barre={f:mn,a,b}}
+  const r=Math.min(sx,fy)*0.33,fyc=f=>y+(f-base+0.5)*fy;
+  if(barre){rr(x+barre.a*sx-r,fyc(barre.f)-r,(barre.b-barre.a)*sx+2*r,2*r,r);c.fillStyle=col;c.fill()}
+  fr.forEach((f,s)=>{const cx=x+s*sx;
+    if(f<0)T('×',cx,y-11,11,C.dim,'center',F.mono);else if(f===0)T('○',cx,y-11,10,C.dim,'center',F.mono);
+    else if(!(barre&&f===barre.f&&s>=barre.a&&s<=barre.b)){c.fillStyle=col;c.beginPath();c.arc(cx,fyc(f),r,0,7);c.fill()}});
+  if(o.names){const op=INST[inst].open;fr.forEach((f,s)=>T(f<0?'':NN[(op[s]+Math.max(0,f))%12].replace('♯','#'),x+s*sx,y+h+10,8,C.dim,'center',F.mono))}
+}
+const STRUMS=[{n:'民谣基础',p:'D-DU-UDU'},{n:'四下扫',p:'D-D-D-D-'},{n:'八分扫',p:'DUDUDUDU'},{n:'切分',p:'D-DU-U-U'},{n:'华尔兹 3/4',p:'D-DUDU'}];
+const SCALES=[{n:'小调五声',iv:[0,3,5,7,10]},{n:'大调五声',iv:[0,2,4,7,9]},{n:'自然大调',iv:[0,2,4,5,7,9,11]},{n:'自然小调',iv:[0,2,3,5,7,8,10]},{n:'布鲁斯',iv:[0,3,5,6,7,10]}];
+const PROGS=[{n:'卡农',c:['C','G','Am','Em','F','C','F','G']},{n:'万能 1-5-6-4',c:['C','G','Am','F']},{n:'小情歌 6-4-1-5',c:['Am','F','C','G']},
+  {n:'五十年代 1-6-4-5',c:['C','Am','F','G']},{n:'12 小节布鲁斯',c:['A7','A7','A7','A7','D7','D7','A7','A7','E7','D7','A7','E7']}];
+const CAPO_SHAPES=['C','G','D','A','E','Am','Em','Dm'];
+const EAR_POOL=['C','G','Am','F','Em','Dm','D','E','A','E7','A7','G7'];
+const GT_PAGES=[{k:'tuner',n:'调音器',ic:'♮',d:'EADGBE 标准调弦'},{k:'chords',n:'和弦谱',ic:'▦',d:'吉他 / 尤克里里 / 和弦进行'},{k:'listen',n:'听和弦',ic:'◎',d:'弹一下，显示指法'},
+  {k:'strum',n:'扫弦节奏',ic:'⇅',d:'跟着箭头扫，判准不准'},{k:'capo',n:'变调夹',ic:'⊐',d:'夹几品、实际是什么和弦'},{k:'scale',n:'指板音阶',ic:'⋮',d:'五声、大小调、布鲁斯，可播放'},{k:'ear',n:'练耳挑战',ic:'?',d:'听和弦猜名字'}];
+const GUITAR={id:'guitar',name:'吉他工具箱',en:'GUITAR KIT',ic:'♪',page:'menu',sel:0,
+  cm:0,ci:0,ui:0,pi:0,prog:{run:false,idx:0,half:0,id:null},playT:-1e9,
+  st:{pi:0,bpm:80,run:false,t0:0,j:new Map(),flash:null,id:null,next:0,beat:0},capo:2,cs:0,root:9,sc:0,
+  ear:{q:null,opts:[],sel:1,ans:null,streak:0,best:store.get('ear',0),at:0},
+  get noSrc(){return this.page!=='listen'&&this.page!=='strum'},
+  get info(){return GT_INFO[this.page]},
+  back(){if(this.page==='menu')return false;this.leave();this.page='menu';showInfo();return true},
+  leave(){if(this.st.run)this.strumStop();this.progStop()},
+  up(){const p=this.page;
+    if(p==='menu')this.sel=(this.sel+GT_PAGES.length-1)%GT_PAGES.length;
+    else if(p==='chords'){if(this.cm===0)this.ci=(this.ci+1)%CHORD_LIST.length;else if(this.cm===1)this.ui=(this.ui+1)%UKE_LIST.length;else{this.progStop();this.pi=(this.pi+1)%PROGS.length}}
+    else if(p==='strum'&&!this.st.run){const L=[60,70,80,90,100,110,120];this.st.bpm=L[(L.indexOf(this.st.bpm)+1)%L.length]}
+    else if(p==='capo')this.capo=(this.capo+1)%10;
+    else if(p==='scale')this.root=(this.root+1)%12;
+    else if(p==='ear'&&!this.ear.ans)this.ear.sel=(this.ear.sel+4)%5},
+  down(){const p=this.page;
+    if(p==='menu')this.sel=(this.sel+1)%GT_PAGES.length;
+    else if(p==='chords'){this.progStop();this.cm=(this.cm+1)%3;toast(['吉他','尤克里里','和弦进行'][this.cm])}
+    else if(p==='strum'&&!this.st.run)this.st.pi=(this.st.pi+1)%STRUMS.length;
+    else if(p==='capo')this.cs=(this.cs+1)%CAPO_SHAPES.length;
+    else if(p==='scale')this.sc=(this.sc+1)%SCALES.length;
+    else if(p==='ear'&&!this.ear.ans)this.ear.sel=(this.ear.sel+1)%5},
+  ok(){const p=this.page;
+    if(p==='menu'){const k=GT_PAGES[this.sel].k;if(k==='tuner'){TUNER.m=1;TUNER.ret=GUITAR;go(TUNER);return}
+      this.page=k;if(k==='ear'&&!this.ear.q)this.newQ();showInfo()}
+    else if(p==='chords'){if(this.cm===0)playFrets(parseShape(SHAPES[CHORD_LIST[this.ci]]),true);
+      else if(this.cm===1)playFrets(parseShape(SHAPES_U[UKE_LIST[this.ui]]),true,'u');
+      else{this.prog.run?this.progStop():this.progStart()}this.playT=nowMs()}
+    else if(p==='strum'){this.st.run?this.strumStop():this.strumStart()}
+    else if(p==='capo'){playFrets(parseShape(SHAPES[CAPO_SHAPES[this.cs]]).map(f=>f<0?f:f+this.capo),true);this.playT=nowMs()}
+    else if(p==='scale')this.playScale();
+    else if(p==='ear')this.earOk()},
+  // ---- 和弦进行：每个和弦两下（下扫、上扫），80 BPM ----
+  progStart(){const P=this.prog;P.run=true;P.idx=0;P.half=0;const play=()=>{const n=PROGS[this.pi].c[P.idx];playFrets(parseShape(SHAPES[n]),P.half%2===0);this.playT=nowMs()};
+    play();P.id=setInterval(()=>{P.half++;if(P.half%2===0)P.idx=(P.idx+1)%PROGS[this.pi].c.length;play()},750)},
+  progStop(){clearInterval(this.prog.id);this.prog.run=false},
+  async playScale(){await ensureAC();const S2=SCALES[this.sc],r=52+((this.root-4+12)%12),notes=[...S2.iv.map(i=>r+i),r+12],d=0.26,o=new Float32Array(Math.round(SR*(notes.length*d+1)));
+    notes.forEach((m,i)=>pluck(m,o,Math.round(i*d*SR),0.4));playPCM(o);this.scaleT=nowMs()},
+  // ---- 扫弦节奏 ----
+  async strumStart(){await ensureAC();const st=this.st;st.run=true;st.j=new Map();st.flash=null;st.t0=AC.currentTime+0.6;st.next=st.t0;st.beat=0;
+    const e=60/st.bpm/2,L=STRUMS[st.pi].p.length;
+    st.id=setInterval(()=>{while(st.next<AC.currentTime+0.12){click(st.beat%(L/2)===0,st.next);st.next+=2*e;st.beat++}},25)},
+  strumStop(){clearInterval(this.st.id);this.st.run=false},
+  onset(){if(this.page!=='strum'||!this.st.run)return;const st=this.st,e=60/st.bpm/2,p=STRUMS[st.pi].p,t=AC.currentTime-0.045,i0=Math.round((t-st.t0)/e);
+    let best=null;for(let i=i0-1;i<=i0+1;i++){if(i<0||p[i%p.length]==='-'||st.j.has(i))continue;const dt=t-(st.t0+i*e);if(Math.abs(dt)<0.15&&(!best||Math.abs(dt)<Math.abs(best.dt)))best={i,dt}}
+    if(!best)return;const a=Math.abs(best.dt),r=a<0.05?'完美':a<0.1?'不错':best.dt<0?'早了':'晚了';st.j.set(best.i,r);st.flash={r,t:nowMs()}},
+  // ---- 练耳 ----
+  newQ(){const E=this.ear,q=EAR_POOL[Math.floor(Math.random()*EAR_POOL.length)],o=[q];
+    while(o.length<4){const x=EAR_POOL[Math.floor(Math.random()*EAR_POOL.length)];if(!o.includes(x))o.push(x)}
+    o.sort(()=>Math.random()-0.5);Object.assign(E,{q,opts:o,sel:1,ans:null});playFrets(parseShape(SHAPES[q]),true)},
+  earOk(){const E=this.ear;if(E.ans){this.newQ();return}if(E.sel===0){playFrets(parseShape(SHAPES[E.q]),true);return}
+    E.ans=E.opts[E.sel-1];E.at=nowMs();if(E.ans===E.q){E.streak++;if(E.streak>E.best){E.best=E.streak;store.set('ear',E.best)}}else E.streak=0},
+  draw(t){const p=this.page,now=nowMs(),amp=Math.max(0,3*(1-(now-this.playT)/900));
+    if(p==='menu'){header(this.name,'GUITAR KIT');
+      GT_PAGES.forEach((g,i)=>{const y=34+i*36,on=i===this.sel;rr(10,y,220,32,7);c.fillStyle=on?C.cyan:C.panel;c.fill();
+        T(g.ic,28,y+16,14,on?C.bg:C.gold,'center',F.mono);T(g.n,46,y+11,13,on?C.bg:C.white,'left',F.sans);T(g.d,46,y+24,9,on?'#0a0716':C.dim,'left',F.sans)});
+      hintK([['▲▼','选择'],['OK','进入']]);return}
+    if(p==='chords'){
+      if(this.cm<2){const inst=this.cm?'u':'g',L=this.cm?UKE_LIST:CHORD_LIST,i=this.cm?this.ui:this.ci,n=L[i];
+        header('和弦谱',`${INST[inst].n} ${i+1}/${L.length}`);T(n,120,50,32,C.white,'center',F.mono);
+        if(inst==='g')drawChord(n,62,98,116,136,{amp,names:true});else drawChord(n,75,98,90,136,{amp,inst,names:true});
+        T('组成音  '+chordTones(parseShape(shapeOf(n,inst)),inst).map(x=>NN[x]).join(' · '),120,276,11,C.dim,'center',F.mono);
+        hintK([['▲','下一个'],['▼',this.cm?'和弦进行':'尤克里里'],['OK','扫弦']]);return}
+      const P=PROGS[this.pi],cur=this.prog.run?P.c[this.prog.idx]:P.c[0];header('和弦进行',P.n);
+      P.c.forEach((n,i)=>{const col=i%6,row=Math.floor(i/6),x=12+col*37.5,y=32+row*24,on=this.prog.run&&i===this.prog.idx;
+        rr(x,y,34,20,5);c.fillStyle=on?C.cyan:C.panel;c.fill();T(n,x+17,y+10,10,on?C.bg:C.white,'center',F.mono)});
+      const top=P.c.length>6?96:76;T(cur,120,top,26,C.white,'center',F.mono);drawChord(cur,72,top+34,96,112,{amp,col:C.gold});
+      T(this.prog.run?'播放中 · 80 BPM · 下扫 / 上扫':'OK 播放这条和弦进行',120,286,10,C.dim,'center',F.sans);
+      hintK([['▲','换进行'],['▼','吉他'],['OK',this.prog.run?'停止':'播放']]);return}
+    if(p==='listen'){header('听和弦','LISTEN');const n=A.chord;
+      if(n){T(n,120,48,30,C.white,'center',F.mono);if(SHAPES[n])drawChord(n,72,90,96,116,{col:C.green});else T('这个和弦还没收录指法',120,150,11,C.dim,'center',F.sans)}
+      else{T('…',120,48,28,C.dark);T('弹一个和弦，让它响着',120,150,12,C.dim,'center',F.sans)}
+      for(let i=0;i<12;i++){const v=A.chroma[i],x=12+i*18.5;c.fillStyle=PC12[i];c.fillRect(x,290-v*44,13,Math.max(1,v*44));T(NN[i].replace('♯','#'),x+6.5,298,7,C.dim,'center',F.mono)}
+      hintK([]);return}
+    if(p==='strum'){const st=this.st,s=STRUMS[st.pi],e=60/st.bpm/2,L=s.p.length;header('扫弦节奏',`${st.bpm} BPM`);
+      T(s.n,12,38,13,C.gold,'left',F.sans);T(s.p.split('').map(ch=>ch==='D'?'↓':ch==='U'?'↑':'·').join(' '),228,38,12,C.white,'right',F.mono);
+      const hy=236;c.fillStyle=C.dim;c.fillRect(40,hy,160,2);
+      if(!st.run){T('OK 开始',120,150,20,C.white);T('▲ 换速度   ▼ 换节奏型',120,176,11,C.dim,'center',F.sans);T('拿起吉他，跟着箭头扫弦',120,196,11,C.dim,'center',F.sans)}
+      else{c.save();c.beginPath();c.rect(0,50,240,200);c.clip();const tn=AC.currentTime,speed=150,i0=Math.max(0,Math.floor((tn-0.35-st.t0)/e)),i1=Math.ceil((tn+1.4-st.t0)/e);
+        for(let i=i0;i<=i1;i++){const ch=s.p[i%L];if(ch==='-')continue;const te=st.t0+i*e,y=hy-(te-tn)*speed;
+          if(tn-te>0.15&&!st.j.has(i))st.j.set(i,'错过');const r=st.j.get(i);
+          const col=r==='完美'?C.green:r==='不错'?C.cyan:r?C.dark:ch==='D'?C.gold:C.mag;
+          c.fillStyle=col;c.beginPath();if(ch==='D'){c.moveTo(106,y-12);c.lineTo(134,y-12);c.lineTo(120,y+10)}else{c.moveTo(106,y+12);c.lineTo(134,y+12);c.lineTo(120,y-10)}c.fill();
+          if(i%L===0){c.fillStyle=C.line;c.fillRect(60,y,120,1)}}
+        c.restore();if(st.flash&&now-st.flash.t<450){const r=st.flash.r;T(r,190,hy-30,16,r==='完美'?C.green:r==='不错'?C.cyan:C.mag)}}
+      const cnt={完美:0,不错:0,早了:0,晚了:0,错过:0};this.st.j.forEach(v=>cnt[v]++);
+      T(`完美 ${cnt.完美}  不错 ${cnt.不错}  偏 ${cnt.早了+cnt.晚了}  错过 ${cnt.错过}`,120,262,10,C.dim,'center',F.sans);
+      nabo('N-IDLE',36,262,t,{sx:0.6,sy:0.6});
+      hintK(st.run?[['OK','停止']]:[['▲','速度'],['▼','节奏型'],['OK','开始']]);return}
+    if(p==='capo'){header('变调夹',this.capo?`夹 ${this.capo} 品`:'不夹');
+      T(this.capo?`夹 ${this.capo} 品`:'不夹变调夹',120,46,20,C.white);
+      CAPO_SHAPES.forEach((n,i)=>{const col=i%2,row=i>>1,x=14+col*110,y=70+row*44,on=i===this.cs;rr(x,y,102,38,8);c.fillStyle=on?C.panel:'#100c22';c.fill();
+        if(on){c.strokeStyle=C.cyan;c.lineWidth=1;c.stroke()}
+        T(n+' 型',x+10,y+12,10,C.dim,'left',F.sans);T('→ '+transName(n,this.capo),x+10,y+27,15,on?C.cyan:C.white,'left',F.mono)});
+      T('按左边的指法，实际响的是右边的和弦',120,262,10,C.dim,'center',F.sans);
+      hintK([['▲','品数'],['▼','选指法'],['OK','试听']]);return}
+    if(p==='scale'){const S2=SCALES[this.sc];header('指板音阶',NN[this.root]+' '+S2.n);
+      const x0=45,dx=30,y0=46,fy=18.5;
+      for(const f of[3,5,7,9]){c.fillStyle=C.line;c.beginPath();c.arc(120,y0+(f-0.5)*fy,3,0,7);c.fill()}
+      c.fillStyle=C.line;c.beginPath();c.arc(105,y0+11.5*fy,3,0,7);c.arc(135,y0+11.5*fy,3,0,7);c.fill();
+      c.fillStyle=C.white;c.fillRect(x0-2,y0-2,dx*5+4,3);c.fillStyle=C.dark;for(let f=1;f<=12;f++)c.fillRect(x0,y0+f*fy,dx*5,1);
+      for(let s=0;s<6;s++){c.fillStyle=C.dim;c.fillRect(x0+s*dx,y0,1,12*fy)}
+      for(const f of[3,5,7,9,12])T(''+f,18,y0+(f-0.5)*fy,9,C.dim,'center',F.mono);
+      const pl=this.scaleT&&now-this.scaleT<2400?Math.floor((now-this.scaleT)/260):-1,plPc=pl>=0?(([...S2.iv,12][pl]??-99)+this.root)%12:-1;
+      for(let s=0;s<6;s++)for(let f=0;f<=12;f++){const pc=(OPEN[s]+f)%12,deg=(pc-this.root+12)%12;if(!S2.iv.includes(deg))continue;
+        const x=x0+s*dx,y=f?y0+(f-0.5)*fy:y0-11,isR=deg===0,blue=S2.n==='布鲁斯'&&deg===6,hot=pc===plPc;
+        c.fillStyle=hot?C.white:isR?C.gold:blue?C.mag:C.cyan;c.beginPath();c.arc(x,y,hot?8:7,0,7);c.fill();T(NN[pc].replace('♯','#'),x,y+0.5,7,C.bg,'center',F.mono)}
+      T('金色是主音',200,y0+12.6*fy,9,C.gold,'right',F.sans);
+      hintK([['▲','换调'],['▼','音阶'],['OK','播放']]);return}
+    if(p==='ear'){const E=this.ear;header('练耳挑战',`连对 ${E.streak} · 最佳 ${E.best}`);
+      const good=E.ans&&E.ans===E.q;
+      if(E.ans)nabo(good?'N-NOD':'N-WOW',62,72,now-E.at,{once:true});else nabo('N-IDLE',62,72,t);
+      if(E.ans)drawChord(E.q,140,52,70,62,{col:good?C.green:C.red});else T('这是哪个和弦？',172,72,12,C.white,'center',F.sans);
+      const rows=['🔁 再听一次',...E.opts];rows.forEach((r,i)=>{const y=134+i*31,on=i===E.sel;let bg=on?C.cyan:C.panel,fg=on?C.bg:C.white;
+        if(E.ans&&i>0){if(r===E.q){bg=C.green;fg=C.bg}else if(r===E.ans){bg=C.red;fg=C.bg}else{bg=C.panel;fg=C.dim}}
+        rr(30,y,180,26,7);c.fillStyle=bg;c.fill();T(r,120,y+13,i?15:12,fg,'center',i?F.mono:F.sans)});
+      hintK(E.ans?[['OK',good?'答对了！下一题':'下一题']]:[['▲▼','选择'],['OK','确定']]);return}
+  }};
+const GT_INFO={
+  menu:{d:'吉他工具箱：7 个吉他小工具放在一个二级菜单里。',k:[['▲ / ▼','选择'],['OK','进入'],['双击 ▲','回主菜单']],fw:['二级菜单；子页面里双击 ▲ 回到这里','美术需要：NABO 抱吉他 / 弹吉他的待机图']},
+  chords:{d:`吉他 ${CHORD_LIST.length} 个、尤克里里 ${UKE_LIST.length} 个常用和弦，按 OK 用合成的拨弦音试听，弦会跟着抖；指法图下面标出每根弦的音名。和弦进行模式自动按 下扫 / 上扫 播放卡农、1-5-6-4、12 小节布鲁斯等。`,
+    k:[['▲（青）','下一个和弦 / 下一条和弦进行'],['▼（绿）','吉他 → 尤克里里 → 和弦进行'],['OK（白）','扫弦试听 / 播放、停止']],
+    fw:['拨弦用 Karplus-Strong：每根弦一个整数环形缓冲，6 根弦约 2 KB','指法表放 Flash，常量数组','横按自动识别并画成横条']},
+  listen:{d:'弹一个和弦并让它响着，屏幕显示猜到的和弦和指法；下面是 12 个音级的能量。',k:[['双击 ▲','返回']],fw:['和和弦环共用音级（chroma）分析','目前只认大三、小三，七和弦以后加']},
+  strum:{d:'节奏型箭头往下掉，扫到白线时正好扫弦，麦克风听你扫弦的时刻打分。节拍器同时在打拍子。',k:[['▲（青）','速度 60–120（停止时）'],['▼（绿）','节奏型（停止时）'],['OK（白）','开始 / 停止']],fw:['判定以起音时刻为准，补偿约 45 ms 延迟（真机要重新标）','咔嗒响的那一帧跳过分析，不会把咔嗒算成扫弦；扫弦和咔嗒同时也最多晚 40 ms，仍在“完美”范围','完美 ±50 ms，不错 ±100 ms，±150 ms 外算错过']},
+  capo:{d:'夹变调夹以后，按的指法和实际的和弦对照。',k:[['▲（青）','品数 0–9'],['▼（绿）','选指法'],['OK（白）','试听（按夹了品算）']],fw:['纯查表，不用麦克风']},
+  scale:{d:'0–12 品指板，标出当前调和音阶的所有音，金色是主音，布鲁斯的蓝调音是粉色。OK 播放一遍音阶，正在响的音会亮白。',k:[['▲（青）','换调（主音）'],['▼（绿）','小调五声 / 大调五声 / 自然大调 / 自然小调 / 布鲁斯'],['OK（白）','播放音阶']],fw:['低音弦在左，竖着放正好占满竖屏','纯计算，不用麦克风']},
+  ear:{d:'NABO 弹一个和弦，你从 4 个选项里猜。最佳连对会记下来，非常上头。',k:[['▲ / ▼','选择（第一行是再听一次）'],['OK','确定 / 下一题']],fw:['题库 12 个常用和弦，以后分难度','随机数固件里用 mulberry32','最佳连对存 NVS']},
+};
+
+// ================= 声音玩具 =================
+const SHOUT={id:'shout',name:'喊叫 NABO',en:'SHOUT',ic:'!',m:0,modes:['普通','困难'],sensL:[0,6,12,-6],sv:0,state:'ready',best:store.get('shout',0),x:40,
+  up(){this.sv=(this.sv+1)%4;const v=this.sensL[this.sv];toast('灵敏度 '+(v>0?'+':'')+v+' dB')},
+  down(){if(this.state==='run')return;this.m^=1;toast(this.modes[this.m])},
+  ok(){if(this.state!=='run')this.start()},
+  leave(){if(this.state==='run')this.state='ready'},
+  start(){this.rnd=mulberry32((Date.now()&0xffff)+1);Object.assign(this,{x:40,y:240,vy:0,ground:true,segs:[[-200,300,240]],state:'run',lt:nowMs()});this.gen()},
+  gen(){const hard=this.m===1,S2=this.segs;while(S2[S2.length-1][1]<this.x+420){const L=S2[S2.length-1],g=(hard?46:28)+this.rnd()*(hard?48:36),len=(hard?50:80)+this.rnd()*(hard?90:110),
+      h=clamp(L[2]+[-14,0,0,14][Math.floor(this.rnd()*4)],218,256);S2.push([L[1]+g,L[1]+g+len,h])}
+    while(S2.length>2&&S2[1][1]<this.x-200)S2.shift()},
+  segAt(x){return this.segs.find(s=>x>=s[0]&&x<=s[1])},
+  lv(){return A.dbS+this.sensL[this.sv]},
+  step(dt){const lv=this.lv(),sp=lv>-48?clamp((lv+48)/22,0,1)*95:0,nx=this.x+sp*dt,ahead=this.segAt(nx+8);
+    if(!(ahead&&ahead[2]<this.y-16))this.x=nx; // 前面高出 16 像素以上就挡住，要跳
+    if(this.ground&&lv>-24){this.vy=-(230+clamp(lv+24,0,20)*9);this.ground=false}
+    const s=this.segAt(this.x);
+    if(this.ground){if(!s||s[2]>this.y)this.ground=false;else this.y=s[2]}
+    if(!this.ground){const py=this.y;this.vy+=640*dt;this.y+=this.vy*dt;const s2=this.segAt(this.x);
+      if(s2&&this.vy>0&&py<=s2[2]+2&&this.y>=s2[2]){this.y=s2[2];this.vy=0;this.ground=true}}
+    if(this.y>380){this.state='over';this.dist=Math.floor(this.x/10);this.newBest=this.dist>this.best;if(this.newBest){this.best=this.dist;store.set('shout',this.best)}}
+    this.gen()},
+  draw(t){const now=nowMs(),dt=Math.min(0.05,(now-(this.lt||now))/1000);this.lt=now;if(this.state==='run')this.step(dt);
+    header(this.name,this.modes[this.m]);const cam=this.x-70;
+    c.fillStyle=C.line;for(let i=0;i<30;i++){const sx=((i*53-cam*0.3)%260+260)%260-10,sy=36+(i*37)%130;c.fillRect(sx,sy,2,2)}
+    if(this.state!=='ready')for(const s of this.segs){const x0=s[0]-cam,x1=s[1]-cam;if(x1<0||x0>240)continue;c.fillStyle='#24193f';c.fillRect(x0,s[2],x1-x0,304-s[2]);c.fillStyle=C.purple;c.fillRect(x0,s[2],x1-x0,3)}
+    // 左边的音量计：两条线分别是“走”和“跳”
+    const lv=this.lv(),my=40,mh=200,mx=6,f=v=>my+mh-clamp((v+70)/70,0,1)*mh;
+    c.fillStyle=C.panel;c.fillRect(mx,my,8,mh);c.fillStyle=lv>-24?C.mag:lv>-48?C.cyan:C.dark;c.fillRect(mx,f(lv),8,my+mh-f(lv));
+    c.fillStyle=C.cyan;c.fillRect(mx-2,f(-48),12,1);c.fillStyle=C.mag;c.fillRect(mx-2,f(-24),12,1);
+    T('跳',mx+15,f(-24),9,C.mag,'left',F.sans);T('走',mx+15,f(-48),9,C.cyan,'left',F.sans);
+    if(this.state==='ready'){nabo('N-IDLE',128,200,t);T('小声走 · 大声跳',128,106,18,C.white);T('OK 开始，然后对着工牌出声',128,132,11,C.dim,'center',F.sans);T('最佳 '+this.best+' 米',128,262,12,C.gold,'center',F.mono)}
+    else{const px=this.x-cam,air=!this.ground;nabo(this.state==='over'?'N-WOW':'N-IDLE',px,this.y-38,t,{sx:air?0.42:0.5,sy:air?0.6:0.5});
+      T(Math.floor(this.x/10)+' 米',232,38,14,C.white,'right',F.mono);
+      if(this.state==='over'){rr(40,96,160,88,10);c.fillStyle='#000c';c.fill();T('掉下去了！',120,118,18,C.mag);
+        T(this.dist+' 米'+(this.newBest?'  新纪录！':''),120,145,14,C.white,'center',F.mono);T('OK 再来一局',120,168,11,C.dim,'center',F.sans)}}
+    hintK([['▲','灵敏度'],['▼','难度'],this.state!=='run'&&['OK','开始']])},
+  info:{d:'《八分音符酱》式：小声说话 NABO 往前走，大声喊 NABO 起跳，声音越大跳得越高。左边音量计上的两条线就是“走”和“跳”的门槛。',
+    k:[['▲（青）','灵敏度 0 / +6 / +12 / −6 dB（嗓门小或环境吵时调）'],['▼（绿）','普通 / 困难（坑更宽、平台更短）'],['OK（白）','开始 / 再来一局']],
+    fw:['控制量直接用 nabo_mic 的 dBFS，20 ms 一次','地形用 mulberry32 生成，同一种子固件和原型一样','最佳距离存 NVS']}};
+
+const HBD=[[67,.75],[67,.25],[69,1],[67,1],[72,1],[71,2],[67,.75],[67,.25],[69,1],[67,1],[74,1],[72,2],[67,.75],[67,.25],[79,1],[76,1],[72,1],[71,1],[69,2],[77,.75],[77,.25],[76,1],[72,1],[74,1],[72,2]];
+const CANDLE={id:'candle',name:'吹蜡烛',en:'BLOW',ic:'♨',m:0,modes:['生日','计时挑战'],n:5,lit:[],life:[],smoke:[],conf:[],t0:0,doneT:0,best:store.get('candle',0),
+  init(){this.lit=Array(this.n).fill(true);this.life=Array.from({length:this.n},(_,i)=>0.5+((i*7)%5)*0.15);this.smoke=[];this.conf=[];this.t0=0;this.doneT=0},
+  up(){this.n=this.n>=30?1:this.n+1;this.init();toast(this.n+' 根蜡烛')},
+  down(){this.m^=1;this.init();toast(this.modes[this.m])},
+  ok(){this.init();toast('重新点上')},
+  pos(i){const per=10,row=Math.floor(i/per),inRow=Math.min(per,this.n-row*per),k=i%per;return[140+(k-(inRow-1)/2)*14,198-row*9]},
+  blow(){const low=(A.bands[0]+A.bands[1]+A.bands[2]+A.bands[3]+A.bands[4])/5,voiced=A.f0>0&&A.f0Conf>0.85;
+    return A.db>-36&&!voiced&&low>0.45?clamp((A.db+36)/18,0.15,1):0},
+  async song(){await ensureAC();const b=0.4,tot=HBD.reduce((s,n)=>s+n[1],0),o=new Float32Array(Math.round(SR*(tot*b+1.2)));let at=0;
+    for(const[m,d]of HBD){pluck(m,o,Math.round(at*SR),0.35);at+=d*b}playPCM(o)},
+  draw(t){const now=nowMs(),dt=Math.min(0.05,(now-(this.lt||now))/1000);this.lt=now;if(this.lit.length!==this.n)this.init();
+    const bs=this.doneT?0:this.blow();
+    if(bs>0){if(!this.t0)this.t0=now;this.lit.forEach((on,i)=>{if(!on)return;this.life[i]-=bs*dt*1.5;if(this.life[i]<=0){this.lit[i]=false;const[x,y]=this.pos(i);this.smoke.push({x,y:y-24,t:now})}})}
+    if(!this.doneT&&this.lit.every(v=>!v)){this.doneT=now;const sec=(now-this.t0)/1000;this.sec=sec;
+      if(this.m===1&&(!this.best||sec<this.best)){this.best=+sec.toFixed(2);store.set('candle',this.best);this.newBest=true}else this.newBest=false;
+      for(let i=0;i<60;i++)this.conf.push({x:Math.random()*240,y:-Math.random()*120,vx:(Math.random()-0.5)*40,vy:40+Math.random()*60,c:PC12[i%12]});
+      if(this.m===0)this.song()}
+    header(this.name,this.modes[this.m]);
+    // 蛋糕
+    c.fillStyle='#ff7eb6';c.fillRect(40,236,200,56);c.fillStyle='#ffe7c2';c.fillRect(66,198,148,40);
+    c.fillStyle='#fff5e6';for(let x=66;x<214;x+=12){c.beginPath();c.arc(x+6,198,6,0,Math.PI);c.fill()}
+    c.fillStyle='#ffe7c2';for(let x=40;x<240;x+=14){c.beginPath();c.arc(x+7,236,7,0,Math.PI);c.fill()}
+    c.fillStyle=C.mag;for(let x=52;x<236;x+=20){c.beginPath();c.arc(x,268,3,0,7);c.fill()}
+    c.fillStyle='#3a2a5a';c.fillRect(30,292,210,4);
+    for(let i=this.n-1;i>=0;i--){const[x,y]=this.pos(i);c.fillStyle=i%2?C.cyan:C.white;c.fillRect(x-2,y-20,5,20);c.fillStyle=C.mag;c.fillRect(x-2,y-14,5,2);c.fillRect(x-2,y-7,5,2);
+      if(this.lit[i]){const lean=bs*8*(S.calm?0.5:1),fl=S.calm?0:Math.sin(now/55+i*1.3)*1.4,h=9+fl-bs*3;
+        c.fillStyle=C.gold;c.beginPath();c.ellipse(x+0.5+lean,y-26,3.2,h/1.6+1,lean*0.06,0,7);c.fill();
+        c.fillStyle=C.white;c.beginPath();c.ellipse(x+0.5+lean*0.7,y-24.5,1.4,h/3.2,0,0,7);c.fill()}}
+    this.smoke=this.smoke.filter(s=>now-s.t<1000);for(const s of this.smoke){const p=(now-s.t)/1000;c.fillStyle=mix('#9d93c8',C.bg,p);c.beginPath();c.arc(s.x+Math.sin(p*6)*3,s.y-p*30,2+p*4,0,7);c.fill()}
+    for(const q of this.conf){q.vy+=60*dt;q.x+=q.vx*dt;q.y+=q.vy*dt;if(q.y<310){c.fillStyle=q.c;c.fillRect(q.x,q.y,3,5)}}
+    const left=this.lit.filter(Boolean).length;
+    if(this.doneT){nabo('N-WOW',40,72,now-this.doneT,{once:true});
+      if(this.m===0)T('生日快乐！',140,70,24,C.gold);else{T(this.sec.toFixed(2)+' 秒',140,64,24,C.white,'center',F.mono);T(this.newBest?'新纪录！':'最佳 '+this.best+' 秒',140,90,11,C.gold,'center',F.sans)}}
+    else{nabo('N-IDLE',40,72,t);
+      T(this.t0?`还剩 ${left} 根`:'对着工牌用力吹',140,62,15,C.white,'center',F.sans);
+      if(this.m===1)T(this.t0?((now-this.t0)/1000).toFixed(1)+' s':(this.best?'最佳 '+this.best+' 秒':'计时挑战'),140,86,11,C.gold,'center',F.mono);
+      const bw=110;c.fillStyle=C.panel;c.fillRect(85,104,bw,5);c.fillStyle=bs?C.cyan:C.dark;c.fillRect(85,104,bw*bs,5);T('风力',80,106,9,C.dim,'right',F.sans)}
+    hintK([['▲',this.n+' 根'],['▼','模式'],['OK','重新点']])},
+  info:{d:'对着工牌吹气把蛋糕上的蜡烛吹灭。生日模式吹完会弹一段生日歌；计时挑战记最快纪录。',
+    k:[['▲（青）','蜡烛数 1–30（就是岁数）'],['▼（绿）','生日 / 计时挑战'],['OK（白）','重新点上']],
+    fw:['吹气判定：音量够大 + 没有音高（不是在说话唱歌）+ 低频能量高','火苗闪动在“减弱闪烁”模式下变成静态','生日歌用 Karplus-Strong 合成，旋律已进入公有领域']}};
+
+const ROPE={id:'rope',name:'走钢丝',en:'HOLD',ic:'⏤',m:0,modes:['自由起音','跟 NABO 唱'],tl:[50,30,15],tn:['容易','普通','困难'],ti:1,state:'ready',hist:store.get('rope',[]),prog:0,cs:0,tilt:0,cents:[],target:null,
+  up(){if(this.state==='walk')return;this.ti=(this.ti+1)%3;toast('难度：'+this.tn[this.ti]+' ±'+this.tl[this.ti]+'¢')},
+  down(){if(this.state==='walk')return;this.m^=1;toast(this.modes[this.m])},
+  async ok(){if(this.state==='walk'||this.state==='ref')return;this.reset();
+    if(this.m===1){this.target=55+Math.floor(Math.random()*13);this.state='ref';await ensureAC();const o=new Float32Array(Math.round(SR*1.3));pluck(this.target,o,0,0.5);playPCM(o);this.refT=nowMs()}
+    else this.state='wait'},
+  reset(){Object.assign(this,{target:null,cs:0,prog:0,tilt:0,bad:0,cents:[],acc:[],lastSeen:0,result:null})},
+  finish(kind){this.state='done';this.result=kind;this.doneT=nowMs();const L=this.cents,n=L.length||1,mA=L.reduce((s,v)=>s+Math.abs(v),0)/n,mu=L.reduce((s,v)=>s+v,0)/n,sd=Math.sqrt(L.reduce((s,v)=>s+(v-mu)**2,0)/n);
+    const tol=this.tl[this.ti];this.score=Math.round(100*this.prog*clamp(1-mA/(tol*1.5),0,1)*(kind==='fall'?0.7:1));this.mA=mA;this.sd=sd;
+    this.hist.unshift(this.score);this.hist=this.hist.slice(0,12);store.set('rope',this.hist)},
+  draw(t){const now=nowMs(),dt=Math.min(0.05,(now-(this.lt||now))/1000);this.lt=now;const tol=this.tl[this.ti];
+    const has=A.f0>0&&A.f0Conf>0.8,midi=has?69+12*Math.log2(A.f0/S.a4):0;
+    if(this.state==='ref'&&now-this.refT>1400)this.state='wait';
+    if(this.state==='wait'&&has){if(this.target==null){this.acc.push(midi);const a=this.acc.slice(-8);
+        if(a.length===8&&Math.max(...a)-Math.min(...a)<0.6)this.target=Math.round(a.reduce((x,y)=>x+y)/8)}
+      if(this.target!=null){this.state='walk';this.lastSeen=now}}
+    if(this.state==='walk'){
+      if(has){this.lastSeen=now;this.cs=lerp(this.cs,(midi-this.target)*100,0.4);this.cents.push(this.cs);this.prog=Math.min(1,this.prog+dt/10);
+        if(Math.abs(this.cs)>tol*1.6){this.bad+=dt;if(this.bad>0.35)this.finish('fall')}else this.bad=Math.max(0,this.bad-dt);
+        if(this.prog>=1&&this.state==='walk')this.finish('win')}
+      else if(now-this.lastSeen>500)this.finish('stop')}
+    const L=this.cents.slice(-12),jit=L.length>3?Math.sqrt(L.reduce((s,v)=>s+(v-this.cs)**2,0)/L.length):0;
+    const tt=this.state==='walk'?clamp(this.cs/tol,-1.6,1.6)*0.45+(S.calm?0:Math.sin(now/90)*clamp(jit/tol,0,1)*0.25):0;this.tilt=lerp(this.tilt,tt,0.2);
+    header(this.name,this.modes[this.m]+' · '+this.tn[this.ti]);
+    T(this.target!=null?NN[((this.target%12)+12)%12]+(Math.floor(this.target/12)-1):'?',120,44,22,C.white,'center',F.mono);
+    if(this.state==='walk'||this.state==='done')T(`${this.cs>=0?'+':''}${this.cs.toFixed(0)}¢`,120,64,11,C.dim,'center',F.mono);
+    c.fillStyle=C.dim;c.fillRect(12,150,4,74);c.fillRect(224,150,4,74);
+    c.strokeStyle=C.gold;c.lineWidth=2;c.beginPath();c.moveTo(14,152);c.quadraticCurveTo(120,174,226,152);c.stroke();
+    const rx=20+this.prog*200,u=(rx-14)/212,ry=(1-u)*(1-u)*152+2*(1-u)*u*174+u*u*152;
+    let dy=0,rot=this.tilt;if(this.state==='done'&&this.result==='fall'){const p=(now-this.doneT)/1000;dy=Math.min(200,p*p*500);rot+=Math.sign(this.tilt||1)*Math.min(1.5,p*3)}
+    c.save();c.beginPath();c.rect(0,24,240,280);c.clip();c.translate(rx,ry+dy);c.rotate(rot);
+    c.strokeStyle=C.cyan;c.lineWidth=3;c.beginPath();c.moveTo(-38,-30);c.lineTo(38,-30);c.stroke();
+    nabo(this.state==='done'&&this.result==='fall'?'N-WOW':'N-IDLE',0,-38*0.8,t,{sx:0.8,sy:0.8});c.restore();
+    const by=236;c.fillStyle=C.panel;c.fillRect(30,by,180,10);const zw=tol*0.9;c.fillStyle='#173d2a';c.fillRect(120-zw,by,zw*2,10);c.fillStyle=C.white;c.fillRect(119,by-2,2,14);
+    if(this.state==='walk'){const ax=120+clamp(this.cs,-100,100)*0.9;c.fillStyle=Math.abs(this.cs)<tol?C.green:C.mag;c.fillRect(ax-2,by-3,5,16)}
+    T('偏低',30,by+18,9,C.dim,'left',F.sans);T('偏高',210,by+18,9,C.dim,'right',F.sans);
+    const msg={ready:'OK 开始，然后唱一个长音',ref:'先听 NABO 唱这个音…',wait:'开口唱吧，NABO 就开始走',walk:`走了 ${Math.round(this.prog*100)}%`}[this.state];
+    if(msg)T(msg,120,96,12,C.white,'center',F.sans);
+    if(this.state==='done'){const R={win:['走到头了！',C.green],fall:['掉下去了！',C.mag],stop:['停下了',C.gold]}[this.result];
+      T(R[0],120,90,16,R[1]);T(this.score+' 分',120,276,20,C.white,'center',F.mono);
+      T(`${(this.prog*10).toFixed(1)} 秒 · 平均偏差 ${this.mA.toFixed(0)}¢ · 晃动 ${this.sd.toFixed(0)}¢`,120,296,9,C.dim,'center',F.sans)}
+    else{T('最近 12 次',22,268,9,C.dim,'left',F.sans);this.hist.forEach((s,i)=>{const h=Math.max(1,s*0.3);c.fillStyle=i?C.purple:C.cyan;c.fillRect(220-i*14,298-h,10,h)})}
+    hintK([['▲','难度'],['▼','模式'],this.state!=='walk'&&['OK','开始']])},
+  info:{d:'长音稳定度，做成走钢丝：唱一个长音 NABO 就往前走，跑调他就歪，抖得厉害他就晃，偏太多就掉下去。坚持 10 秒走到对岸，按时长和偏差打分，记下最近 12 次。',
+    k:[['▲（青）','难度：容差 ±50 / ±30 / ±15 音分'],['▼（绿）','自由起音（自动锁定你起的音）/ 跟 NABO 唱（先放一个音给你）'],['OK（白）','开始']],
+    fw:['和调音器共用 YIN，A4 用设置里的基准','得分 = 走完的比例 × (1 − 平均偏差 / 1.5 倍容差)，掉下去打 7 折','最近 12 次存 NVS']}};
+
+const VOICE_TYPES=[['男低音',40,64],['男中音',45,69],['男高音',48,72],['女低音',53,77],['女中音',57,81],['女高音',60,84]];
+const noteName=n=>NN[((n%12)+12)%12]+(Math.floor(n/12)-1);
+const RANGE={id:'range',name:'声部卡',en:'RANGE',ic:'↕',step:'low',low:null,high:null,cur:null,acc:[],
+  up(){this.reset();toast('重新测')},
+  reset(){Object.assign(this,{step:'low',low:null,high:null,cur:null,acc:[]})},
+  ok(){if(this.step==='low'){if(this.low!=null){this.step='high';this.acc=[];this.cur=null}else toast('先唱一个最低音')}
+    else if(this.step==='high'){if(this.high!=null){this.step='card';this.cardT=nowMs()}else toast('再唱一个最高音')}
+    else this.reset()},
+  keys(x0,x1,y,lo,hi,cur){const a=36,b=84,w=(x1-x0)/(b-a+1);
+    for(let n=a;n<=b;n++){const pc=n%12,blk=[1,3,6,8,10].includes(pc),inR=lo!=null&&hi!=null&&n>=lo&&n<=hi;
+      c.fillStyle=inR?(blk?'#1f8f84':C.cyan):blk?'#1a1433':'#3a3260';c.fillRect(x0+(n-a)*w,y,w-0.6,blk?14:22)}
+    for(const n of[36,48,60,72,84])T(noteName(n),x0+(n-a)*w+w/2,y+31,7,C.dim,'center',F.mono);
+    if(cur!=null){const x=x0+(clamp(cur,a,b)-a)*w+w/2;c.fillStyle=C.gold;c.beginPath();c.moveTo(x-4,y-7);c.lineTo(x+4,y-7);c.lineTo(x,y-1);c.fill()}},
+  draw(t){const now=nowMs();
+    if(this.step!=='card'){const has=A.f0>0&&A.f0Conf>0.85;
+      if(has){this.acc.push(69+12*Math.log2(A.f0/S.a4));if(this.acc.length>15)this.acc.shift();
+        if(this.acc.length===15&&Math.max(...this.acc)-Math.min(...this.acc)<0.7){const s=[...this.acc].sort((a,b)=>a-b),n=Math.round(s[7]);this.cur=n;
+          if(this.step==='low')this.low=this.low==null?n:Math.min(this.low,n);else this.high=this.high==null?n:Math.max(this.high,n)}}
+      else this.acc=[];
+      const lowStep=this.step==='low';header(this.name,lowStep?'第 1 步 · 最低音':'第 2 步 · 最高音');
+      T(lowStep?'慢慢往下唱，唱到最低还能稳住的音':'慢慢往上唱，唱到最高还能稳住的音',120,42,11,C.dim,'center',F.sans);
+      T(this.cur!=null?noteName(this.cur):'—',120,96,46,this.cur!=null?C.white:C.dark,'center',F.mono);
+      T(has?'稳住 0.5 秒就记下':'唱一个音',120,130,10,C.dim,'center',F.sans);
+      const rec=lowStep?this.low:this.high;T((lowStep?'目前最低  ':'目前最高  ')+(rec!=null?noteName(rec):'--'),120,160,15,lowStep?C.cyan:C.mag,'center',F.mono);
+      if(!lowStep)T('最低 '+noteName(this.low),120,180,10,C.dim,'center',F.mono);
+      this.keys(12,228,206,lowStep?this.low:this.low,lowStep?this.low:(this.high??this.low),this.cur);
+      nabo('N-IDLE',200,272,t,{sx:0.6,sy:0.6});
+      hintK([['▲','重测'],['OK',lowStep?'下一步':'出卡片']]);return}
+    // 结果卡
+    const lo=this.low,hi=Math.max(this.high,lo),span=hi-lo,mid=(lo+hi)/2;
+    let vt=VOICE_TYPES[0],bd=1e9;for(const v of VOICE_TYPES){const d=Math.abs((v[1]+v[2])/2-mid);if(d<bd){bd=d;vt=v}}
+    const title=span<12?'精准小钢炮':span<19?'稳稳当当':span<26?'收放自如':span<32?'宽广大音域':'音域大魔王';
+    c.fillStyle=C.bg;c.fillRect(0,0,W,H);rr(10,8,220,292,14);c.fillStyle=C.panel;c.fill();c.strokeStyle=C.gold;c.lineWidth=1.5;c.stroke();
+    T('NABO 声部卡',120,28,15,C.gold);nabo('N-WOW',196,66,now-this.cardT,{once:true,sx:0.7,sy:0.7});
+    T(noteName(lo)+' – '+noteName(hi),24,70,26,C.white,'left',F.mono);
+    T(`跨度 ${span} 个半音 · ${(span/12).toFixed(1)} 个八度`,24,98,10,C.dim,'left',F.sans);
+    T('最接近',24,128,10,C.dim,'left',F.sans);T(vt[0],24,152,24,C.cyan,'left');
+    T('NABO 认证',24,184,10,C.dim,'left',F.sans);T('「'+title+'」',18,206,18,C.mag,'left');
+    this.keys(20,220,226,lo,hi,null);
+    T('仅供娱乐：专业声部还要看音色和换声点',120,280,8,C.dark,'center',F.sans);
+    hintK([['OK','重新测']])},
+  info:{d:'测音域：先往下唱到最低，再往上唱到最高，每个音稳住 0.5 秒才算。最后出一张 NABO 声部卡，告诉你最接近哪个声部、给个称号，可以拍照分享。',
+    k:[['▲（青）','重测'],['OK（白）','下一步 / 出卡片 / 再测一次']],
+    fw:['声部按音域中点和常见声部范围的中点比距离，纯娱乐','卡片是整屏静态画面，方便拍照']}};
+
+// ================= 设置与开机画面 =================
+const A4L=[440,441,442,443,444,445,446,415,430,432,435,438];
+const SETTINGS={id:'settings',name:'设置',en:'SETTINGS',ic:'⚙',noSrc:true,sel:0,qr:false,
+  rows(){return[['A4 基准',S.a4+' Hz'],['减弱闪烁',S.calm?'开':'关'],['安静阈值',S.quiet+' dB'],['dB 校准','+'+S.cal],['频谱灵敏度',(S.sens>0?'+':'')+S.sens+' dB']]},
+  up(){this.sel=(this.sel+4)%5},down(){this.sel=(this.sel+1)%5},
+  ok(){const s=this.sel;
+    if(s===0)S.a4=A4L[(A4L.indexOf(S.a4)+1)%A4L.length];else if(s===1)S.calm=!S.calm;else if(s===2)S.quiet=S.quiet>=80?40:S.quiet+5;
+    else if(s===3)S.cal=S.cal>=130?90:S.cal+5;else cycleSens();syncSliders()},
+  draw(t){header(this.name,'SETTINGS');
+    this.rows().forEach(([k,v],i)=>{const y=34+i*36,on=i===this.sel;rr(10,y,220,32,7);c.fillStyle=on?C.cyan:C.panel;c.fill();
+      T(k,22,y+16,13,on?C.bg:C.white,'left',F.sans);T(v,218,y+16,12,on?C.bg:C.cyan,'right',F.mono)});
+    T('A4 可选 415–446 Hz',120,256,9,C.dim,'center',F.sans);T('减弱闪烁：关掉频闪、红框闪烁和火苗跳动',120,272,9,C.dim,'center',F.sans);
+    hintK([['▲▼','选择'],['OK','修改']])},
+  info:{d:'全局设置，固件里存 NVS。',k:[['▲ / ▼','选择'],['OK','改值（循环）']],fw:['A4 基准影响调音器、走钢丝、声部卡、音准曲线','减弱闪烁：频闪条改成静态箭头、红框不闪、火苗不跳、节拍圆环不放']}};
+const SPLASH={id:'splash',name:'开机',noSrc:true,t0:0,
+  anyKey(k){if(k==='ok'&&nowMs()-this.t0>500)go(MENU)},
+  draw(){const now=nowMs();if(!this.t0)this.t0=now;const t=now-this.t0,out=x=>1-(1-clamp(x,0,1))**3;
+    c.fillStyle=C.bg;c.fillRect(0,0,W,H);const mid=150;
+    // 0–300 ms：中间一条平线向两边拉开（示波器开机）
+    if(t<300){const w=240*out(t/300);c.fillStyle=C.cyan;c.fillRect(120-w/2,mid,w,2)}
+    // 300–900 ms：平线开始振动，振幅越来越大
+    else if(t<900){const a=out((t-300)/600)*34;c.strokeStyle=C.cyan;c.lineWidth=2;c.beginPath();
+      for(let x=0;x<=240;x+=2){const y=mid+a*Math.sin(x/240*Math.PI)*(Math.sin(x*0.09+t/60)*0.7+Math.sin(x*0.23-t/35)*0.3);x?c.lineTo(x,y):c.moveTo(x,y)}c.stroke()}
+    // 900 ms 起：波形炸开成 32 根频谱柱，之后一直轻轻跳
+    else{const k=out((t-900)/400);for(let i=0;i<32;i++){const x=Math.round(i*7.5)+1,
+        v=S.calm?0.5+0.3*Math.sin(i*0.6):0.35+0.65*Math.abs(Math.sin(i*0.7+now/180)*Math.sin(i*0.31+now/420)),h=Math.max(2,v*k*70);
+        c.fillStyle=BARC[i];c.fillRect(x,184-h,6,h)}}
+    // 标题逐字出现，每个字带 2 帧红青错位
+    const title='NABO 声音实验室',shown=clamp(Math.floor((t-600)/90),0,title.length);
+    if(shown>0){const s1=title.slice(0,shown),gl=!S.calm&&shown<title.length&&(t-600)%90<40;
+      c.font=`24px ${F.disp}`;c.textAlign='left';const full=c.measureText(title).width,x0=120-full/2;
+      if(gl){T(s1,x0-2,214,24,C.mag,'left');T(s1,x0+2,214,24,C.cyan,'left')}T(s1,x0,214,24,C.white,'left')}
+    if(t>1300)T('NABO SOUND LAB',120,238,9,C.cyan,'center',F.mono);
+    // 1.4 s 起：NABO 从底部升起做欢迎动作，然后待机
+    if(t>1400){const p=out((t-1400)/500),y=lerp(380,124,p),tt=t-1400;
+      if(tt<2500)nabo('N-WELCOME',120,y,tt,{size:120,once:true});else nabo('N-IDLE',120,y,tt-2500,{size:120})}
+    if(t>1900&&(S.calm||Math.floor(now/500)%2))T('按 OK 开始',120,288,13,C.cyan,'center',F.sans)},
+  info:{d:'开机动画，和赛博算命机同一套结构：约 1.9 秒可以操作，任何时刻（0.5 秒后）按 OK 跳过进菜单。',
+    k:[['0–300 ms','屏幕中间一条平线向两边拉开（像示波器开机）'],['300–900 ms','平线开始振动，振幅越来越大'],['0.6–1.3 s','“NABO 声音实验室”逐字出现，每个字带 2 帧红青错位'],['0.9 s 起','波形炸开成 32 根频谱柱，之后一直轻轻跳'],['1.4 s 起','NABO 从底部升起做欢迎动作，“按 OK 开始”呼吸闪烁'],['OK','进菜单']],
+    fw:['正式版用新片段 S-WELCOME：戴上耳机 → 打碟 → 挥手（120×120）；原型里暂用算命机的 N-WELCOME 占位','平线、波形、频谱柱都是纯填色，用正弦表','0.1.2 开机语音：“NABO，陪你玩音乐”；沿用赛博算命机的阳光小男孩音色，由固件播放交付录音','减弱闪烁模式：不做错位、频谱柱静止、提示不闪']}};
+
+const NEW_TOY=(id,name,en,ic)=>({id,name,en,ic,url:'new-games.html?game='+id});
+const ITEMS=[{sep:'玩 · 声音玩具'},ECHO,SHOUT,CANDLE,ROPE,RANGE,NEW_TOY('flight','哼歌飞行','HUM FLIGHT','✈'),NEW_TOY('clap','拍手节奏','CLAP BEAT','✋'),NEW_TOY('sampler','采样琴','SAMPLER','♫'),
+  {sep:'看 · 声音可视化'},SPEC,WATER,SCOPE,CHROMA,DBM,{sep:'练 · 音乐工具'},TUNER,GUITAR,BEAT,PITCH,{sep:'其他'},SETTINGS];
+const MENU={id:'menu',sel:1,scroll:0,
+  move(d){let s=this.sel;do{s=(s+d+ITEMS.length)%ITEMS.length}while(ITEMS[s].sep);this.sel=s},
+  up(){this.move(-1)},down(){this.move(1)},
+  ok(){const it=ITEMS[this.sel];if(it.url){location.assign(it.url);return}go(it)},
+  draw(t){c.fillStyle=C.bg;c.fillRect(0,0,W,H);
+    for(let i=0;i<32;i++){const h=A.bands[i]*70;c.fillStyle=mix(BARC[i].match(/\d+/g).map(Number).reduce((s,x)=>s+x.toString(16).padStart(2,'0'),'#'),C.bg,0.55);c.fillRect(Math.round(i*7.5)+1,100-h,6,h)}
+    nabo('N-IDLE',120,56,t);
+    T('声音实验室',120,112,20,C.white);T('NABO SOUND LAB',120,130,9,C.cyan,'center',F.mono);
+    const rowH=24,top=142,vis=6;
+    if(this.sel<this.scroll)this.scroll=this.sel;if(this.sel>=this.scroll+vis)this.scroll=this.sel-vis+1;
+    for(let k=0;k<vis;k++){const i=this.scroll+k;if(i>=ITEMS.length)break;const it=ITEMS[i],y=top+k*rowH;
+      if(it.sep){T(it.sep,16,y+12,16,C.gold,'left',F.sans);const lineX=24+c.measureText(it.sep).width;c.fillStyle=C.line;c.fillRect(lineX,y+12,Math.max(0,224-lineX),1);continue}
+      const on=i===this.sel;if(on){rr(10,y,220,rowH-2,6);c.fillStyle=C.cyan;c.fill()}
+      T(it.ic,28,y+12,11,on?C.bg:C.mag,'center',F.mono);
+      T(it.name,44,y+12,16,on?C.bg:C.white,'left',F.sans);
+      if(it.en)T(it.en,222,y+12,8,on?C.bg:C.dark,'right',F.mono)}
+    c.fillStyle=C.dark;const tot=ITEMS.length,track=rowH*vis;c.fillRect(234,top+this.scroll/tot*track,2,vis/tot*track);
+    hintK([['▲▼','选择'],['OK','进入']],false)},
+  info:{d:'主菜单包含8个声音玩具；哼歌飞行、拍手节奏、采样琴已接入可玩新原型。上方小频谱一直在跑，NABO 站在上面。',
+    k:[['▲ / ▼','选择'],['OK','进入'],['工具里双击 ▲','回到这里']],
+    fw:['独立离线固件：开机直接进菜单，不配网','所有工具共用 nabo_mic 一个采集/分析任务','5 分钟无操作深睡（麦克风工具常开时可设“常亮”）']}};
+
+function go(s){if(scr&&scr.leave)scr.leave();scr=s;showInfo()}
+function press0(){}
+function back(){if(scr===MENU)return;if(scr.back&&scr.back())return;const r=scr.ret;scr.ret=null;go(r||MENU)}
+function showInfo(){const i=scr.info,el=document.getElementById('info');
+  el.innerHTML=`<h2>当前画面</h2><h3>${scr===MENU?'主菜单':scr.name} <small style="color:var(--mute);font:600 11px var(--mono)">${scr.en||''}</small></h3><p>${i.d}</p>
+  <table>${i.k.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('')}</table><h2>固件实现要点</h2><ul>${i.fw.map(x=>`<li>${x}</li>`).join('')}</ul>`}
+
+// ================= 按键：▲ 单击 / 双击返回；OK 支持按住 =================
+const K={upT:0,upTimer:null,okHeld:false};
+function press(k){
+  if(scr.anyKey){scr.anyKey(k);return}
+  if(k==='up'){if(scr===MENU){MENU.up();return}
+    const n=nowMs();if(n-K.upT<300){clearTimeout(K.upTimer);K.upTimer=null;K.upT=0;back();return}
+    K.upT=n;K.upTimer=setTimeout(()=>{K.upTimer=null;scr.up&&scr.up()},300)}
+  else if(k==='down'){scr.down&&scr.down()}
+  else if(k==='ok'){if(K.okHeld)return;K.okHeld=true;if(scr.okDown)scr.okDown();else scr.ok&&scr.ok()}
+}
+function release(k){if(k==='ok'){K.okHeld=false;scr.okUp&&scr.okUp()}}
+document.querySelectorAll('.keys button').forEach(b=>{const k=b.dataset.k;
+  b.addEventListener('pointerdown',e=>{e.preventDefault();b.classList.add('on');press(k)});
+  ['pointerup','pointerleave','pointercancel'].forEach(ev=>b.addEventListener(ev,()=>{if(b.classList.contains('on')){b.classList.remove('on');release(k)}}))});
+const KEYMAP={ArrowUp:'up',ArrowDown:'down',Enter:'ok',' ':'ok'};
+addEventListener('keydown',e=>{if(e.target.tagName==='INPUT')return;if(e.key==='Escape'||e.key==='Backspace'){back();return}
+  const k=KEYMAP[e.key];if(!k)return;e.preventDefault();if(e.repeat)return;press(k)});
+addEventListener('keyup',e=>{const k=KEYMAP[e.key];if(k)release(k)});
+document.querySelectorAll('[data-src]').forEach(b=>b.addEventListener('click',()=>useSource(b.dataset.src)));
+const bind=(id,o,f)=>{const el=document.getElementById(id),out=document.getElementById(o);const u=()=>{f(+el.value);};el.addEventListener('input',u);u()};
+bind('gain','gainO',v=>{S.gain=v;gainO.textContent=v.toFixed(1)+'×'});
+bind('cal','calO',v=>{S.cal=v;calO.textContent='+'+v});
+bind('quiet','quietO',v=>{S.quiet=v;quietO.textContent=v+' dB'});
+document.getElementById('rgb').addEventListener('change',e=>S.rgb=e.target.checked);
+
+// ================= 主循环（目标 30 fps） =================
+let last=0,fc=0,ft=0,fps=0,side=0;
+function frame(now){requestAnimationFrame(frame);if(now-last<32)return;last=now;
+  try{scr.draw(now)}catch(e){console.error(e)}
+  if(scr!==MENU&&scr!==ECHO&&scr!==DBM&&!scr.noSrc)needSrc();
+  if(S.toast&&now-S.toastT<1200){c.font=`12px ${F.sans}`;const w=c.measureText(S.toast).width+24;rr(120-w/2,268,w,24,12);c.fillStyle='#000c';c.fill();T(S.toast,120,280,12,C.white,'center',F.sans)}
+  if(S.rgb){const im=c.getImageData(0,0,W,H),d=im.data;for(let i=0;i<d.length;i+=4){d[i]&=0xF8;d[i+1]&=0xFC;d[i+2]&=0xF8}c.putImageData(im,0,0)}
+  fc++;if(now-ft>1000){fps=fc*1000/(now-ft);fc=0;ft=now}
+  if(now-side>250){side=now;const on=src.kind!=='none';
+    vDb.textContent=on?A.db.toFixed(0):'--';vF0.textContent=A.f0>0?A.f0.toFixed(0):'--';vBpm.textContent=A.bpm?Math.round(A.bpm):'--';
+    vChord.textContent=A.chord||'--';vFps.textContent=fps.toFixed(0);vCpu.textContent=on?A.ms.toFixed(2):'--'}
+}
+MENU.info={d:'主菜单按“玩 / 看 / 练”分三组，已有8个声音玩具，包括可玩的哼歌飞行、拍手节奏、采样琴。每屏6行、行高24像素，主名称16像素，超出后滚动。三个键颜色固定：▲ 青色调数值，▼ 绿色换模式，OK 白色做主动作。',
+  k:[['▲ / ▼','选择'],['OK','进入'],['工具里双击 ▲','返回上一级']],fw:['独立离线固件：开机是 NABO 欢迎动画，然后进菜单','所有工具共用 nabo_mic 一个采集/分析任务','5 分钟无操作深睡（麦克风工具开着时可设“常亮”）']};
+SPEC.info.k=[['▲（青）','灵敏度 0 / +6 / +12 / −12 / −6 dB'],['▼（绿）','样式：LED 柱 / 镜像 / NABO 环'],['OK（白）','冻结']];
+WATER.info.k=[['▲（青）','灵敏度'],['▼（绿）','配色：霓虹 / 矩阵 / 热成像'],['OK（白）','冻结']];
+SCOPE.info.k=[['▲（青）','时间轴 ×1 / ×2 / ×4'],['▼（绿）','波形 / 圆形 / 李萨如'],['OK（白）','冻结']];
+TUNER.info.k=[['▲（青）','A4 基准 440 / 442 / 443 / 432 / 415（设置里可 415–446 细调）'],['▼（绿）','半音 / 吉他 / 尤克里里'],['频闪条','偏低往左流、偏高往右流；减弱闪烁时改成文字箭头']];
+DBM.info.k=[['▲（青）','安静阈值 40–80 dB'],['▼（绿）','实时 / 峰值保持 / 安静提醒'],['OK（白）','清零峰值']];
+BEAT.info.k=[['▲（青）','灵敏度；节拍器开着时每次 +5 BPM'],['▼（绿）','自动检测 / 拍手测速'],['OK（白）','节拍器开关']];
+PITCH.info.k=[['▲（青）','纵轴 20 / 12 / 32 个半音'],['▼（绿）','音名 / 简谱 / 唱名'],['OK（白）','冻结']];
+CHROMA.info.k=[['▲（青）','灵敏度'],['▼（绿）','五度圈 / 半音排列']];
+ECHO.info.d='会说话的汤姆猫玩法：说一句（最长 3 秒），NABO 用选好的声音学回来。自动复读模式不用按键，你说完它就学。';
+ECHO.info.k=[['▲（青）','换声音（12 种）'],['▼（绿）','按住说 / 自动复读'],['按住 OK','录音，松手复读']];
+go(new URLSearchParams(location.search).get('screen')==='menu'?MENU:SPLASH);requestAnimationFrame(frame);
+</script>
+</body>
+</html>

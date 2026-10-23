@@ -1,0 +1,136 @@
+{
+  "version": "0.1.2",
+  "revision": "r4-volume-prewarm",
+  "validation_date": "2026-10-23",
+  "status": "specified_features_passed_known_limits_open",
+  "hardware": {
+    "chip": "ESP32-C3",
+    "flash_bytes": 8388608,
+    "screen": [
+      240,
+      320
+    ]
+  },
+  "binary_provenance": "Exact frozen r4 app/assets; no rebuild for publication",
+  "files": {
+    "bootloader.bin": {
+      "bytes": 21024,
+      "sha256": "9255b6d53d21878d109827c9f1396140942923e1d6d4a89a719c3057c2c9541c"
+    },
+    "partition-table.bin": {
+      "bytes": 3072,
+      "sha256": "43311cbc95711332aa26b5e5002a58a9099b1a3be0b394408bc7b2b5dd986d86"
+    },
+    "nabo-soundlab-passport.bin": {
+      "bytes": 510160,
+      "sha256": "fa93210ee93d5e569289c8ed4e87615ca339b3e63266678e0acb5f2480f39869"
+    },
+    "soundlab_assets.bin": {
+      "bytes": 1882628,
+      "sha256": "37018a9263a5110af7ed8b38ce2f64ed51ba004ae4d7d6327b6eb1bc7e916604"
+    },
+    "nabo-soundlab-0.1.2-merged.bin": {
+      "bytes": 3979780,
+      "sha256": "037570a8b8bbfdde4c8740899afad59a2a44a9f7367f46045d647317fb46a93c"
+    }
+  },
+  "device_readback": {
+    "full_flash_readback_verified": true,
+    "app_exact": true,
+    "assets_exact": true,
+    "outside_target_sectors_preserved_at_upgrade": true,
+    "nvs_scope": "Preserved during upgrade; subsequent authorized volume tests intentionally saved vol",
+    "actual_installed_boot_sha256": "82bdd7488052b327eb6c1122518b5e95b741bdba48f70fc8f5efa3af6d4becf1",
+    "merged_boot_end_to_end_first_install_tested": false
+  },
+  "volume": {
+    "range": [
+      0,
+      100
+    ],
+    "step": 10,
+    "default": 80,
+    "current_last_verified": 80,
+    "navigation": "Settings first row; UP/DOWN select, OK cycles, double UP returns",
+    "zero_percent_exact_zero_PCM_host_verified": true,
+    "reset_persistence_verified": [
+      0,
+      40,
+      80
+    ],
+    "persistence_test_method": "Three deliberate chip hard resets; no physical power-removal test claimed"
+  },
+  "runtime": {
+    "completed_result_count": 6,
+    "first_cold_fill_us": 680,
+    "max_all_12_voice_fill_us": 2809,
+    "audio_read_errors": 0,
+    "audio_write_errors": 0,
+    "formal_windows": 4,
+    "formal_fps": 30.3,
+    "formal_over33ms_frames": 0,
+    "scope_window_s": 120.351,
+    "scope_frames": 3647,
+    "scope_UI_avg_max_ms": [
+      20,
+      24
+    ],
+    "scope_heap_delta": 0,
+    "scope_status_coverage": "Two bracket statuses; no continuous15second sampling claimed",
+    "echo_functional_UI_fps_range": [
+      26.39,
+      30.3
+    ],
+    "chorus_UI_max_ms": 61,
+    "chorus_UI_over33ms_frames": 50,
+    "chorus_UI_frames": 259,
+    "status_samples": 48,
+    "serial_key_commands": 80,
+    "physical_key_counters_all_zero": true,
+    "controlled_runtime_epochs": 4,
+    "unknown_runtime_epochs": 0,
+    "uncommanded_scene_mismatch_count": 0,
+    "USB_disconnects": 0
+  },
+  "host_volume_assertions": 12136,
+  "host_settings_renders": 64,
+  "host_settings_native_images": 14,
+  "actual_C3_settings_captures": 11,
+  "actual_capture_RGB565_roundtrip_exact": true,
+  "label_px": 16,
+  "value_px": 22,
+  "welcome": {
+    "text": "那波，陪你玩音乐！",
+    "voice": "阳光小男孩，同赛博算命机",
+    "user_volume_reply": "音量合适了",
+    "accepted_on": "r3; same PCM/default80 inr4",
+    "wav_sha256": "abfddfb12b17f62d02102f58b26c32136936d6d757850c7143673b96a607785d"
+  },
+  "earlier_revision_game_evidence": {
+    "revision": "r2",
+    "actions": 223,
+    "ten_round_scene_entry_exit_stable": true,
+    "sampler_samples": 4000,
+    "sampler_ms": 500,
+    "clap_PC_input_hits": "15/16,14perfect; background baseline also triggered hits, no quiet-environment pass claimed",
+    "scope": "Prior revision evidence, not relabeled as full r4 replay"
+  },
+  "open_items": [
+    "User physical listening for revised voice-changer plosive is pending; zero API errors do not prove absence of audible clicks",
+    "R1 uncommanded menu/reset cause unestablished; R2/R3/R4 non-reproduction is not a root-cause fix",
+    "Actual noisy440Hz input can yield subharmonic147Hz estimate; DSP unchanged",
+    "Voice-changer functional UI retains slow frames; quiet formal windows do not replace this load"
+  ],
+  "private_evidence_report_sha256": {
+    "frozen_telemetry_review": "718b0e56a9233f0f85b98a81de1b47f806bc652e99786147a52820ef2b7040e8",
+    "actual_capture_review": "04331e42a55edc44a4de39e146fff07962ea680255ec65bd294c7bb30bd684e0",
+    "offline_package_recheck": "cd5d6ff7d305a65edd673fe2593365aa7eb6016f01da84f33a71775c24dad498"
+  },
+  "screenshots": {
+    "type": "Actual C3 sent-to-LCD RGB565, not optical photographs",
+    "overview_background": "#0A0716",
+    "overview_sha256": "68d75677b50a60694a2424037a0f1157c5df2dbfbb7ed822263fb3ced93e5cd0",
+    "final_80_sha256": "d8fd30ed591ff5f900ba43df64beecbdab77c83fafa3beee740d086e7420b654"
+  },
+  "private_raw_evidence_published": false
+}

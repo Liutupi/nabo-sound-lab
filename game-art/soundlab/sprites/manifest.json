@@ -1,0 +1,3358 @@
+{
+ "S-IDLE": {
+  "id": "S-IDLE",
+  "file": "grok-clips/S-IDLE.mp4",
+  "sha256": "ccf345be8910c280a003d5d12c2c38b219d977dd28bb4d40458452ade80edec2",
+  "source": [
+   720,
+   720,
+   24.0,
+   97
+  ],
+  "green": [
+   2.0,
+   252.0,
+   1.0
+  ],
+  "loop": true,
+  "src_frames": [
+   3,
+   5,
+   8,
+   10,
+   13,
+   15,
+   17,
+   20,
+   22,
+   25,
+   27,
+   29,
+   32,
+   34,
+   36,
+   39,
+   41,
+   44,
+   46,
+   48,
+   51,
+   53,
+   56,
+   58,
+   60,
+   63,
+   65,
+   68,
+   70,
+   72,
+   75,
+   77,
+   79,
+   82,
+   84,
+   87
+  ],
+  "retime": {
+   "rule": "loop: N evenly spaced in [a,b)",
+   "interval_s": [
+    0.125,
+    3.7083
+   ],
+   "speed": 1.194,
+   "candidate_s": [
+    0,
+    3
+   ],
+   "searched_cut_native": [
+    3,
+    89
+   ],
+   "cut_diff": 0.33
+  },
+  "frames": 36,
+  "ms": 3000,
+  "seam": {
+   "last_to_first": 0.34,
+   "median_step": 1.23,
+   "ratio": 0.28,
+   "max_step": 2.66
+  },
+  "sizes": {
+   "56": {
+    "bytes": 17020,
+    "colors": 63,
+    "roundtrip_ok": true,
+    "mean_color_err": 6.07,
+    "max_frame_err": 6.45,
+    "min_top_margin_px": 7,
+    "foot_anchor": [
+     28.0,
+     50.75
+    ]
+   },
+   "76": {
+    "bytes": 29322,
+    "colors": 63,
+    "roundtrip_ok": true,
+    "mean_color_err": 5.91,
+    "max_frame_err": 6.21,
+    "min_top_margin_px": 9,
+    "foot_anchor": [
+     38.0,
+     68.88
+    ]
+   },
+   "120": {
+    "bytes": 66018,
+    "colors": 63,
+    "roundtrip_ok": true,
+    "mean_color_err": 5.91,
+    "max_frame_err": 6.2,
+    "min_top_margin_px": 15,
+    "foot_anchor": [
+     60.0,
+     108.75
+    ]
+   }
+  }
+ },
+ "S-JUMP-R": {
+  "id": "S-JUMP-R",
+  "file": "grok-clips/S-JUMP-R.mp4",
+  "sha256": "8cd4f2d7cf46572bcfc33bc121bbd79bb68cce5899009f32e0300f43f07fb487",
+  "source": [
+   960,
+   960,
+   24.0,
+   73
+  ],
+  "green": [
+   0.0,
+   253.0,
+   0.0
+  ],
+  "loop": false,
+  "src_frames": [
+   6,
+   10,
+   15,
+   19,
+   23,
+   28,
+   32,
+   37,
+   41,
+   45,
+   50,
+   54
+  ],
+  "retime": {
+   "rule": "once: N evenly spaced in [a,b] inclusive",
+   "interval_s": [
+    0.25,
+    2.25
+   ],
+   "speed": 2.0
+  },
+  "frames": 12,
+  "ms": 1000,
+  "root": {
+   "method": "manual waist/pelvis registration; remove translation only during confirmed airborne frames",
+   "registration_file": "root-registration/body-root-registration-v1.json",
+   "registration_sha256": "53ae2ea1decc4345bf5d57f639c18388995b6e556e745d473a5e597a01d36cf5",
+   "source_sha256": "8cd4f2d7cf46572bcfc33bc121bbd79bb68cce5899009f32e0300f43f07fb487",
+   "landmark": "Manually identified waist/pelvis root: midpoint of the magenta shirt hem meeting the trouser waist, below the jacket; no hat/shoe/bbox centroid used.",
+   "coordinate_canvas": [
+    360,
+    360
+   ],
+   "airborne_output_frames": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+   ],
+   "shifts_source360_xy": [
+    [
+     0,
+     0
+    ],
+    [
+     0,
+     0
+    ],
+    [
+     3,
+     38
+    ],
+    [
+     4,
+     46
+    ],
+    [
+     4,
+     47
+    ],
+    [
+     4,
+     44
+    ],
+    [
+     4,
+     41
+    ],
+    [
+     6,
+     27
+    ],
+    [
+     7,
+     16
+    ],
+    [
+     0,
+     0
+    ],
+    [
+     0,
+     0
+    ],
+    [
+     0,
+     0
+    ]
+   ],
+   "authored_root_motion_source360_xy": [
+    [
+     0,
+     0
+    ],
+    [
+     0,
+     0
+    ],
+    [
+     -3,
+     -38
+    ],
+    [
+     -4,
+     -46
+    ],
+    [
+     -4,
+     -47
+    ],
+    [
+     -4,
+     -44
+    ],
+    [
+     -4,
+     -41
+    ],
+    [
+     -6,
+     -27
+    ],
+    [
+     -7,
+     -16
+    ],
+    [
+     0,
+     0
+    ],
+    [
+     0,
+     0
+    ],
+    [
+     0,
+     0
+    ]
+   ],
+   "logical_anchor_source360": [
+    180.0,
+    326.25
+   ],
+   "logical_anchor_note": "Fixed engine anchor; not a per-frame shoe-bottom measurement. Crouch, leg tuck and bow remain in the pose.",
+   "manual_landmark_uncertainty_source_px": 3,
+   "manual_landmark_uncertainty_target_px": {
+    "56": 0.467
+   },
+   "ground_frames_preserved": [
+    0,
+    1,
+    9,
+    10,
+    11
+   ],
+   "ground_frames_translation_zero": true
+  },
+  "silhouette_bottom_row_range_target": {
+   "56": 6.69
+  },
+  "silhouette_bottom_x_range_target": {
+   "56": 5.59
+  },
+  "silhouette_diagnostic_note": "Lowest shoe outline moves with the leg pose; these ranges are not anatomical root drift or pass/fail thresholds.",
+  "seam": {
+   "last_to_first": 11.52,
+   "median_step": 6.35,
+   "ratio": 1.81,
+   "max_step": 15.38
+  },
+  "sizes": {
+   "56": {
+    "bytes": 9285,
+    "colors": 63,
+    "roundtrip_ok": true,
+    "mean_color_err": 6.33,
+    "max_frame_err": 7.01,
+    "min_top_margin_px": 8,
+    "foot_anchor": [
+     28.0,
+     50.75
+    ]
+   }
+  }
+ },
+ "S-ROPE-FALL": {
+  "id": "S-ROPE-FALL",
+  "file": "grok-clips/revisions/S-ROPE-FALL-v2.mp4",
+  "sha256": "e48c2a25b0d5b7c80acb6f7078baeb034bb9f1b88c8a7938ed7ce3d7845a26bc",
+  "source": [
+   960,
+   960,
+   24.0,
+   49
+  ],
+  "green": [
+   0.0,
+   253.0,
+   0.0
+  ],
+  "loop": false,
+  "src_frames": [
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12,
+   13,
+   13,
+   13,
+   13,
+   13
+  ],
+  "retime": {
+   "rule": "native frames 6..13 inclusive, then hold 13 x4 (Codex condition)",
+   "interval_s": [
+    0.25,
+    0.541667
+   ]
+  },
+  "frames": 12,
+  "ms": 1000,
+  "feet_row_range_target": {
+   "76": 0.21
+  },
+  "feet_x_range_target": {
+   "76": 0.45
+  },
+  "seam": {
+   "last_to_first": 17.85,
+   "median_step": 5.45,
+   "ratio": 3.27,
+   "max_step": 8.97
+  },
+  "sizes": {
+   "76": {
+    "bytes": 12291,
+    "colors": 63,
+    "roundtrip_ok": true,
+    "mean_color_err": 7.4,
+    "max_frame_err": 7.95,
+    "min_top_margin_px": 9,
+    "foot_anchor": [
+     38.0,
+     68.88
+    ]
+   }
+  }
+ },
+ "_note": "由 tools/clip_to_sprites_soundlab.py 生成；frames.bin 为 FNBO v1：头、RGB565 调色板(63，索引 0 透明)、帧偏移、每帧行偏移+RLE（第0帧关键帧，其余差分）；处理分辨率 360，逻辑脚锚 = (size/2, 928/1024*size)；JUMP/BOW仅在确认离地帧使用源SHA绑定的人工腰髋注册，最低鞋轮廓统计不是人体根误差",
+ "S-BLOW": {
+  "id": "S-BLOW",
+  "file": "grok-clips/S-BLOW.mp4",
+  "sha256": "616580efe7bbca81dc7c733766c6d8cee4b392b30a460639360d820f41c2598a",
+  "source": [
+   720,
+   720,
+   24.0,
+   49
+  ],
+  "green": [
+   1.0,
+   253.0,
+   2.0
+  ],
+  "loop": true,
+  "src_frames": [
+   4,
+   7,
+   11,
+   14,
+   18,
+   21,
+   24,
+   28,
+   31,
+   35,
+   38,
+   42
+  ],
+  "retime": {
+   "rule": "loop: N evenly spaced in [a,b)",
+   "interval_s": [
+    0.1667,
+    1.875
+   ],
+   "speed": 1.708,
+   "candidate_s": [
+    0,
+    2
+   ],
+   "searched_cut_native": [
+    4,
+    45
+   ],
+   "cut_diff": 0.32
+  },
+  "frames": 12,
+  "ms": 1000,
+  "seam": {
+   "last_to_first": 0.34,
+   "median_step": 3.15,
+   "ratio": 0.11,
+   "max_step": 5.35
+  },
+  "sizes": {
+   "76": {
+    "bytes": 15942,
+    "colors": 63,
+    "roundtrip_ok": true,
+    "mean_color_err": 6.6,
+    "max_frame_err": 6.89,
+    "min_top_margin_px": 4,
+    "foot_anchor": [
+     38.0,
+     68.88
+    ]
+   }
+  }
+ },
+ "S-CAKE-WAIT": {
+  "id": "S-CAKE-WAIT",
+  "file": "grok-clips/revisions/S-CAKE-WAIT-v2.mp4",
+  "sha256": "c8b19fb8a51858e9b202b31fc5b55eb9153995b0c3900e2230c84dc30ecd0415",
+  "source": [
+   720,
+   720,
+   24.0,
+   73
+  ],
+  "green": [
+   2.0,
+   253.0,
+   2.0
+  ],
+  "loop": true,
+  "src_frames": [
+   6,
+   9,
+   11,
+   14,
+   17,
+   19,
+   22,
+   25,
+   27,
+   30,
+   33,
+   35,
+   38,
+   41,
+   43,
+   46,
+   49,
+   51,
+   54,
+   57,
+   59,
+   62,
+   65,
+   67
+  ],
+  "retime": {
+   "rule": "loop: N evenly spaced in [a,b)",
+   "interval_s": [
+    0.25,
+    2.9167
+   ],
+   "speed": 1.333,
+   "candidate_s": [
+    0.25,
+    2.75
+   ],
+   "searched_cut_native": [
+    6,
+    70
+   ],
+   "cut_diff": 0.26
+  },
+  "frames": 24,
+  "ms": 2000,
+  "seam": {
+   "last_to_first": 0.27,
+   "median_step": 1.21,
+   "ratio": 0.22,
+   "max_step": 4.41
+  },
+  "sizes": {
+   "76": {
+    "bytes": 21385,
+    "colors": 63,
+    "roundtrip_ok": true,
+    "mean_color_err": 6.51,
+    "max_frame_err": 6.69,
+    "min_top_margin_px": 3,
+    "foot_anchor": [
+     38.0,
+     68.88
+    ]
+   }
+  }
+ },
+ "S-CHEER": {
+  "id": "S-CHEER",
+  "file": "grok-clips/S-CHEER.mp4",
+  "sha256": "fbd34ea415eff10277ac59467ec95d9db1b20fb8dc68e4798bf6062bc1efaa66",
+  "source": [
+   720,
+   720,
+   24.0,
+   73
+  ],
+  "green": [
+   2.0,
+   252.0,
+   2.0
+  ],
+  "loop": false,
+  "src_frames": [
+   2,
+   5,
+   9,
+   12,
+   16,
+   19,
+   22,
+   26,
+   29,
+   33,
+   36,
+   40,
+   43,
+   46,
+   50,
+   53,
+   57,
+   60
+  ],
+  "retime": {
+   "rule": "once: N evenly spaced in [a,b] inclusive",
+   "interval_s": [
+    0.0833,
+    2.5
+   ],
+   "speed": 1.611
+  },
+  "frames": 18,
+  "ms": 1500,
+  "seam": {
+   "last_to_first": 2.79,
+   "median_step": 7.71,
+   "ratio": 0.36,
+   "max_step": 20.49
+  },
+  "sizes": {
+   "76": {
+    "bytes": 27520,
+    "colors": 63,
+    "roundtrip_ok": true,
+    "mean_color_err": 6.23,
+    "max_frame_err": 6.68,
+    "min_top_margin_px": 9,
+    "foot_anchor": [
+     38.0,
+     68.88
+    ]
+   }
+  }
+ },
+ "S-DJ": {
+  "id": "S-DJ",
+  "file": "grok-clips/S-DJ.mp4",
+  "sha256": "4ad3745adbc94f75b31a7e1ddddc7abbd702a1e58cbccf828601c148a89e8573",
+  "source": [
+   720,
+   720,
+   24.0,
+   73
+  ],
+  "green": [
+   1.0,
+   252.0,
+   2.0
+  ],
+  "loop": true,
+  "src_frames": [
+   2,
+   4,
+   6,
+   8,
+   10,
+   12,
+   14,
+   16,
+   18,
+   20,
+   22,
+   24,
+   26,
+   27,
+   29,
+   31,
+   33,
+   35,
+   37,
+   39,
+   41,
+   43,
+   45,
+   47
+  ],
+  "retime": {
+   "rule": "loop: N evenly spaced in [a,b)",
+   "interval_s": [
+    0.0833,
+    2.0417
+   ],
+   "speed": 0.979,
+   "candidate_s": [
+    0.0833,
+    2
+   ],
+   "searched_cut_native": [
+    2,
+    49
+   ],
+   "cut_diff": 0.87
+  },
+  "frames": 24,
+  "ms": 2000,
+  "seam": {
+   "last_to_first": 1.49,
+   "median_step": 3.2,
+   "ratio": 0.47,
+   "max_step": 4.89
+  },
+  "sizes": {
+   "76": {
+    "bytes": 26142,
+    "colors": 63,
+    "roundtrip_ok": true,
+    "mean_color_err": 6.14,
+    "max_frame_err": 6.35,
+    "min_top_margin_px": 9,
+    "foot_anchor": [
+     38.0,
+     68.88
+    ]
+   }
+  }
+ },
+ "S-DRUM": {
+  "id": "S-DRUM",
+  "file": "grok-clips/revisions/S-DRUM-v2.mp4",
+  "sha256": "123548e29e76e1cf47855d5158bffc4f510e3fcfb2e71400afb49059eabb6e2c",
+  "source": [
+   720,
+   720,
+   24.0,
+   49
+  ],
+  "green": [
+   2.0,
+   253.0,
+   1.0
+  ],
+  "loop": false,
+  "src_frames": [
+   14,
+   19,
+   24,
+   29,
+   34
+  ],
+  "retime": {
+   "rule": "once: N evenly spaced in [a,b] inclusive",
+   "interval_s": [
+    0.5833,
+    1.4167
+   ],
+   "speed": 2.083
+  },
+  "frames": 5,
+  "ms": 417,
+  "seam": {
+   "last_to_first": 1.95,
+   "median_step": 5.46,
+   "ratio": 0.36,
+   "max_step": 6.91
+  },
+  "sizes": {
+   "76": {
+    "bytes": 6391,
+    "colors": 63,
+    "roundtrip_ok": true,
+    "mean_color_err": 6.08,
+    "max_frame_err": 6.18,
+    "min_top_margin_px": 9,
+    "foot_anchor": [
+     38.0,
+     68.88
+    ]
+   }
+  }
+ },
+ "S-EARS": {
+  "id": "S-EARS",
+  "file": "grok-clips/S-EARS.mp4",
+  "sha256": "94ee8095929672c986063bc66e20dfc74d7c56265d63df1e3656eb1a9aff553f",
+  "source": [
+   720,
+   720,
+   24.0,
+   73
+  ],
+  "green": [
+   2.0,
+   253.0,
+   2.0
+  ],
+  "loop": true,
+  "src_frames": [
+   12,
+   14,
+   15,
+   17,
+   19,
+   20,
+   22,
+   24,
+   25,
+   27,
+   29,
+   30,
+   32,
+   34,
+   35,
+   37,
+   39,
+   40
+  ],
+  "retime": {
+   "rule": "loop: N evenly spaced in [a,b)",
+   "interval_s": [
+    0.5,
+    1.75
+   ],
+   "speed": 0.833,
+   "candidate_s": [
+    0,
+    1.5
+   ],
+   "searched_cut_native": [
+    12,
+    42
+   ],
+   "cut_diff": 0.67
+  },
+  "frames": 18,
+  "ms": 1500,
+  "seam": {
+   "last_to_first": 2.24,
+   "median_step": 1.26,
+   "ratio": 1.77,
+   "max_step": 4.78
+  },
+  "sizes": {
+   "76": {
+    "bytes": 18116,
+    "colors": 63,
+    "roundtrip_ok": true,
+    "mean_color_err": 5.89,
+    "max_frame_err": 6.44,
+    "min_top_margin_px": 9,
+    "foot_anchor": [
+     38.0,
+     68.88
+    ]
+   }
+  }
+ },
+ "S-FALL-R": {
+  "id": "S-FALL-R",
+  "file": "grok-clips/S-FALL-R.mp4",
+  "sha256": "830d632aa824476bec1fa3434027d2c794b21ceb8e0c84892002d7848a761f2f",
+  "source": [
+   720,
+   720,
+   24.0,
+   49
+  ],
+  "green": [
+   1.0,
+   252.0,
+   1.0
+  ],
+  "loop": true,
+  "src_frames": [
+   0,
+   4,
+   8,
+   12,
+   16,
+   20,
+   24,
+   27,
+   31,
+   35,
+   39,
+   43
+  ],
+  "retime": {
+   "rule": "loop: N evenly spaced in [a,b)",
+   "interval_s": [
+    0.0,
+    1.9583
+   ],
+   "speed": 1.958,
+   "candidate_s": [
+    0.0,
+    2.0
+   ],
+   "searched_cut_native": [
+    0,
+    47
+   ],
+   "cut_diff": 0.3
+  },
+  "frames": 12,
+  "ms": 1000,
+  "feet_row_range_target": {
+   "56": 3.27
+  },
+  "feet_x_range_target": {
+   "56": 10.89
+  },
+  "seam": {
+   "last_to_first": 0.37,
+   "median_step": 10.74,
+   "ratio": 0.03,
+   "max_step": 12.97
+  },
+  "sizes": {
+   "56": {
+    "bytes": 11160,
+    "colors": 63,
+    "roundtrip_ok": true,
+    "mean_color_err": 6.07,
+    "max_frame_err": 6.53,
+    "min_top_margin_px": 10,
+    "foot_anchor": [
+     28.0,
+     50.75
+    ]
+   }
+  }
+ },
+ "S-FLOAT": {
+  "id": "S-FLOAT",
+  "file": "grok-clips/S-FLOAT.mp4",
+  "sha256": "bdbeb4e0c77818e0ab86094f4144002d016c34013abedd623fb2c3205bc45e76",
+  "source": [
+   720,
+   720,
+   24.0,
+   97
+  ],
+  "green": [
+   2.0,
+   253.0,
+   0.0
+  ],
+  "loop": true,
+  "src_frames": [
+   10,
+   12,
+   14,
+   17,
+   19,
+   21,
+   23,
+   25,
+   28,
+   30,
+   32,
+   34,
+   36,
+   39,
+   41,
+   43,
+   45,
+   47,
+   50,
+   52,
+   54,
+   56,
+   58,
+   60,
+   63,
+   65,
+   67,
+   69,
+   71,
+   74,
+   76,
+   78,
+   80,
+   82,
+   85,
+   87
+  ],
+  "retime": {
+   "rule": "loop: N evenly spaced in [a,b)",
+   "interval_s": [
+    0.4167,
+    3.7083
+   ],
+   "speed": 1.097,
+   "candidate_s": [
+    0.4167,
+    3.75
+   ],
+   "searched_cut_native": [
+    10,
+    89
+   ],
+   "cut_diff": 0.15
+  },
+  "frames": 36,
+  "ms": 3000,
+  "seam": {
+   "last_to_first": 0.17,
+   "median_step": 1.05,
+   "ratio": 0.16,
+   "max_step": 1.65
+  },
+  "sizes": {
+   "76": {
+    "bytes": 16856,
+    "colors": 63,
+    "roundtrip_ok": true,
+    "mean_color_err": 5.68,
+    "max_frame_err": 5.94,
+    "min_top_margin_px": 19,
+    "foot_anchor": [
+     38.0,
+     68.88
+    ]
+   }
+  }
+ },
+ "S-GUITAR-IDLE": {
+  "id": "S-GUITAR-IDLE",
+  "file": "grok-clips/S-GUITAR-IDLE.mp4",
+  "sha256": "f571ae190fa1ffd64dc4a959c291fe157df94a76a3f6b064733d477b0408dabe",
+  "source": [
+   720,
+   720,
+   24.0,
+   97
+  ],
+  "green": [
+   1.0,
+   253.0,
+   2.0
+  ],
+  "loop": true,
+  "src_frames": [
+   18,
+   20,
+   22,
+   24,
+   27,
+   29,
+   31,
+   33,
+   35,
+   37,
+   39,
+   42,
+   44,
+   46,
+   48,
+   50,
+   52,
+   54,
+   57,
+   59,
+   61,
+   63,
+   65,
+   67,
+   69,
+   71,
+   74,
+   76,
+   78,
+   80,
+   82,
+   84,
+   86,
+   89,
+   91,
+   93
+  ],
+  "retime": {
+   "rule": "loop: N evenly spaced in [a,b)",
+   "interval_s": [
+    0.75,
+    3.9583
+   ],
+   "speed": 1.069,
+   "candidate_s": [
+    0.8333,
+    3.8333
+   ],
+   "searched_cut_native": [
+    18,
+    95
+   ],
+   "cut_diff": 0.34
+  },
+  "frames": 36,
+  "ms": 3000,
+  "seam": {
+   "last_to_first": 0.4,
+   "median_step": 0.74,
+   "ratio": 0.53,
+   "max_step": 1.35
+  },
+  "sizes": {
+   "56": {
+    "bytes": 13471,
+    "colors": 63,
+    "roundtrip_ok": true,
+    "mean_color_err": 5.97,
+    "max_frame_err": 6.17,
+    "min_top_margin_px": 7,
+    "foot_anchor": [
+     28.0,
+     50.75
+    ]
+   },
+   "76": {
+    "bytes": 23240,
+    "colors": 63,
+    "roundtrip_ok": true,
+    "mean_color_err": 6.21,
+    "max_frame_err": 6.44,
+    "min_top_margin_px": 9,
+    "foot_anchor": [
+     38.0,
+     68.88
+    ]
+   }
+  }
+ },
+ "S-GUITAR-STRUM": {
+  "id": "S-GUITAR-STRUM",
+  "file": "grok-clips/S-GUITAR-STRUM.mp4",
+  "sha256": "4d32d428d1768717df14c89ba477ebb5dfc6ef883f7115698a12ab6080e06676",
+  "source": [
+   720,
+   720,
+   24.0,
+   49
+  ],
+  "green": [
+   1.0,
+   253.0,
+   1.0
+  ],
+  "loop": false,
+  "src_frames": [
+   8,
+   10,
+   13,
+   15,
+   17,
+   20,
+   22
+  ],
+  "retime": {
+   "rule": "once: N evenly spaced in [a,b] inclusive",
+   "interval_s": [
+    0.3333,
+    0.9167
+   ],
+   "speed": 0.972
+  },
+  "frames": 7,
+  "ms": 583,
+  "seam": {
+   "last_to_first": 0.66,
+   "median_step": 1.41,
+   "ratio": 0.47,
+   "max_step": 1.81
+  },
+  "sizes": {
+   "56": {
+    "bytes": 3172,
+    "colors": 63,
+    "roundtrip_ok": true,
+    "mean_color_err": 6.09,
+    "max_frame_err": 6.17,
+    "min_top_margin_px": 7,
+    "foot_anchor": [
+     28.0,
+     50.75
+    ]
+   },
+   "76": {
+    "bytes": 4948,
+    "colors": 63,
+    "roundtrip_ok": true,
+    "mean_color_err": 6.05,
+    "max_frame_err": 6.14,
+    "min_top_margin_px": 9,
+    "foot_anchor": [
+     38.0,
+     68.88
+    ]
+   }
+  }
+ },
+ "S-GUITAR-TUNE": {
+  "id": "S-GUITAR-TUNE",
+  "file": "grok-clips/S-GUITAR-TUNE.mp4",
+  "sha256": "caa4283c528d4f56307b63fa70dbc94d0934eb237fa396656c6ab1f29f5113b0",
+  "source": [
+   720,
+   720,
+   24.0,
+   73
+  ],
+  "green": [
+   0.0,
+   253.0,
+   2.0
+  ],
+  "loop": true,
+  "src_frames": [
+   6,
+   8,
+   11,
+   13,
+   15,
+   18,
+   20,
+   22,
+   25,
+   27,
+   29,
+   32,
+   34,
+   36,
+   39,
+   41,
+   43,
+   46,
+   48,
+   50,
+   53,
+   55,
+   57,
+   60
+  ],
+  "retime": {
+   "rule": "loop: N evenly spaced in [a,b)",
+   "interval_s": [
+    0.25,
+    2.5833
+   ],
+   "speed": 1.167,
+   "candidate_s": [
+    0.25,
+    2.5833
+   ],
+   "searched_cut_native": [
+    6,
+    62
+   ],
+   "cut_diff": 0.58
+  },
+  "frames": 24,
+  "ms": 2000,
+  "seam": {
+   "last_to_first": 1.12,
+   "median_step": 1.13,
+   "ratio": 0.99,
+   "max_step": 3.58
+  },
+  "sizes": {
+   "76": {
+    "bytes": 23014,
+    "colors": 63,
+    "roundtrip_ok": true,
+    "mean_color_err": 6.79,
+    "max_frame_err": 6.98,
+    "min_top_margin_px": 8,
+    "foot_anchor": [
+     38.0,
+     68.88
+    ]
+   }
+  }
+ },
+ "S-HEADPHONE": {
+  "id": "S-HEADPHONE",
+  "file": "grok-clips/S-HEADPHONE.mp4",
+  "sha256": "8003ed04fe2374a0a60748c755992c77ee9c4be5956ffab14a2a0a387a6558a7",
+  "source": [
+   720,
+   720,
+   24.0,
+   73
+  ],
+  "green": [
+   2.0,
+   253.0,
+   0.0
+  ],
+  "loop": true,
+  "src_frames": [
+   1,
+   4,
+   7,
+   10,
+   13,
+   16,
+   18,
+   21,
+   24,
+   27,
+   30,
+   33,
+   36,
+   39,
+   42,
+   45,
+   48,
+   51,
+   54,
+   56,
+   59,
+   62,
+   65,
+   68
+  ],
+  "retime": {
+   "rule": "loop: N evenly spaced in [a,b)",
+   "interval_s": [
+    0.0417,
+    2.9583
+   ],
+   "speed": 1.458,
+   "candidate_s": [
+    0,
+    3
+   ],
+   "searched_cut_native": [
+    1,
+    71
+   ],
+   "cut_diff": 0.34
+  },
+  "frames": 24,
+  "ms": 2000,
+  "seam": {
+   "last_to_first": 0.58,
+   "median_step": 1.45,
+   "ratio": 0.4,
+   "max_step": 3.4
+  },
+  "sizes": {
+   "76": {
+    "bytes": 21569,
+    "colors": 63,
+    "roundtrip_ok": true,
+    "mean_color_err": 6.1,
+    "max_frame_err": 6.35,
+    "min_top_margin_px": 9,
+    "foot_anchor": [
+     38.0,
+     68.88
+    ]
+   }
+  }
+ },
+ "S-LISTEN": {
+  "id": "S-LISTEN",
+  "file": "grok-clips/S-LISTEN.mp4",
+  "sha256": "571561f83641a1c8518ca29503a7f1214f7aa629ab212919e984c0633d363ada",
+  "source": [
+   720,
+   720,
+   24.0,
+   73
+  ],
+  "green": [
+   0.0,
+   253.0,
+   2.0
+  ],
+  "loop": true,
+  "src_frames": [
+   33,
+   35,
+   36,
+   38,
+   40,
+   41,
+   43,
+   44,
+   46,
+   48,
+   49,
+   51,
+   52,
+   54,
+   56,
+   57,
+   59,
+   61,
+   62,
+   64,
+   66,
+   67,
+   69,
+   70
+  ],
+  "retime": {
+   "rule": "loop: N evenly spaced in [a,b)",
+   "interval_s": [
+    1.375,
+    3.0
+   ],
+   "speed": 0.812,
+   "candidate_s": [
+    0.9167,
+    3
+   ],
+   "searched_cut_native": [
+    33,
+    72
+   ],
+   "cut_diff": 0.28
+  },
+  "frames": 24,
+  "ms": 2000,
+  "seam": {
+   "last_to_first": 0.28,
+   "median_step": 0.5,
+   "ratio": 0.56,
+   "max_step": 3.98
+  },
+  "sizes": {
+   "76": {
+    "bytes": 17402,
+    "colors": 63,
+    "roundtrip_ok": true,
+    "mean_color_err": 5.81,
+    "max_frame_err": 6.26,
+    "min_top_margin_px": 9,
+    "foot_anchor": [
+     38.0,
+     68.88
+    ]
+   },
+   "120": {
+    "bytes": 38898,
+    "colors": 63,
+    "roundtrip_ok": true,
+    "mean_color_err": 5.79,
+    "max_frame_err": 6.24,
+    "min_top_margin_px": 15,
+    "foot_anchor": [
+     60.0,
+     108.75
+    ]
+   }
+  }
+ },
+ "S-LOWBAT": {
+  "id": "S-LOWBAT",
+  "file": "grok-clips/S-LOWBAT.mp4",
+  "sha256": "2e59925bde8b70a7ce33983da3fe0b7074823fad24b51b4007cdb81221729ddc",
+  "source": [
+   960,
+   960,
+   24.0,
+   97
+  ],
+  "green": [
+   2.0,
+   253.0,
+   0.0
+  ],
+  "loop": false,
+  "src_frames": [
+   2,
+   4,
+   7,
+   9,
+   11,
+   14,
+   16,
+   18,
+   21,
+   23,
+   25,
+   28,
+   30,
+   32,
+   35,
+   37,
+   39,
+   42,
+   44,
+   47,
+   49,
+   51,
+   54,
+   56,
+   58,
+   61,
+   63,
+   65,
+   68,
+   70,
+   72,
+   75,
+   77,
+   79,
+   82,
+   84
+  ],
+  "retime": {
+   "rule": "once: N evenly spaced in [a,b] inclusive",
+   "interval_s": [
+    0.0833,
+    3.5
+   ],
+   "speed": 1.139
+  },
+  "frames": 36,
+  "ms": 3000,
+  "seam": {
+   "last_to_first": 25.5,
+   "median_step": 3.69,
+   "ratio": 6.91,
+   "max_step": 13.76
+  },
+  "sizes": {
+   "76": {
+    "bytes": 39509,
+    "colors": 63,
+    "roundtrip_ok": true,
+    "mean_color_err": 6.95,
+    "max_frame_err": 7.48,
+    "min_top_margin_px": 9,
+    "foot_anchor": [
+     38.0,
+     68.88
+    ]
+   },
+   "120": {
+    "bytes": 88953,
+    "colors": 63,
+    "roundtrip_ok": true,
+    "mean_color_err": 6.8,
+    "max_frame_err": 7.21,
+    "min_top_margin_px": 14,
+    "foot_anchor": [
+     60.0,
+     108.75
+    ]
+   }
+  }
+ },
+ "S-MIC-IDLE": {
+  "id": "S-MIC-IDLE",
+  "file": "grok-clips/S-MIC-IDLE.mp4",
+  "sha256": "e5a2ceac6eb0f6a2e8064ca47c16e7d9824167abcd6cb81337bb1f0bdefba1ae",
+  "source": [
+   720,
+   720,
+   24.0,
+   73
+  ],
+  "green": [
+   2.0,
+   252.0,
+   2.0
+  ],
+  "loop": true,
+  "src_frames": [
+   4,
+   7,
+   10,
+   12,
+   15,
+   18,
+   20,
+   23,
+   26,
+   29,
+   32,
+   34,
+   37,
+   40,
+   42,
+   45,
+   48,
+   51,
+   54,
+   56,
+   59,
+   62,
+   64,
+   67
+  ],
+  "retime": {
+   "rule": "loop: N evenly spaced in [a,b)",
+   "interval_s": [
+    0.1667,
+    2.9167
+   ],
+   "speed": 1.375,
+   "candidate_s": [
+    0.1667,
+    2.9167
+   ],
+   "searched_cut_native": [
+    4,
+    70
+   ],
+   "cut_diff": 0.29
+  },
+  "frames": 24,
+  "ms": 2000,
+  "seam": {
+   "last_to_first": 0.3,
+   "median_step": 3.16,
+   "ratio": 0.1,
+   "max_step": 9.05
+  },
+  "sizes": {
+   "76": {
+    "bytes": 28379,
+    "colors": 63,
+    "roundtrip_ok": true,
+    "mean_color_err": 6.44,
+    "max_frame_err": 6.85,
+    "min_top_margin_px": 9,
+    "foot_anchor": [
+     38.0,
+     68.88
+    ]
+   },
+   "120": {
+    "bytes": 64390,
+    "colors": 63,
+    "roundtrip_ok": true,
+    "mean_color_err": 6.77,
+    "max_frame_err": 7.11,
+    "min_top_margin_px": 15,
+    "foot_anchor": [
+     60.0,
+     108.75
+    ]
+   }
+  }
+ },
+ "S-NOD": {
+  "id": "S-NOD",
+  "file": "grok-clips/S-NOD.mp4",
+  "sha256": "5ae9c6fdc07bb492afafd965c5fa61586a689c4e1cfcf158ff6dc5f73dc2a43a",
+  "source": [
+   720,
+   720,
+   24.0,
+   49
+  ],
+  "green": [
+   1.0,
+   252.0,
+   1.0
+  ],
+  "loop": false,
+  "src_frames": [
+   12,
+   14,
+   17,
+   19,
+   21,
+   24,
+   26,
+   29,
+   31,
+   33,
+   36,
+   38
+  ],
+  "retime": {
+   "rule": "once: N evenly spaced in [a,b] inclusive",
+   "interval_s": [
+    0.5,
+    1.5833
+   ],
+   "speed": 1.083
+  },
+  "frames": 12,
+  "ms": 1000,
+  "seam": {
+   "last_to_first": 1.21,
+   "median_step": 7.78,
+   "ratio": 0.16,
+   "max_step": 10.97
+  },
+  "sizes": {
+   "56": {
+    "bytes": 10551,
+    "colors": 63,
+    "roundtrip_ok": true,
+    "mean_color_err": 6.32,
+    "max_frame_err": 6.67,
+    "min_top_margin_px": 7,
+    "foot_anchor": [
+     28.0,
+     50.75
+    ]
+   },
+   "76": {
+    "bytes": 17636,
+    "colors": 63,
+    "roundtrip_ok": true,
+    "mean_color_err": 6.47,
+    "max_frame_err": 6.82,
+    "min_top_margin_px": 9,
+    "foot_anchor": [
+     38.0,
+     68.88
+    ]
+   }
+  }
+ },
+ "S-OK-SIGN": {
+  "id": "S-OK-SIGN",
+  "file": "grok-clips/S-OK-SIGN.mp4",
+  "sha256": "f4f11c920031b39877feaac4b5b194f26e3180a4c92bb418e0629d8f448e5e4b",
+  "source": [
+   960,
+   960,
+   24.0,
+   73
+  ],
+  "green": [
+   0.0,
+   253.0,
+   0.0
+  ],
+  "loop": false,
+  "src_frames": [
+   26,
+   29,
+   31,
+   34,
+   36,
+   39,
+   41,
+   44,
+   46,
+   49,
+   51,
+   54
+  ],
+  "retime": {
+   "rule": "once: N evenly spaced in [a,b] inclusive",
+   "interval_s": [
+    1.0833,
+    2.25
+   ],
+   "speed": 1.167
+  },
+  "frames": 12,
+  "ms": 1000,
+  "seam": {
+   "last_to_first": 8.8,
+   "median_step": 1.36,
+   "ratio": 6.48,
+   "max_step": 5.09
+  },
+  "sizes": {
+   "76": {
+    "bytes": 10324,
+    "colors": 63,
+    "roundtrip_ok": true,
+    "mean_color_err": 6.1,
+    "max_frame_err": 6.63,
+    "min_top_margin_px": 9,
+    "foot_anchor": [
+     38.0,
+     68.88
+    ]
+   }
+  }
+ },
+ "S-OOPS": {
+  "id": "S-OOPS",
+  "file": "grok-clips/S-OOPS.mp4",
+  "sha256": "6978222243c019254ad636856263a3fd7fafd8c99e188a1c2fba5ce28e498391",
+  "source": [
+   960,
+   960,
+   24.0,
+   73
+  ],
+  "green": [
+   0.0,
+   253.0,
+   0.0
+  ],
+  "loop": false,
+  "src_frames": [
+   10,
+   15,
+   19,
+   24,
+   28,
+   33,
+   38,
+   42,
+   47,
+   52,
+   56,
+   61,
+   65,
+   70
+  ],
+  "retime": {
+   "rule": "once: N evenly spaced in [a,b] inclusive",
+   "interval_s": [
+    0.4167,
+    2.9167
+   ],
+   "speed": 2.083
+  },
+  "frames": 14,
+  "ms": 1167,
+  "seam": {
+   "last_to_first": 7.12,
+   "median_step": 8.11,
+   "ratio": 0.88,
+   "max_step": 10.81
+  },
+  "sizes": {
+   "56": {
+    "bytes": 12211,
+    "colors": 63,
+    "roundtrip_ok": true,
+    "mean_color_err": 6.54,
+    "max_frame_err": 6.75,
+    "min_top_margin_px": 7,
+    "foot_anchor": [
+     28.0,
+     50.75
+    ]
+   },
+   "76": {
+    "bytes": 20877,
+    "colors": 63,
+    "roundtrip_ok": true,
+    "mean_color_err": 6.6,
+    "max_frame_err": 6.82,
+    "min_top_margin_px": 9,
+    "foot_anchor": [
+     38.0,
+     68.88
+    ]
+   }
+  }
+ },
+ "S-ROPE-BOW": {
+  "id": "S-ROPE-BOW",
+  "file": "grok-clips/S-ROPE-BOW.mp4",
+  "sha256": "7f29387316d4a5578f64b0a780be36cde0d5db5b98d8f634ec181196441a54e3",
+  "source": [
+   720,
+   720,
+   24.0,
+   73
+  ],
+  "green": [
+   2.0,
+   251.0,
+   1.0
+  ],
+  "loop": false,
+  "src_frames": [
+   3,
+   6,
+   9,
+   12,
+   15,
+   19,
+   22,
+   25,
+   28,
+   31,
+   34,
+   37,
+   40,
+   44,
+   47,
+   50,
+   53,
+   56
+  ],
+  "retime": {
+   "rule": "once: N evenly spaced in [a,b] inclusive",
+   "interval_s": [
+    0.125,
+    2.3333
+   ],
+   "speed": 1.472
+  },
+  "frames": 18,
+  "ms": 1500,
+  "root": {
+   "method": "manual waist/pelvis registration; remove translation only during confirmed airborne frames",
+   "registration_file": "root-registration/body-root-registration-v1.json",
+   "registration_sha256": "53ae2ea1decc4345bf5d57f639c18388995b6e556e745d473a5e597a01d36cf5",
+   "source_sha256": "7f29387316d4a5578f64b0a780be36cde0d5db5b98d8f634ec181196441a54e3",
+   "landmark": "Manually identified waist/pelvis root: midpoint of the magenta shirt hem meeting the trouser waist, below the jacket; no hat/shoe/bbox centroid used.",
+   "coordinate_canvas": [
+    360,
+    360
+   ],
+   "airborne_output_frames": [
+    4,
+    5,
+    6
+   ],
+   "shifts_source360_xy": [
+    [
+     0,
+     0
+    ],
+    [
+     0,
+     0
+    ],
+    [
+     0,
+     0
+    ],
+    [
+     0,
+     0
+    ],
+    [
+     0,
+     18
+    ],
+    [
+     0,
+     26
+    ],
+    [
+     0,
+     13
+    ],
+    [
+     0,
+     0
+    ],
+    [
+     0,
+     0
+    ],
+    [
+     0,
+     0
+    ],
+    [
+     0,
+     0
+    ],
+    [
+     0,
+     0
+    ],
+    [
+     0,
+     0
+    ],
+    [
+     0,
+     0
+    ],
+    [
+     0,
+     0
+    ],
+    [
+     0,
+     0
+    ],
+    [
+     0,
+     0
+    ],
+    [
+     0,
+     0
+    ]
+   ],
+   "authored_root_motion_source360_xy": [
+    [
+     0,
+     0
+    ],
+    [
+     0,
+     0
+    ],
+    [
+     0,
+     0
+    ],
+    [
+     0,
+     0
+    ],
+    [
+     0,
+     -18
+    ],
+    [
+     0,
+     -26
+    ],
+    [
+     0,
+     -13
+    ],
+    [
+     0,
+     0
+    ],
+    [
+     0,
+     0
+    ],
+    [
+     0,
+     0
+    ],
+    [
+     0,
+     0
+    ],
+    [
+     0,
+     0
+    ],
+    [
+     0,
+     0
+    ],
+    [
+     0,
+     0
+    ],
+    [
+     0,
+     0
+    ],
+    [
+     0,
+     0
+    ],
+    [
+     0,
+     0
+    ],
+    [
+     0,
+     0
+    ]
+   ],
+   "logical_anchor_source360": [
+    180.0,
+    326.25
+   ],
+   "logical_anchor_note": "Fixed engine anchor; not a per-frame shoe-bottom measurement. Crouch, leg tuck and bow remain in the pose.",
+   "manual_landmark_uncertainty_source_px": 3,
+   "manual_landmark_uncertainty_target_px": {
+    "76": 0.633
+   },
+   "ground_frames_preserved": [
+    0,
+    1,
+    2,
+    3,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17
+   ],
+   "ground_frames_translation_zero": true
+  },
+  "silhouette_bottom_row_range_target": {
+   "76": 1.27
+  },
+  "silhouette_bottom_x_range_target": {
+   "76": 0.0
+  },
+  "silhouette_diagnostic_note": "Lowest shoe outline moves with the leg pose; these ranges are not anatomical root drift or pass/fail thresholds.",
+  "seam": {
+   "last_to_first": 1.8,
+   "median_step": 10.96,
+   "ratio": 0.16,
+   "max_step": 14.96
+  },
+  "sizes": {
+   "76": {
+    "bytes": 23137,
+    "colors": 63,
+    "roundtrip_ok": true,
+    "mean_color_err": 7.13,
+    "max_frame_err": 7.94,
+    "min_top_margin_px": 9,
+    "foot_anchor": [
+     38.0,
+     68.88
+    ]
+   }
+  }
+ },
+ "S-ROPE-READY": {
+  "id": "S-ROPE-READY",
+  "file": "grok-clips/S-ROPE-READY.mp4",
+  "sha256": "ff684c39642726dda2b44eee970601a827b59622352a85046044566ab52bd2cb",
+  "source": [
+   720,
+   720,
+   24.0,
+   73
+  ],
+  "green": [
+   2.0,
+   253.0,
+   1.0
+  ],
+  "loop": true,
+  "src_frames": [
+   21,
+   23,
+   25,
+   27,
+   29,
+   31,
+   33,
+   35,
+   37,
+   39,
+   41,
+   43,
+   44,
+   46,
+   48,
+   50,
+   52,
+   54,
+   56,
+   58,
+   60,
+   62,
+   64,
+   66
+  ],
+  "retime": {
+   "rule": "loop: N evenly spaced in [a,b)",
+   "interval_s": [
+    0.875,
+    2.8333
+   ],
+   "speed": 0.979,
+   "candidate_s": [
+    0.5833,
+    2.5833
+   ],
+   "searched_cut_native": [
+    21,
+    68
+   ],
+   "cut_diff": 0.18
+  },
+  "frames": 24,
+  "ms": 2000,
+  "feet_row_range_target": {
+   "76": 0.0
+  },
+  "feet_x_range_target": {
+   "76": 0.0
+  },
+  "seam": {
+   "last_to_first": 1.01,
+   "median_step": 0.4,
+   "ratio": 2.53,
+   "max_step": 1.08
+  },
+  "sizes": {
+   "76": {
+    "bytes": 11151,
+    "colors": 63,
+    "roundtrip_ok": true,
+    "mean_color_err": 6.4,
+    "max_frame_err": 6.73,
+    "min_top_margin_px": 8,
+    "foot_anchor": [
+     38.0,
+     68.88
+    ]
+   }
+  }
+ },
+ "S-ROPE-WALK": {
+  "id": "S-ROPE-WALK",
+  "file": "grok-clips/S-ROPE-WALK.mp4",
+  "sha256": "2ee22a62fb3b7f2f19df1ba3eee73302323e915c035fa410b954a2b0021b706e",
+  "source": [
+   720,
+   720,
+   24.0,
+   49
+  ],
+  "green": [
+   0.0,
+   252.0,
+   2.0
+  ],
+  "loop": true,
+  "src_frames": [
+   7,
+   9,
+   11,
+   13,
+   15,
+   17,
+   20,
+   22,
+   24,
+   26,
+   28,
+   30
+  ],
+  "retime": {
+   "rule": "loop: N evenly spaced in [a,b)",
+   "interval_s": [
+    0.2917,
+    1.3333
+   ],
+   "speed": 1.042,
+   "candidate_s": [
+    0.4167,
+    1.4167
+   ],
+   "searched_cut_native": [
+    7,
+    32
+   ],
+   "cut_diff": 0.38
+  },
+  "frames": 12,
+  "ms": 1000,
+  "feet_row_range_target": {
+   "76": 1.69
+  },
+  "feet_x_range_target": {
+   "76": 3.91
+  },
+  "seam": {
+   "last_to_first": 3.94,
+   "median_step": 3.15,
+   "ratio": 1.25,
+   "max_step": 4.94
+  },
+  "sizes": {
+   "76": {
+    "bytes": 13931,
+    "colors": 63,
+    "roundtrip_ok": true,
+    "mean_color_err": 7.55,
+    "max_frame_err": 7.93,
+    "min_top_margin_px": 6,
+    "foot_anchor": [
+     38.0,
+     68.88
+    ]
+   }
+  }
+ },
+ "S-ROPE-WOBBLE": {
+  "id": "S-ROPE-WOBBLE",
+  "file": "grok-clips/S-ROPE-WOBBLE.mp4",
+  "sha256": "f9b7cb2d0d6b7543757fa751caa3bcc743985fc05873dda91e314fa7e1ed505e",
+  "source": [
+   720,
+   720,
+   24.0,
+   49
+  ],
+  "green": [
+   2.0,
+   253.0,
+   1.0
+  ],
+  "loop": true,
+  "src_frames": [
+   0,
+   2,
+   4,
+   6,
+   8,
+   10,
+   12,
+   15,
+   17,
+   19,
+   21,
+   23
+  ],
+  "retime": {
+   "rule": "loop: N evenly spaced in [a,b)",
+   "interval_s": [
+    0.0,
+    1.0417
+   ],
+   "speed": 1.042,
+   "candidate_s": [
+    0,
+    1
+   ],
+   "searched_cut_native": [
+    0,
+    25
+   ],
+   "cut_diff": 0.36
+  },
+  "frames": 12,
+  "ms": 1000,
+  "feet_row_range_target": {
+   "76": 0.0
+  },
+  "feet_x_range_target": {
+   "76": 0.0
+  },
+  "seam": {
+   "last_to_first": 0.46,
+   "median_step": 5.16,
+   "ratio": 0.09,
+   "max_step": 9.57
+  },
+  "sizes": {
+   "76": {
+    "bytes": 13751,
+    "colors": 63,
+    "roundtrip_ok": true,
+    "mean_color_err": 7.63,
+    "max_frame_err": 8.35,
+    "min_top_margin_px": 7,
+    "foot_anchor": [
+     38.0,
+     68.88
+    ]
+   }
+  }
+ },
+ "S-RUN-R": {
+  "id": "S-RUN-R",
+  "file": "grok-clips/S-RUN-R.mp4",
+  "sha256": "488c4f6f76a7ca3427206f68ebeedf43dd6bf11b3530ef72f00090c4b74bce6c",
+  "source": [
+   720,
+   720,
+   24.0,
+   49
+  ],
+  "green": [
+   1.0,
+   252.0,
+   1.0
+  ],
+  "loop": true,
+  "src_frames": [
+   0,
+   3,
+   6,
+   9,
+   12,
+   15,
+   18,
+   21
+  ],
+  "retime": {
+   "rule": "loop: N evenly spaced in [a,b)",
+   "interval_s": [
+    0.0,
+    1.0
+   ],
+   "speed": 1.429,
+   "candidate_s": [
+    0.0,
+    1.0
+   ],
+   "searched_cut_native": [
+    0,
+    24
+   ],
+   "cut_diff": 0.58
+  },
+  "frames": 8,
+  "ms": 667,
+  "feet_row_range_target": {
+   "56": 0.31
+  },
+  "feet_x_range_target": {
+   "56": 16.02
+  },
+  "seam": {
+   "last_to_first": 8.58,
+   "median_step": 8.23,
+   "ratio": 1.04,
+   "max_step": 9.17
+  },
+  "sizes": {
+   "56": {
+    "bytes": 7201,
+    "colors": 63,
+    "roundtrip_ok": true,
+    "mean_color_err": 5.96,
+    "max_frame_err": 6.41,
+    "min_top_margin_px": 9,
+    "foot_anchor": [
+     28.0,
+     50.75
+    ]
+   }
+  }
+ },
+ "S-SHOUT": {
+  "id": "S-SHOUT",
+  "file": "grok-clips/S-SHOUT.mp4",
+  "sha256": "bdb408d9d68b67a510c1f79670594324f2392adac5a164efb5b68eea6b023f55",
+  "source": [
+   720,
+   720,
+   24.0,
+   73
+  ],
+  "green": [
+   1.0,
+   253.0,
+   2.0
+  ],
+  "loop": true,
+  "src_frames": [
+   0,
+   4,
+   8,
+   12,
+   16,
+   20,
+   24,
+   28,
+   32,
+   36,
+   40,
+   44,
+   48,
+   52,
+   56,
+   60,
+   64,
+   68
+  ],
+  "retime": {
+   "rule": "loop: N evenly spaced in [a,b)",
+   "interval_s": [
+    0.0,
+    3.0
+   ],
+   "speed": 2.0,
+   "candidate_s": [
+    0,
+    3
+   ],
+   "searched_cut_native": [
+    0,
+    72
+   ],
+   "cut_diff": 0.4
+  },
+  "frames": 18,
+  "ms": 1500,
+  "seam": {
+   "last_to_first": 0.47,
+   "median_step": 1.87,
+   "ratio": 0.25,
+   "max_step": 6.92
+  },
+  "sizes": {
+   "76": {
+    "bytes": 20975,
+    "colors": 63,
+    "roundtrip_ok": true,
+    "mean_color_err": 6.18,
+    "max_frame_err": 6.44,
+    "min_top_margin_px": 8,
+    "foot_anchor": [
+     38.0,
+     68.88
+    ]
+   }
+  }
+ },
+ "S-SHUSH": {
+  "id": "S-SHUSH",
+  "file": "grok-clips/S-SHUSH.mp4",
+  "sha256": "4bb90e2a09bd51de1b374946968a7c7e160f372d9ef02535394bf91aed633a53",
+  "source": [
+   960,
+   960,
+   24.0,
+   97
+  ],
+  "green": [
+   0.0,
+   253.0,
+   1.0
+  ],
+  "loop": false,
+  "src_frames": [
+   18,
+   21,
+   24,
+   26,
+   29,
+   32,
+   35,
+   38,
+   41,
+   43,
+   46,
+   49,
+   52,
+   55,
+   58,
+   60,
+   63,
+   66
+  ],
+  "retime": {
+   "rule": "once: N evenly spaced in [a,b] inclusive",
+   "interval_s": [
+    0.75,
+    2.75
+   ],
+   "speed": 1.333
+  },
+  "frames": 18,
+  "ms": 1500,
+  "seam": {
+   "last_to_first": 6.9,
+   "median_step": 0.79,
+   "ratio": 8.71,
+   "max_step": 2.56
+  },
+  "sizes": {
+   "76": {
+    "bytes": 13063,
+    "colors": 63,
+    "roundtrip_ok": true,
+    "mean_color_err": 5.77,
+    "max_frame_err": 6.1,
+    "min_top_margin_px": 8,
+    "foot_anchor": [
+     38.0,
+     68.88
+    ]
+   }
+  }
+ },
+ "S-SING-BDAY": {
+  "id": "S-SING-BDAY",
+  "file": "grok-clips/S-SING-BDAY.mp4",
+  "sha256": "d126b6efa39cf79ffeca4d7598b6284e5afa80f282645d2119d1e95bdef87900",
+  "source": [
+   720,
+   720,
+   24.0,
+   73
+  ],
+  "green": [
+   2.0,
+   252.0,
+   1.0
+  ],
+  "loop": true,
+  "src_frames": [
+   0,
+   3,
+   6,
+   9,
+   12,
+   14,
+   17,
+   20,
+   23,
+   26,
+   29,
+   32,
+   34,
+   37,
+   40,
+   43,
+   46,
+   49,
+   52,
+   55,
+   58,
+   60,
+   63,
+   66
+  ],
+  "retime": {
+   "rule": "loop: N evenly spaced in [a,b)",
+   "interval_s": [
+    0.0,
+    2.875
+   ],
+   "speed": 1.438,
+   "candidate_s": [
+    0,
+    3
+   ],
+   "searched_cut_native": [
+    0,
+    69
+   ],
+   "cut_diff": 0.38
+  },
+  "frames": 24,
+  "ms": 2000,
+  "seam": {
+   "last_to_first": 0.99,
+   "median_step": 4.78,
+   "ratio": 0.21,
+   "max_step": 11.68
+  },
+  "sizes": {
+   "76": {
+    "bytes": 34331,
+    "colors": 63,
+    "roundtrip_ok": true,
+    "mean_color_err": 7.18,
+    "max_frame_err": 7.67,
+    "min_top_margin_px": 2,
+    "foot_anchor": [
+     38.0,
+     68.88
+    ]
+   }
+  }
+ },
+ "S-SING-HIGH": {
+  "id": "S-SING-HIGH",
+  "file": "grok-clips/revisions/S-SING-HIGH-v2.mp4",
+  "sha256": "688a372f388dcab3b2e6f82658f4ef16575199f6bdeb0cf6b1794bf358bfa5c0",
+  "source": [
+   720,
+   720,
+   24.0,
+   73
+  ],
+  "green": [
+   0.0,
+   253.0,
+   2.0
+  ],
+  "loop": true,
+  "src_frames": [
+   0,
+   3,
+   6,
+   9,
+   12,
+   15,
+   18,
+   20,
+   23,
+   26,
+   29,
+   32,
+   35,
+   38,
+   41,
+   44,
+   47,
+   50,
+   52,
+   55,
+   58,
+   61,
+   64,
+   67
+  ],
+  "retime": {
+   "rule": "loop: N evenly spaced in [a,b)",
+   "interval_s": [
+    0.0,
+    2.9167
+   ],
+   "speed": 1.458,
+   "candidate_s": [
+    0,
+    3
+   ],
+   "searched_cut_native": [
+    0,
+    70
+   ],
+   "cut_diff": 0.41
+  },
+  "frames": 24,
+  "ms": 2000,
+  "seam": {
+   "last_to_first": 0.9,
+   "median_step": 2.42,
+   "ratio": 0.37,
+   "max_step": 3.12
+  },
+  "sizes": {
+   "76": {
+    "bytes": 22946,
+    "colors": 63,
+    "roundtrip_ok": true,
+    "mean_color_err": 6.44,
+    "max_frame_err": 6.83,
+    "min_top_margin_px": 7,
+    "foot_anchor": [
+     38.0,
+     68.88
+    ]
+   }
+  }
+ },
+ "S-SING-LOW": {
+  "id": "S-SING-LOW",
+  "file": "grok-clips/S-SING-LOW.mp4",
+  "sha256": "4cdc194c1e7782c2475a10e2b39a64d1c7ee9b66eea0ca94d6e1f04ed75599a1",
+  "source": [
+   720,
+   720,
+   24.0,
+   73
+  ],
+  "green": [
+   2.0,
+   253.0,
+   1.0
+  ],
+  "loop": true,
+  "src_frames": [
+   6,
+   8,
+   11,
+   13,
+   15,
+   17,
+   20,
+   22,
+   24,
+   27,
+   29,
+   31,
+   34,
+   36,
+   38,
+   40,
+   43,
+   45,
+   47,
+   50,
+   52,
+   54,
+   56,
+   59
+  ],
+  "retime": {
+   "rule": "loop: N evenly spaced in [a,b)",
+   "interval_s": [
+    0.25,
+    2.5417
+   ],
+   "speed": 1.146,
+   "candidate_s": [
+    0,
+    2
+   ],
+   "searched_cut_native": [
+    6,
+    61
+   ],
+   "cut_diff": 0.3
+  },
+  "frames": 24,
+  "ms": 2000,
+  "seam": {
+   "last_to_first": 0.83,
+   "median_step": 0.19,
+   "ratio": 4.37,
+   "max_step": 0.9
+  },
+  "sizes": {
+   "76": {
+    "bytes": 11299,
+    "colors": 63,
+    "roundtrip_ok": true,
+    "mean_color_err": 5.82,
+    "max_frame_err": 5.99,
+    "min_top_margin_px": 9,
+    "foot_anchor": [
+     38.0,
+     68.88
+    ]
+   }
+  }
+ },
+ "S-SLEEP": {
+  "id": "S-SLEEP",
+  "file": "grok-clips/S-SLEEP.mp4",
+  "sha256": "f851b9e951ee8e3b90e4be36191c19c2baaea1234f86495230b29652be97792f",
+  "source": [
+   720,
+   720,
+   24.0,
+   97
+  ],
+  "green": [
+   2.0,
+   253.0,
+   2.0
+  ],
+  "loop": true,
+  "src_frames": [
+   1,
+   3,
+   6,
+   8,
+   11,
+   13,
+   15,
+   18,
+   20,
+   22,
+   25,
+   27,
+   30,
+   32,
+   34,
+   37,
+   39,
+   42,
+   44,
+   46,
+   49,
+   51,
+   54,
+   56,
+   58,
+   61,
+   63,
+   66,
+   68,
+   70,
+   73,
+   75,
+   77,
+   80,
+   82,
+   85
+  ],
+  "retime": {
+   "rule": "loop: N evenly spaced in [a,b)",
+   "interval_s": [
+    0.0417,
+    3.625
+   ],
+   "speed": 1.194,
+   "candidate_s": [
+    0,
+    3
+   ],
+   "searched_cut_native": [
+    1,
+    87
+   ],
+   "cut_diff": 0.31
+  },
+  "frames": 36,
+  "ms": 3000,
+  "seam": {
+   "last_to_first": 0.32,
+   "median_step": 3.41,
+   "ratio": 0.09,
+   "max_step": 14.06
+  },
+  "sizes": {
+   "76": {
+    "bytes": 33943,
+    "colors": 63,
+    "roundtrip_ok": true,
+    "mean_color_err": 6.4,
+    "max_frame_err": 6.97,
+    "min_top_margin_px": 9,
+    "foot_anchor": [
+     38.0,
+     68.88
+    ]
+   }
+  }
+ },
+ "S-TALK": {
+  "id": "S-TALK",
+  "file": "grok-clips/S-TALK.mp4",
+  "sha256": "293069c5ec0a8d5ef955767736037a222e3c359e865bf69a01b8a7ad1e12d4e3",
+  "source": [
+   720,
+   720,
+   24.0,
+   73
+  ],
+  "green": [
+   2.0,
+   253.0,
+   0.0
+  ],
+  "loop": true,
+  "src_frames": [
+   0,
+   2,
+   4,
+   6,
+   8,
+   10,
+   12,
+   14,
+   16,
+   18,
+   20,
+   22,
+   24,
+   26,
+   28,
+   30,
+   32,
+   34,
+   36,
+   38,
+   40,
+   42,
+   44,
+   46
+  ],
+  "retime": {
+   "rule": "loop: N evenly spaced in [a,b)",
+   "interval_s": [
+    0.0,
+    2.0
+   ],
+   "speed": 1.0,
+   "candidate_s": [
+    0.0833,
+    2.0833
+   ],
+   "searched_cut_native": [
+    0,
+    48
+   ],
+   "cut_diff": 0.65
+  },
+  "frames": 24,
+  "ms": 2000,
+  "seam": {
+   "last_to_first": 0.8,
+   "median_step": 0.92,
+   "ratio": 0.87,
+   "max_step": 3.02
+  },
+  "sizes": {
+   "76": {
+    "bytes": 20158,
+    "colors": 63,
+    "roundtrip_ok": true,
+    "mean_color_err": 6.64,
+    "max_frame_err": 6.93,
+    "min_top_margin_px": 9,
+    "foot_anchor": [
+     38.0,
+     68.88
+    ]
+   },
+   "120": {
+    "bytes": 45382,
+    "colors": 63,
+    "roundtrip_ok": true,
+    "mean_color_err": 6.67,
+    "max_frame_err": 6.95,
+    "min_top_margin_px": 15,
+    "foot_anchor": [
+     60.0,
+     108.75
+    ]
+   }
+  }
+ },
+ "S-THINK": {
+  "id": "S-THINK",
+  "file": "grok-clips/S-THINK.mp4",
+  "sha256": "6aba9d82f5116a2d2f84be0cb148b6e32e57ea15895d515ae24123957df62822",
+  "source": [
+   720,
+   720,
+   24.0,
+   73
+  ],
+  "green": [
+   2.0,
+   253.0,
+   2.0
+  ],
+  "loop": true,
+  "src_frames": [
+   2,
+   5,
+   8,
+   10,
+   13,
+   16,
+   19,
+   22,
+   24,
+   27,
+   30,
+   33,
+   36,
+   38,
+   41,
+   44,
+   47,
+   49,
+   52,
+   55,
+   58,
+   61,
+   63,
+   66
+  ],
+  "retime": {
+   "rule": "loop: N evenly spaced in [a,b)",
+   "interval_s": [
+    0.0833,
+    2.875
+   ],
+   "speed": 1.396,
+   "candidate_s": [
+    0.0833,
+    2.9167
+   ],
+   "searched_cut_native": [
+    2,
+    69
+   ],
+   "cut_diff": 0.32
+  },
+  "frames": 24,
+  "ms": 2000,
+  "seam": {
+   "last_to_first": 0.56,
+   "median_step": 1.47,
+   "ratio": 0.38,
+   "max_step": 4.65
+  },
+  "sizes": {
+   "76": {
+    "bytes": 23769,
+    "colors": 63,
+    "roundtrip_ok": true,
+    "mean_color_err": 6.45,
+    "max_frame_err": 6.7,
+    "min_top_margin_px": 9,
+    "foot_anchor": [
+     38.0,
+     68.88
+    ]
+   }
+  }
+ },
+ "S-THUMB": {
+  "id": "S-THUMB",
+  "file": "grok-clips/S-THUMB.mp4",
+  "sha256": "6aedd6faa49fe189e7301a1364461d42e32a88c8026e938ef259ac43547f28e3",
+  "source": [
+   720,
+   720,
+   24.0,
+   73
+  ],
+  "green": [
+   1.0,
+   252.0,
+   2.0
+  ],
+  "loop": false,
+  "src_frames": [
+   4,
+   8,
+   12,
+   16,
+   20,
+   23,
+   27,
+   31,
+   35,
+   39,
+   43,
+   47,
+   51,
+   54,
+   58,
+   62,
+   66,
+   70
+  ],
+  "retime": {
+   "rule": "once: N evenly spaced in [a,b] inclusive",
+   "interval_s": [
+    0.1667,
+    2.9167
+   ],
+   "speed": 1.833
+  },
+  "frames": 18,
+  "ms": 1500,
+  "seam": {
+   "last_to_first": 1.58,
+   "median_step": 1.76,
+   "ratio": 0.9,
+   "max_step": 8.92
+  },
+  "sizes": {
+   "76": {
+    "bytes": 18376,
+    "colors": 63,
+    "roundtrip_ok": true,
+    "mean_color_err": 7.07,
+    "max_frame_err": 7.23,
+    "min_top_margin_px": 3,
+    "foot_anchor": [
+     38.0,
+     68.88
+    ]
+   }
+  }
+ },
+ "S-UMBRELLA": {
+  "id": "S-UMBRELLA",
+  "file": "grok-clips/S-UMBRELLA.mp4",
+  "sha256": "526ffa6f152c9acf22ccb25cf92c0e3fb3bace03bfc3a45a1093304ebd2caf52",
+  "source": [
+   720,
+   720,
+   24.0,
+   73
+  ],
+  "green": [
+   1.0,
+   252.0,
+   2.0
+  ],
+  "loop": true,
+  "src_frames": [
+   6,
+   9,
+   11,
+   14,
+   16,
+   19,
+   22,
+   24,
+   27,
+   30,
+   32,
+   35,
+   38,
+   40,
+   43,
+   45,
+   48,
+   51,
+   53,
+   56,
+   58,
+   61,
+   64,
+   66
+  ],
+  "retime": {
+   "rule": "loop: N evenly spaced in [a,b)",
+   "interval_s": [
+    0.25,
+    2.875
+   ],
+   "speed": 1.312,
+   "candidate_s": [
+    0.25,
+    2.9167
+   ],
+   "searched_cut_native": [
+    6,
+    69
+   ],
+   "cut_diff": 0.25
+  },
+  "frames": 24,
+  "ms": 2000,
+  "feet_row_range_target": {
+   "56": 0.0
+  },
+  "feet_x_range_target": {
+   "56": 0.0
+  },
+  "seam": {
+   "last_to_first": 0.47,
+   "median_step": 0.29,
+   "ratio": 1.59,
+   "max_step": 2.92
+  },
+  "sizes": {
+   "56": {
+    "bytes": 8366,
+    "colors": 63,
+    "roundtrip_ok": true,
+    "mean_color_err": 6.99,
+    "max_frame_err": 7.16,
+    "min_top_margin_px": 4,
+    "foot_anchor": [
+     28.0,
+     50.75
+    ]
+   }
+  }
+ },
+ "S-WELCOME": {
+  "id": "S-WELCOME",
+  "file": "grok-clips/S-WELCOME.mp4",
+  "sha256": "d950a0a1799683741466cce73b3a8208dd207ffd665c257c31fecca58d144002",
+  "source": [
+   960,
+   960,
+   24.0,
+   121
+  ],
+  "green": [
+   0.0,
+   253.0,
+   1.0
+  ],
+  "loop": false,
+  "src_frames": [
+   6,
+   10,
+   14,
+   17,
+   21,
+   25,
+   29,
+   33,
+   36,
+   40,
+   44,
+   48,
+   51,
+   55,
+   59,
+   63,
+   67,
+   70,
+   74,
+   78,
+   82,
+   86,
+   89,
+   93,
+   97,
+   101,
+   105,
+   108,
+   112,
+   116
+  ],
+  "retime": {
+   "rule": "once: N evenly spaced in [a,b] inclusive",
+   "interval_s": [
+    0.25,
+    4.83
+   ],
+   "speed": 1.832
+  },
+  "frames": 30,
+  "ms": 2500,
+  "seam": {
+   "last_to_first": 8.86,
+   "median_step": 5.95,
+   "ratio": 1.49,
+   "max_step": 13.72
+  },
+  "sizes": {
+   "120": {
+    "bytes": 97167,
+    "colors": 63,
+    "roundtrip_ok": true,
+    "mean_color_err": 6.28,
+    "max_frame_err": 6.71,
+    "min_top_margin_px": 10,
+    "foot_anchor": [
+     60.0,
+     108.75
+    ]
+   }
+  }
+ },
+ "S-WOW": {
+  "id": "S-WOW",
+  "file": "grok-clips/S-WOW.mp4",
+  "sha256": "b76fc188750bdcf15aaf45d83de93fb996a004fae72eb0d4ff13998fe7782d7f",
+  "source": [
+   720,
+   720,
+   24.0,
+   49
+  ],
+  "green": [
+   2.0,
+   253.0,
+   1.0
+  ],
+  "loop": false,
+  "src_frames": [
+   10,
+   13,
+   15,
+   18,
+   20,
+   23,
+   26,
+   28,
+   31,
+   34,
+   36,
+   39,
+   41,
+   44
+  ],
+  "retime": {
+   "rule": "once: N evenly spaced in [a,b] inclusive",
+   "interval_s": [
+    0.4167,
+    1.8333
+   ],
+   "speed": 1.18
+  },
+  "frames": 14,
+  "ms": 1167,
+  "seam": {
+   "last_to_first": 11.99,
+   "median_step": 6.21,
+   "ratio": 1.93,
+   "max_step": 17.65
+  },
+  "sizes": {
+   "76": {
+    "bytes": 21838,
+    "colors": 63,
+    "roundtrip_ok": true,
+    "mean_color_err": 6.18,
+    "max_frame_err": 6.58,
+    "min_top_margin_px": 8,
+    "foot_anchor": [
+     38.0,
+     68.88
+    ]
+   }
+  }
+ }
+}

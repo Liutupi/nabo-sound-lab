@@ -1,0 +1,39 @@
+{
+  "date": "2026-10-23",
+  "scope": "prototype menu routing and design descriptions only",
+  "browser": "Edge through CUA",
+  "menu": {
+    "visible_rows": 6,
+    "row_height_px": 24,
+    "main_chinese_px": 16,
+    "soon_placeholders": 0
+  },
+  "actual_menu_activation": [
+    {
+      "input": "five Down then Enter from menu",
+      "url": "new-games.html?game=flight",
+      "verified": true
+    },
+    {
+      "input": "six Down then Enter after return link",
+      "url": "new-games.html?game=clap",
+      "verified": true
+    },
+    {
+      "input": "seven Down then Enter after return link",
+      "url": "new-games.html?game=sampler",
+      "verified": true
+    }
+  ],
+  "return_link": "index.html?screen=menu",
+  "return_link_activated": true,
+  "prototype_scripts_syntax": "passed",
+  "boot_voice_spec": "NABO，陪你玩音乐; fortune阳光小男孩",
+  "browser_final_voice_playback_verified": false,
+  "c_or_frozen_inputs_modified": false,
+  "sha256": {
+    "prototype/index.html": "35d6ba745b4eba7d33c3acf1e5d8eaa57e21e542f991617040172eaf0e2157b9",
+    "prototype/new-games.html": "164a485e29db493f29bf2b5c0eaefc6fadd7a859514c2e446e5231f0ae375e59",
+    "DESIGN.md": "ef901b604fa4e17e682ae989aceb71c2d0050c0a8b2182a15d3c0f62187765a3"
+  }
+}

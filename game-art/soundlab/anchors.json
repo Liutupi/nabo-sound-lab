@@ -1,0 +1,154 @@
+{
+  "scope": "P0 starting images only; video frame anchors must be checked after extraction",
+  "canvas_1024": [
+    1024,
+    1024
+  ],
+  "foot_anchor_1024": [
+    512,
+    928
+  ],
+  "clips": {
+    "S-RUN-R": {
+      "source_1024": [
+        512,
+        928
+      ],
+      "target_size": 56,
+      "target_foot_center": [
+        28.0,
+        50.75
+      ],
+      "normalized": [
+        0.5,
+        0.90625
+      ]
+    },
+    "S-JUMP-R": {
+      "source_1024": [
+        512,
+        928
+      ],
+      "target_size": 56,
+      "target_foot_center": [
+        28.0,
+        50.75
+      ],
+      "normalized": [
+        0.5,
+        0.90625
+      ]
+    },
+    "S-FALL-R": {
+      "source_1024": [
+        512,
+        928
+      ],
+      "target_size": 56,
+      "target_foot_center": [
+        28.0,
+        50.75
+      ],
+      "normalized": [
+        0.5,
+        0.90625
+      ]
+    },
+    "S-ROPE-READY": {
+      "source_1024": [
+        512,
+        928
+      ],
+      "target_size": 76,
+      "target_foot_center": [
+        38.0,
+        68.875
+      ],
+      "normalized": [
+        0.5,
+        0.90625
+      ]
+    },
+    "S-ROPE-WALK": {
+      "source_1024": [
+        512,
+        928
+      ],
+      "target_size": 76,
+      "target_foot_center": [
+        38.0,
+        68.875
+      ],
+      "normalized": [
+        0.5,
+        0.90625
+      ]
+    },
+    "S-ROPE-FALL": {
+      "source_1024": [
+        512,
+        928
+      ],
+      "target_size": 76,
+      "target_foot_center": [
+        38.0,
+        68.875
+      ],
+      "normalized": [
+        0.5,
+        0.90625
+      ]
+    },
+    "S-ROPE-WOBBLE": {
+      "source_1024": [
+        512,
+        928
+      ],
+      "target_size": 76,
+      "target_foot_center": [
+        38.0,
+        68.875
+      ],
+      "normalized": [
+        0.5,
+        0.90625
+      ],
+      "priority": "P1"
+    },
+    "S-ROPE-BOW": {
+      "source_1024": [
+        512,
+        928
+      ],
+      "target_size": 76,
+      "target_foot_center": [
+        38.0,
+        68.875
+      ],
+      "normalized": [
+        0.5,
+        0.90625
+      ],
+      "priority": "P1"
+    },
+    "S-UMBRELLA": {
+      "source_1024": [
+        512,
+        928
+      ],
+      "target_size": 56,
+      "target_foot_center": [
+        28.0,
+        50.75
+      ],
+      "normalized": [
+        0.5,
+        0.90625
+      ],
+      "priority": "P1"
+    }
+  },
+  "additional_scopes": {
+    "P1": "P1 full-body starting-image foot anchors; S-FLOAT has independent lateral framing and no foot anchor. Video anchors remain unverified until extraction."
+  }
+}

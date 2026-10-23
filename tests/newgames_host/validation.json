@@ -1,0 +1,10 @@
+{
+  "scope": "new games host rules and sampler audio only",
+  "unit_result": "PASS flight,clap,sampler; flight_state=60 bytes clap_state=28 bytes sample=8000 bytes",
+  "c_js_snapshots": 46,
+  "exact_parity": true,
+  "mutation_rejected": true,
+  "sample_bytes": 8000,
+  "device_tested": false,
+  "esp32_built": false
+}

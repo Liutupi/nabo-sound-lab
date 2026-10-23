@@ -1,0 +1,6 @@
+# Name,   Type, SubType, Offset,   Size,     Flags
+# 整片 8 MB 只给声音实验室：程序 1.94 MB，素材 6 MB（与赛博算命机同一布局）
+nvs,      data, nvs,     0x9000,   0x6000,
+phy_init, data, phy,     0xf000,   0x1000,
+factory,  app,  factory, 0x10000,  0x1F0000,
+assets,   data, 0x41,    0x200000, 0x600000,

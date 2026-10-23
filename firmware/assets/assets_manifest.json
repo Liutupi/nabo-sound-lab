@@ -1,0 +1,480 @@
+{
+ "total": 1882628,
+ "entries": {
+  "spr/S-BLOW/76": {
+   "bytes": 15942,
+   "sha256": "7a0748529371c86a",
+   "placeholder": false
+  },
+  "spr/S-CAKE-WAIT/76": {
+   "bytes": 21385,
+   "sha256": "857adc1d6b19c93b",
+   "placeholder": false
+  },
+  "spr/S-CHEER/76": {
+   "bytes": 27520,
+   "sha256": "698cb4b54946b766",
+   "placeholder": false
+  },
+  "spr/S-DJ/76": {
+   "bytes": 26142,
+   "sha256": "3a18136ed236a3bd",
+   "placeholder": false
+  },
+  "spr/S-DRUM/76": {
+   "bytes": 6391,
+   "sha256": "2600472e945bfa8d",
+   "placeholder": false
+  },
+  "spr/S-EARS/76": {
+   "bytes": 18116,
+   "sha256": "773705b5573585fb",
+   "placeholder": false
+  },
+  "spr/S-FALL-R/56": {
+   "bytes": 11160,
+   "sha256": "70579ced4457197b",
+   "placeholder": false
+  },
+  "spr/S-FLOAT/76": {
+   "bytes": 16856,
+   "sha256": "fb624733a10f0c92",
+   "placeholder": false
+  },
+  "spr/S-GUITAR-IDLE/56": {
+   "bytes": 13471,
+   "sha256": "cf081155370c4509",
+   "placeholder": false
+  },
+  "spr/S-GUITAR-IDLE/76": {
+   "bytes": 23240,
+   "sha256": "9d25b3dfea4860c4",
+   "placeholder": false
+  },
+  "spr/S-GUITAR-STRUM/56": {
+   "bytes": 3172,
+   "sha256": "03ad460ae36fc2fb",
+   "placeholder": false
+  },
+  "spr/S-GUITAR-STRUM/76": {
+   "bytes": 4948,
+   "sha256": "35741dc992b73b41",
+   "placeholder": false
+  },
+  "spr/S-GUITAR-TUNE/76": {
+   "bytes": 23014,
+   "sha256": "9a20b8392caddb1e",
+   "placeholder": false
+  },
+  "spr/S-HEADPHONE/76": {
+   "bytes": 21569,
+   "sha256": "15a9c6c63eee464e",
+   "placeholder": false
+  },
+  "spr/S-IDLE/120": {
+   "bytes": 66018,
+   "sha256": "47353db4ef5d6ccc",
+   "placeholder": false
+  },
+  "spr/S-IDLE/56": {
+   "bytes": 17020,
+   "sha256": "9302010efb6f5723",
+   "placeholder": false
+  },
+  "spr/S-IDLE/76": {
+   "bytes": 29322,
+   "sha256": "03689f44438ff664",
+   "placeholder": false
+  },
+  "spr/S-JUMP-R/56": {
+   "bytes": 9285,
+   "sha256": "f8f0ecf2fd2ffe30",
+   "placeholder": false
+  },
+  "spr/S-LISTEN/120": {
+   "bytes": 38898,
+   "sha256": "cd20a1292b292ab4",
+   "placeholder": false
+  },
+  "spr/S-LISTEN/76": {
+   "bytes": 17402,
+   "sha256": "5478e98ce217c257",
+   "placeholder": false
+  },
+  "spr/S-LOWBAT/120": {
+   "bytes": 88953,
+   "sha256": "b3151fb912d98957",
+   "placeholder": false
+  },
+  "spr/S-LOWBAT/76": {
+   "bytes": 39509,
+   "sha256": "a5fab318fd20572f",
+   "placeholder": false
+  },
+  "spr/S-MIC-IDLE/120": {
+   "bytes": 64390,
+   "sha256": "7f4e4abce30613cf",
+   "placeholder": false
+  },
+  "spr/S-MIC-IDLE/76": {
+   "bytes": 28379,
+   "sha256": "5ccdeda42fd5742c",
+   "placeholder": false
+  },
+  "spr/S-NOD/56": {
+   "bytes": 10551,
+   "sha256": "41004fa4ee91ebd1",
+   "placeholder": false
+  },
+  "spr/S-NOD/76": {
+   "bytes": 17636,
+   "sha256": "c1c4614ea1547745",
+   "placeholder": false
+  },
+  "spr/S-OK-SIGN/76": {
+   "bytes": 10324,
+   "sha256": "5ffbe51558865bd4",
+   "placeholder": false
+  },
+  "spr/S-OOPS/56": {
+   "bytes": 12211,
+   "sha256": "5d99d0b0a18af59b",
+   "placeholder": false
+  },
+  "spr/S-OOPS/76": {
+   "bytes": 20877,
+   "sha256": "8a7478cc5d31797d",
+   "placeholder": false
+  },
+  "spr/S-ROPE-BOW/76": {
+   "bytes": 23137,
+   "sha256": "0c57f845dcfb217f",
+   "placeholder": false
+  },
+  "spr/S-ROPE-FALL/76": {
+   "bytes": 12291,
+   "sha256": "45dfd78a7d9f3fcd",
+   "placeholder": false
+  },
+  "spr/S-ROPE-READY/76": {
+   "bytes": 11151,
+   "sha256": "37b5234c2622316a",
+   "placeholder": false
+  },
+  "spr/S-ROPE-WALK/76": {
+   "bytes": 13931,
+   "sha256": "bc155813b72c7694",
+   "placeholder": false
+  },
+  "spr/S-ROPE-WOBBLE/76": {
+   "bytes": 13751,
+   "sha256": "ff29b1b1e803046e",
+   "placeholder": false
+  },
+  "spr/S-RUN-R/56": {
+   "bytes": 7201,
+   "sha256": "c015b5abba9300c8",
+   "placeholder": false
+  },
+  "spr/S-SHOUT/76": {
+   "bytes": 20975,
+   "sha256": "fd47a64babe738ec",
+   "placeholder": false
+  },
+  "spr/S-SHUSH/76": {
+   "bytes": 13063,
+   "sha256": "ade304055231aec7",
+   "placeholder": false
+  },
+  "spr/S-SING-BDAY/76": {
+   "bytes": 34331,
+   "sha256": "4b673d382e6b87a8",
+   "placeholder": false
+  },
+  "spr/S-SING-HIGH/76": {
+   "bytes": 22946,
+   "sha256": "5c912a0a9785c944",
+   "placeholder": false
+  },
+  "spr/S-SING-LOW/76": {
+   "bytes": 11299,
+   "sha256": "9a89d7952e52b4ee",
+   "placeholder": false
+  },
+  "spr/S-SLEEP/76": {
+   "bytes": 33943,
+   "sha256": "91a0056a6b063705",
+   "placeholder": false
+  },
+  "spr/S-TALK/120": {
+   "bytes": 45382,
+   "sha256": "e89c6807a1562d14",
+   "placeholder": false
+  },
+  "spr/S-TALK/76": {
+   "bytes": 20158,
+   "sha256": "57597c9245c16947",
+   "placeholder": false
+  },
+  "spr/S-THINK/76": {
+   "bytes": 23769,
+   "sha256": "618a4b9992dd4196",
+   "placeholder": false
+  },
+  "spr/S-THUMB/76": {
+   "bytes": 18376,
+   "sha256": "4e1b569c304f72ab",
+   "placeholder": false
+  },
+  "spr/S-UMBRELLA/56": {
+   "bytes": 8366,
+   "sha256": "74fb77ac2857fccc",
+   "placeholder": false
+  },
+  "spr/S-WELCOME/120": {
+   "bytes": 97167,
+   "sha256": "20a747c4b18d30df",
+   "placeholder": false
+  },
+  "spr/S-WOW/76": {
+   "bytes": 21838,
+   "sha256": "9e81081f4475de91",
+   "placeholder": false
+  },
+  "prop/cake": {
+   "bytes": 13477,
+   "sha256": "d514078658319a2f",
+   "placeholder": false
+  },
+  "prop/candle-a": {
+   "bytes": 329,
+   "sha256": "b5b21dae68a5345f",
+   "placeholder": false
+  },
+  "prop/candle-b": {
+   "bytes": 329,
+   "sha256": "fdba49fe6b53757f",
+   "placeholder": false
+  },
+  "prop/card-alto": {
+   "bytes": 5156,
+   "sha256": "e8bb263ff21ea39a",
+   "placeholder": false
+  },
+  "prop/card-baritone": {
+   "bytes": 4647,
+   "sha256": "bda238f63cc8b10d",
+   "placeholder": false
+  },
+  "prop/card-bass": {
+   "bytes": 4846,
+   "sha256": "1c8d481313ba7fee",
+   "placeholder": false
+  },
+  "prop/card-frame": {
+   "bytes": 8835,
+   "sha256": "d0e952b2c16ef490",
+   "placeholder": false
+  },
+  "prop/card-mezzo": {
+   "bytes": 4864,
+   "sha256": "5cbce5365a199018",
+   "placeholder": false
+  },
+  "prop/card-soprano": {
+   "bytes": 5410,
+   "sha256": "a5f0aab1745cfb7f",
+   "placeholder": false
+  },
+  "prop/card-tenor": {
+   "bytes": 5558,
+   "sha256": "4ede82f2aa5c58d5",
+   "placeholder": false
+  },
+  "prop/ground-fill": {
+   "bytes": 447,
+   "sha256": "15b8f472b4f92315",
+   "placeholder": false
+  },
+  "prop/ground-top": {
+   "bytes": 279,
+   "sha256": "6b6a271877958065",
+   "placeholder": false
+  },
+  "prop/group-play": {
+   "bytes": 326,
+   "sha256": "fa625ba5c9808752",
+   "placeholder": false
+  },
+  "prop/group-practice": {
+   "bytes": 354,
+   "sha256": "3a4d9aa90e09540e",
+   "placeholder": false
+  },
+  "prop/group-see": {
+   "bytes": 335,
+   "sha256": "025f5c30f8d89298",
+   "placeholder": false
+  },
+  "prop/head-24": {
+   "bytes": 622,
+   "sha256": "8e735271de06b160",
+   "placeholder": false
+  },
+  "prop/icon-beat": {
+   "bytes": 331,
+   "sha256": "ce9b46702f2adc8e",
+   "placeholder": false
+  },
+  "prop/icon-candle": {
+   "bytes": 282,
+   "sha256": "82bd96da38d2d91e",
+   "placeholder": false
+  },
+  "prop/icon-chroma": {
+   "bytes": 344,
+   "sha256": "649dfe8c8aa667a4",
+   "placeholder": false
+  },
+  "prop/icon-db": {
+   "bytes": 354,
+   "sha256": "011baea9e5e4d03d",
+   "placeholder": false
+  },
+  "prop/icon-echo": {
+   "bytes": 326,
+   "sha256": "46fe52dee16ef1a6",
+   "placeholder": false
+  },
+  "prop/icon-guitar": {
+   "bytes": 289,
+   "sha256": "c7562af79611e6f8",
+   "placeholder": false
+  },
+  "prop/icon-pitch": {
+   "bytes": 302,
+   "sha256": "5dd0d0b95c216732",
+   "placeholder": false
+  },
+  "prop/icon-range": {
+   "bytes": 325,
+   "sha256": "7a836f3f98ac93e1",
+   "placeholder": false
+  },
+  "prop/icon-rope": {
+   "bytes": 330,
+   "sha256": "4df4e18d255b6c99",
+   "placeholder": false
+  },
+  "prop/icon-scope": {
+   "bytes": 372,
+   "sha256": "ab88df94711caa70",
+   "placeholder": false
+  },
+  "prop/icon-settings": {
+   "bytes": 365,
+   "sha256": "9a3235f5a0ee054c",
+   "placeholder": false
+  },
+  "prop/icon-shout": {
+   "bytes": 331,
+   "sha256": "18650d109dc051b9",
+   "placeholder": false
+  },
+  "prop/icon-spec": {
+   "bytes": 343,
+   "sha256": "4f06f52a8278b836",
+   "placeholder": false
+  },
+  "prop/icon-tuner": {
+   "bytes": 305,
+   "sha256": "66310c2d18470289",
+   "placeholder": false
+  },
+  "prop/icon-water": {
+   "bytes": 404,
+   "sha256": "33ebddc3034b3327",
+   "placeholder": false
+  },
+  "prop/rope-post": {
+   "bytes": 1122,
+   "sha256": "80472900028f631b",
+   "placeholder": false
+  },
+  "prop/stamp-1": {
+   "bytes": 1795,
+   "sha256": "f480f539ca9ba6b5",
+   "placeholder": false
+  },
+  "prop/stamp-2": {
+   "bytes": 1833,
+   "sha256": "9175619837736310",
+   "placeholder": false
+  },
+  "prop/stamp-3": {
+   "bytes": 1754,
+   "sha256": "658031061b3e4a4f",
+   "placeholder": false
+  },
+  "prop/stamp-4": {
+   "bytes": 1742,
+   "sha256": "704a245916a50940",
+   "placeholder": false
+  },
+  "prop/stamp-5": {
+   "bytes": 1727,
+   "sha256": "5386d01d9b30e4b7",
+   "placeholder": false
+  },
+  "prop/title": {
+   "bytes": 4290,
+   "sha256": "f4d5a6734d0226f3",
+   "placeholder": false
+  },
+  "font/disp18": {
+   "bytes": 122212,
+   "sha256": "65112e6a3b60d84f",
+   "placeholder": false
+  },
+  "font/disp24": {
+   "bytes": 198380,
+   "sha256": "418792e1d68a439c",
+   "placeholder": false
+  },
+  "font/disp56": {
+   "bytes": 7173,
+   "sha256": "7bb52e366e03f1bd",
+   "placeholder": false
+  },
+  "font/mono14": {
+   "bytes": 5762,
+   "sha256": "6e953339eba99718",
+   "placeholder": false
+  },
+  "font/mono22": {
+   "bytes": 11284,
+   "sha256": "8f7df8786ba8e286",
+   "placeholder": false
+  },
+  "font/mono48": {
+   "bytes": 11693,
+   "sha256": "194cded5de196c27",
+   "placeholder": false
+  },
+  "font/sans14": {
+   "bytes": 88573,
+   "sha256": "137d1316d0912ca8",
+   "placeholder": false
+  },
+  "font/sans16": {
+   "bytes": 109791,
+   "sha256": "064b21ce56141f01",
+   "placeholder": false
+  },
+  "snd/boot-welcome": {
+   "bytes": 91952,
+   "sha256": "4820f5aa3a90fbac",
+   "placeholder": false
+  }
+ }
+}

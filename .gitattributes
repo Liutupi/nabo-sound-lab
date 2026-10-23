@@ -1,0 +1,2 @@
+# Preserve exact source and binary bytes from the verified snapshot.
+* -text

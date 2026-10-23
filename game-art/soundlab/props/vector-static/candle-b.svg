@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="6" height="22" viewBox="0 0 6 22">
+<polyline points="2.5,0 2.5,2.5" fill="none" stroke="#171027" stroke-width="1" stroke-linejoin="round" stroke-linecap="round"/>
+<rect x="0" y="3" width="5" height="18" rx="0" fill="#35F0DC" stroke="#171027" stroke-width="1" stroke-linejoin="round" stroke-linecap="round"/>
+<polygon points="1,5 4,7 4,9 1,7" fill="#8A5CFF" stroke="none" stroke-width="1" stroke-linejoin="round" stroke-linecap="round"/>
+<polygon points="1,10 4,12 4,14 1,12" fill="#8A5CFF" stroke="none" stroke-width="1" stroke-linejoin="round" stroke-linecap="round"/>
+<polygon points="1,15 4,17 4,19 1,17" fill="#8A5CFF" stroke="none" stroke-width="1" stroke-linejoin="round" stroke-linecap="round"/>
+<ellipse cx="2.5" cy="3.5" rx="2.5" ry="1.5" fill="#35F0DC" stroke="#171027" stroke-width="0.7" stroke-linejoin="round" stroke-linecap="round"/>
+<polyline points="2.5,1 2.5,3" fill="none" stroke="#171027" stroke-width="0.7" stroke-linejoin="round" stroke-linecap="round"/>
+</svg>

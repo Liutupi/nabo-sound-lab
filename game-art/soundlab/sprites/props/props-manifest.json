@@ -1,0 +1,344 @@
+{
+ "cake": {
+  "w": 200,
+  "h": 100,
+  "bytes": 13477,
+  "roundtrip_ok": true,
+  "mean_color_err": 4.58,
+  "src_colors": 5990,
+  "source": "props/cake.png"
+ },
+ "candle-a": {
+  "w": 6,
+  "h": 22,
+  "bytes": 329,
+  "roundtrip_ok": true,
+  "mean_color_err": 0.0,
+  "src_colors": 3,
+  "source": "props/candle-a.png"
+ },
+ "candle-b": {
+  "w": 6,
+  "h": 22,
+  "bytes": 329,
+  "roundtrip_ok": true,
+  "mean_color_err": 0.0,
+  "src_colors": 3,
+  "source": "props/candle-b.png"
+ },
+ "card-alto": {
+  "w": 96,
+  "h": 96,
+  "bytes": 5156,
+  "roundtrip_ok": true,
+  "mean_color_err": 5.85,
+  "src_colors": 3118,
+  "source": "props/card-alto.png"
+ },
+ "card-baritone": {
+  "w": 96,
+  "h": 96,
+  "bytes": 4647,
+  "roundtrip_ok": true,
+  "mean_color_err": 5.86,
+  "src_colors": 3064,
+  "source": "props/card-baritone.png"
+ },
+ "card-bass": {
+  "w": 96,
+  "h": 96,
+  "bytes": 4846,
+  "roundtrip_ok": true,
+  "mean_color_err": 5.48,
+  "src_colors": 3121,
+  "source": "props/card-bass.png"
+ },
+ "card-frame": {
+  "w": 220,
+  "h": 292,
+  "bytes": 8835,
+  "roundtrip_ok": true,
+  "mean_color_err": 0.0,
+  "src_colors": 7,
+  "source": "props/card-frame.png"
+ },
+ "card-mezzo": {
+  "w": 96,
+  "h": 96,
+  "bytes": 4864,
+  "roundtrip_ok": true,
+  "mean_color_err": 5.71,
+  "src_colors": 3326,
+  "source": "props/card-mezzo.png"
+ },
+ "card-soprano": {
+  "w": 96,
+  "h": 96,
+  "bytes": 5410,
+  "roundtrip_ok": true,
+  "mean_color_err": 6.13,
+  "src_colors": 3480,
+  "source": "props/card-soprano.png"
+ },
+ "card-tenor": {
+  "w": 96,
+  "h": 96,
+  "bytes": 5558,
+  "roundtrip_ok": true,
+  "mean_color_err": 5.69,
+  "src_colors": 3476,
+  "source": "props/card-tenor.png"
+ },
+ "ground-fill": {
+  "w": 16,
+  "h": 16,
+  "bytes": 447,
+  "roundtrip_ok": true,
+  "mean_color_err": 0.0,
+  "src_colors": 3,
+  "source": "props/ground-fill.png"
+ },
+ "ground-top": {
+  "w": 16,
+  "h": 8,
+  "bytes": 279,
+  "roundtrip_ok": true,
+  "mean_color_err": 0.0,
+  "src_colors": 4,
+  "source": "props/ground-top.png"
+ },
+ "group-play": {
+  "w": 16,
+  "h": 16,
+  "bytes": 326,
+  "roundtrip_ok": true,
+  "mean_color_err": 0.0,
+  "src_colors": 5,
+  "source": "props/group-play.png"
+ },
+ "group-practice": {
+  "w": 16,
+  "h": 16,
+  "bytes": 354,
+  "roundtrip_ok": true,
+  "mean_color_err": 0.0,
+  "src_colors": 5,
+  "source": "props/group-practice.png"
+ },
+ "group-see": {
+  "w": 16,
+  "h": 16,
+  "bytes": 335,
+  "roundtrip_ok": true,
+  "mean_color_err": 0.0,
+  "src_colors": 4,
+  "source": "props/group-see.png"
+ },
+ "head-24": {
+  "w": 24,
+  "h": 24,
+  "bytes": 622,
+  "roundtrip_ok": true,
+  "mean_color_err": 5.25,
+  "src_colors": 351,
+  "source": "props/head-24.png"
+ },
+ "icon-beat": {
+  "w": 16,
+  "h": 16,
+  "bytes": 331,
+  "roundtrip_ok": true,
+  "mean_color_err": 0.0,
+  "src_colors": 5,
+  "source": "props/icon-beat.png"
+ },
+ "icon-candle": {
+  "w": 16,
+  "h": 16,
+  "bytes": 282,
+  "roundtrip_ok": true,
+  "mean_color_err": 0.0,
+  "src_colors": 4,
+  "source": "props/icon-candle.png"
+ },
+ "icon-chroma": {
+  "w": 16,
+  "h": 16,
+  "bytes": 344,
+  "roundtrip_ok": true,
+  "mean_color_err": 0.0,
+  "src_colors": 5,
+  "source": "props/icon-chord.png"
+ },
+ "icon-db": {
+  "w": 16,
+  "h": 16,
+  "bytes": 354,
+  "roundtrip_ok": true,
+  "mean_color_err": 0.0,
+  "src_colors": 6,
+  "source": "props/icon-db.png"
+ },
+ "icon-echo": {
+  "w": 16,
+  "h": 16,
+  "bytes": 326,
+  "roundtrip_ok": true,
+  "mean_color_err": 0.0,
+  "src_colors": 5,
+  "source": "props/icon-echo.png"
+ },
+ "icon-guitar": {
+  "w": 16,
+  "h": 16,
+  "bytes": 289,
+  "roundtrip_ok": true,
+  "mean_color_err": 0.0,
+  "src_colors": 5,
+  "source": "props/icon-guitar.png"
+ },
+ "icon-pitch": {
+  "w": 16,
+  "h": 16,
+  "bytes": 302,
+  "roundtrip_ok": true,
+  "mean_color_err": 0.0,
+  "src_colors": 4,
+  "source": "props/icon-pitch.png"
+ },
+ "icon-range": {
+  "w": 16,
+  "h": 16,
+  "bytes": 325,
+  "roundtrip_ok": true,
+  "mean_color_err": 0.0,
+  "src_colors": 4,
+  "source": "props/icon-range.png"
+ },
+ "icon-rope": {
+  "w": 16,
+  "h": 16,
+  "bytes": 330,
+  "roundtrip_ok": true,
+  "mean_color_err": 0.0,
+  "src_colors": 5,
+  "source": "props/icon-rope.png"
+ },
+ "icon-scope": {
+  "w": 16,
+  "h": 16,
+  "bytes": 372,
+  "roundtrip_ok": true,
+  "mean_color_err": 0.0,
+  "src_colors": 4,
+  "source": "props/icon-scope.png"
+ },
+ "icon-settings": {
+  "w": 16,
+  "h": 16,
+  "bytes": 365,
+  "roundtrip_ok": true,
+  "mean_color_err": 0.0,
+  "src_colors": 3,
+  "source": "props/icon-settings.png"
+ },
+ "icon-shout": {
+  "w": 16,
+  "h": 16,
+  "bytes": 331,
+  "roundtrip_ok": true,
+  "mean_color_err": 0.0,
+  "src_colors": 5,
+  "source": "props/icon-shout.png"
+ },
+ "icon-spec": {
+  "w": 16,
+  "h": 16,
+  "bytes": 343,
+  "roundtrip_ok": true,
+  "mean_color_err": 0.0,
+  "src_colors": 4,
+  "source": "props/icon-spectrum.png"
+ },
+ "icon-tuner": {
+  "w": 16,
+  "h": 16,
+  "bytes": 305,
+  "roundtrip_ok": true,
+  "mean_color_err": 0.0,
+  "src_colors": 5,
+  "source": "props/icon-tuner.png"
+ },
+ "icon-water": {
+  "w": 16,
+  "h": 16,
+  "bytes": 404,
+  "roundtrip_ok": true,
+  "mean_color_err": 0.0,
+  "src_colors": 6,
+  "source": "props/icon-waterfall.png"
+ },
+ "rope-post": {
+  "w": 12,
+  "h": 80,
+  "bytes": 1122,
+  "roundtrip_ok": true,
+  "mean_color_err": 0.0,
+  "src_colors": 6,
+  "source": "props/rope-post.png"
+ },
+ "stamp-1": {
+  "w": 64,
+  "h": 28,
+  "bytes": 1795,
+  "roundtrip_ok": true,
+  "mean_color_err": 0.0,
+  "src_colors": 3,
+  "source": "props/stamp-1.png"
+ },
+ "stamp-2": {
+  "w": 64,
+  "h": 28,
+  "bytes": 1833,
+  "roundtrip_ok": true,
+  "mean_color_err": 0.0,
+  "src_colors": 5,
+  "source": "props/stamp-2.png"
+ },
+ "stamp-3": {
+  "w": 64,
+  "h": 28,
+  "bytes": 1754,
+  "roundtrip_ok": true,
+  "mean_color_err": 0.0,
+  "src_colors": 5,
+  "source": "props/stamp-3.png"
+ },
+ "stamp-4": {
+  "w": 64,
+  "h": 28,
+  "bytes": 1742,
+  "roundtrip_ok": true,
+  "mean_color_err": 0.0,
+  "src_colors": 5,
+  "source": "props/stamp-4.png"
+ },
+ "stamp-5": {
+  "w": 64,
+  "h": 28,
+  "bytes": 1727,
+  "roundtrip_ok": true,
+  "mean_color_err": 0.0,
+  "src_colors": 6,
+  "source": "props/stamp-5.png"
+ },
+ "title": {
+  "w": 200,
+  "h": 56,
+  "bytes": 4290,
+  "roundtrip_ok": true,
+  "mean_color_err": 2.64,
+  "src_colors": 1808,
+  "source": "props/title.png"
+ }
+}

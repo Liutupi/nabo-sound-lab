@@ -1,0 +1,184 @@
+#include "fc_res.h"
+#include "fc_fx.h"
+#include <stdlib.h>
+#include <string.h>
+
+static const uint8_t *g_blob;
+static uint32_t g_size;
+
+static uint16_t rd16(const uint8_t *p) { return (uint16_t)(p[0] | (p[1] << 8)); }
+static uint32_t rd32(const uint8_t *p) { return (uint32_t)p[0] | ((uint32_t)p[1] << 8) | ((uint32_t)p[2] << 16) | ((uint32_t)p[3] << 24); }
+
+void fc_res_init(const uint8_t *blob, uint32_t size) { g_blob = blob; g_size = size; fc_img_cache_clear(); }
+
+const uint8_t *fc_res(const char *name, uint32_t *size) {
+  if (!g_blob || memcmp(g_blob, "FNAS", 4)) return NULL;
+  int n = rd16(g_blob + 6);
+  for (int i = 0; i < n; i++) {
+    const uint8_t *e = g_blob + 8 + 40 * i;
+    if (strncmp((const char *)e, name, 32) == 0) {
+      uint32_t off = rd32(e + 32), len = rd32(e + 36);
+      if (off + len > g_size) return NULL;
+      if (size) *size = len;
+      return g_blob + off;
+    }
+  }
+  return NULL;
+}
+
+/* ---------- 图像 ---------- */
+bool fc_img_open(const char *name, fc_img_t *im) {
+  const uint8_t *d = fc_res(name, NULL);
+  if (!d) return false;
+  im->data = d;
+  if (!memcmp(d, "FNBO", 4)) {            /* 正方形：4s H H(size) H(n) B */
+    im->w = im->h = rd16(d + 6); im->frames = rd16(d + 8); im->loop = d[10];
+    im->pal = d + 11; im->offs = d + 11 + 126;
+  } else if (!memcmp(d, "FNBR", 4)) {     /* 矩形：4s H H(w) H(h) H(n) B */
+    im->w = rd16(d + 6); im->h = rd16(d + 8); im->frames = rd16(d + 10); im->loop = d[12];
+    im->pal = d + 13; im->offs = d + 13 + 126;
+  } else return false;
+  return true;
+}
+
+static void decode_into(const fc_img_t *im, int k, uint8_t *buf) {
+  const uint8_t *fr = im->data + rd32(im->offs + 4 * k);
+  bool delta = k > 0;
+  for (int y = 0; y < im->h; y++) {
+    const uint8_t *p = fr + rd16(fr + 2 * y);
+    uint8_t *row = buf + y * im->w;
+    int x = 0;
+    while (x < im->w) {
+      uint8_t c = *p++; int L = (c & 0x7F) + 1;
+      if (c & 0x80) { if (!delta) memset(row + x, 0, (size_t)L); }
+      else { memcpy(row + x, p, (size_t)L); p += L; }
+      x += L;
+    }
+  }
+}
+
+/* 解码缓存：键 = (图像, 帧)。按字节预算做 LRU 淘汰；本帧（epoch）用过的槽不原地推进，
+ * 所以同一帧里多次引用同一图像的不同帧也安全。显示列表在合成时才取帧数据。 */
+#define CACHE_N 24
+#ifndef FC_IMG_BUDGET
+#define FC_IMG_BUDGET (64 * 1024)   /* 声音实验室堆小（约 100 KB），留一半给系统 */
+#endif
+static struct { const uint8_t *key; int frame; uint8_t *buf; uint32_t bytes; uint32_t used, epoch; } g_cache[CACHE_N];
+static uint32_t g_tick, g_epoch = 1, g_bytes;
+
+void fc_img_epoch(void) { g_epoch++; }
+static void slot_free(int i) { free(g_cache[i].buf); g_bytes -= g_cache[i].buf ? g_cache[i].bytes : 0; g_cache[i].buf = NULL; g_cache[i].key = NULL; }
+void fc_img_cache_clear(void) { for (int i = 0; i < CACHE_N; i++) if (g_cache[i].buf) slot_free(i); g_bytes = 0; }
+uint32_t fc_img_cache_bytes(void) { return g_bytes; }
+
+static int slot_alloc(uint32_t bytes) {
+  for (;;) {
+    int empty = -1, lru = -1;
+    for (int i = 0; i < CACHE_N; i++) {
+      if (!g_cache[i].key) { if (empty < 0) empty = i; }
+      else if (g_cache[i].epoch != g_epoch && (lru < 0 || g_cache[i].used < g_cache[lru].used)) lru = i;   /* 本帧显示列表里引用着的不能淘汰 */
+    }
+    if (empty >= 0 && g_bytes + bytes <= FC_IMG_BUDGET) {
+      g_cache[empty].buf = (uint8_t *)malloc(bytes);
+      if (!g_cache[empty].buf) { if (lru < 0) return -1; slot_free(lru); continue; }   /* 堆不够：再淘汰一个 */
+      g_cache[empty].bytes = bytes; g_bytes += bytes; return empty;
+    }
+    if (lru < 0) return -1;
+    slot_free(lru);
+  }
+}
+
+const uint8_t *fc_img_frame(const fc_img_t *im, int frame) {
+  if (frame < 0) frame = 0;
+  if (frame >= im->frames) frame = im->frames - 1;
+  int hit = -1, base = -1;
+  for (int i = 0; i < CACHE_N; i++) {
+    if (g_cache[i].key != im->data) continue;
+    if (g_cache[i].frame == frame) { hit = i; break; }
+    if (g_cache[i].frame < frame && (base < 0 || g_cache[i].frame > g_cache[base].frame)) base = i;
+  }
+  g_tick++;
+  if (hit < 0) {
+    uint32_t bytes = (uint32_t)im->w * im->h;
+    int cur;
+    if (base >= 0 && g_cache[base].epoch != g_epoch) { hit = base; cur = g_cache[base].frame; }   /* 原地推进 */
+    else {
+      if (base >= 0) g_cache[base].used = g_tick;          /* 别把起点淘汰掉 */
+      hit = slot_alloc(bytes);
+      if (hit < 0) return NULL;
+      g_cache[hit].key = im->data;
+      if (base >= 0 && g_cache[base].key == im->data) { memcpy(g_cache[hit].buf, g_cache[base].buf, bytes); cur = g_cache[base].frame; }
+      else { decode_into(im, 0, g_cache[hit].buf); cur = 0; }
+    }
+    while (cur < frame) decode_into(im, ++cur, g_cache[hit].buf);
+    g_cache[hit].frame = frame;
+  }
+  g_cache[hit].used = g_tick; g_cache[hit].epoch = g_epoch;
+  return g_cache[hit].buf;
+}
+
+/* ---------- 字体 ---------- */
+bool fc_font_open(const char *name, fc_font_t *f) {
+  const uint8_t *d = fc_res(name, NULL);
+  if (!d || memcmp(d, "FNFT", 4)) return false;
+  f->data = d; f->n = rd16(d + 6); f->line_h = d[8]; f->asc = d[9]; f->space = d[10];
+  return true;
+}
+
+bool fc_font_glyph(const fc_font_t *f, uint32_t cp, fc_glyph_t *g) {
+  int lo = 0, hi = f->n - 1;
+  while (lo <= hi) {
+    int mid = (lo + hi) / 2;
+    const uint8_t *e = f->data + 12 + 13 * mid;
+    uint32_t c = rd32(e);
+    if (c == cp) {
+      g->bits = f->data + rd32(e + 4); g->w = e[8]; g->h = e[9];
+      g->xo = (int8_t)e[10]; g->yo = (int8_t)e[11]; g->adv = e[12];
+      return true;
+    }
+    if (c < cp) lo = mid + 1; else hi = mid - 1;
+  }
+  return false;
+}
+
+uint32_t fc_utf8_next(const char **s) {
+  const uint8_t *p = (const uint8_t *)*s; uint32_t c = *p;
+  int n = c < 0x80 ? 1 : c < 0xE0 ? 2 : c < 0xF0 ? 3 : 4;
+  if (n == 2) c = ((c & 0x1F) << 6) | (p[1] & 0x3F);
+  else if (n == 3) c = ((c & 0x0F) << 12) | ((uint32_t)(p[1] & 0x3F) << 6) | (p[2] & 0x3F);
+  else if (n == 4) c = ((c & 0x07) << 18) | ((uint32_t)(p[1] & 0x3F) << 12) | ((uint32_t)(p[2] & 0x3F) << 6) | (p[3] & 0x3F);
+  *s += n; return c;
+}
+
+int fc_text_width(const fc_font_t *f, const char *s) {
+  int w = 0; fc_glyph_t g;
+  while (*s) { uint32_t c = fc_utf8_next(&s); if (c == ' ') w += f->space; else if (fc_font_glyph(f, c, &g)) w += g.adv; else w += f->space; }
+  return w;
+}
+
+/* ---------- 文本表 ---------- */
+const char *fc_txt(const char *table, int i) {
+  char name[32]; size_t n = strlen(table);
+  if (n > 26) return "";
+  memcpy(name, "txt/", 4); memcpy(name + 4, table, n + 1);
+  uint32_t sz; const uint8_t *d = fc_res(name, &sz);
+  if (!d || memcmp(d, "FNTX", 4)) return "";
+  int cnt = rd16(d + 4);
+  if (i < 0 || i >= cnt) return "";
+  return (const char *)d + rd32(d + 6 + 4 * i);
+}
+
+/* ---------- 正弦表 ---------- */
+static const int16_t SIN_Q14[257] = {
+#include "fc_sin_table.inc"
+};
+int fx_sin(int a) {
+  a &= ANG_TURN - 1;
+  int q = a >> 8, i = a & 255;
+  switch (q) {
+    case 0: return SIN_Q14[i];
+    case 1: return SIN_Q14[256 - i];
+    case 2: return -SIN_Q14[i];
+    default: return -SIN_Q14[256 - i];
+  }
+}

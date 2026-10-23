@@ -1,0 +1,91 @@
+{
+ "disp24": {
+  "source": "ZCOOLQingKeHuangYou-Regular.ttf",
+  "source_sha256": "54f0c0df4308cd74cd0f2fd3494ae054dbc4a1fd6fa7d71f4807eb4cdd8b4136",
+  "px": 26,
+  "glyphs": 831,
+  "line_h": 27,
+  "ascent": 23,
+  "bytes": 198380,
+  "fallback": "·↑→↓↕⇅▦▲▶▼◀◉○◎♨♩♪♫♭♮♯〰〽",
+  "missing": "∿≋⊐⋮⏤◔⚙✈✋✲"
+ },
+ "disp18": {
+  "source": "ZCOOLQingKeHuangYou-Regular.ttf",
+  "source_sha256": "54f0c0df4308cd74cd0f2fd3494ae054dbc4a1fd6fa7d71f4807eb4cdd8b4136",
+  "px": 19,
+  "glyphs": 831,
+  "line_h": 20,
+  "ascent": 17,
+  "bytes": 122212,
+  "fallback": "·↑→↓↕⇅▦▲▶▼◀◉○◎♨♩♪♫♭♮♯〰〽",
+  "missing": "∿≋⊐⋮⏤◔⚙✈✋✲"
+ },
+ "sans16": {
+  "source": "SourceHanSansCN-Medium.otf",
+  "source_sha256": "a94e558a2fe972bee4f46bce0843abff37063fd68c33f1e7d9058f6f09432b01",
+  "px": 16,
+  "glyphs": 831,
+  "line_h": 24,
+  "ascent": 19,
+  "bytes": 109791,
+  "fallback": "",
+  "missing": "∿≋⊐⋮⏤◔⚙✈✋✲"
+ },
+ "sans14": {
+  "source": "SourceHanSansCN-Medium.otf",
+  "source_sha256": "a94e558a2fe972bee4f46bce0843abff37063fd68c33f1e7d9058f6f09432b01",
+  "px": 14,
+  "glyphs": 831,
+  "line_h": 22,
+  "ascent": 17,
+  "bytes": 88573,
+  "fallback": "",
+  "missing": "∿≋⊐⋮⏤◔⚙✈✋✲"
+ },
+ "mono14": {
+  "source": "SpaceMono-Bold.ttf",
+  "source_sha256": "405e73d41afb7e5906efce206a326af5c956f38e255f35421c260e861e599c59",
+  "px": 14,
+  "glyphs": 95,
+  "line_h": 22,
+  "ascent": 16,
+  "bytes": 5762,
+  "fallback": "",
+  "missing": ""
+ },
+ "mono22": {
+  "source": "SpaceMono-Bold.ttf",
+  "source_sha256": "405e73d41afb7e5906efce206a326af5c956f38e255f35421c260e861e599c59",
+  "px": 22,
+  "glyphs": 96,
+  "line_h": 33,
+  "ascent": 25,
+  "bytes": 11284,
+  "fallback": "关开",
+  "missing": ""
+ },
+ "mono48": {
+  "source": "SpaceMono-Bold.ttf",
+  "source_sha256": "405e73d41afb7e5906efce206a326af5c956f38e255f35421c260e861e599c59",
+  "px": 50,
+  "glyphs": 21,
+  "line_h": 75,
+  "ascent": 56,
+  "bytes": 11693,
+  "fallback": "",
+  "missing": ""
+ },
+ "disp56": {
+  "source": "ZCOOLQingKeHuangYou-Regular.ttf",
+  "source_sha256": "54f0c0df4308cd74cd0f2fd3494ae054dbc4a1fd6fa7d71f4807eb4cdd8b4136",
+  "px": 60,
+  "glyphs": 11,
+  "line_h": 61,
+  "ascent": 53,
+  "bytes": 7173,
+  "fallback": "",
+  "missing": ""
+ },
+ "_charset_size": 842
+}

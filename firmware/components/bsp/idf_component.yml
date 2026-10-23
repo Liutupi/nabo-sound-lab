@@ -1,0 +1,5 @@
+# 声音实验室直接画屏，不用 LVGL（已去掉 bsp_display_lvgl.c）
+dependencies:
+  idf: ">=5.5.3,<5.6.0"
+  espressif/button: "4.2.0"
+  espressif/esp_codec_dev: "1.6.2"
