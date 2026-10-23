@@ -1,5 +1,5 @@
 {
- "total": 1882628,
+ "total": 1897404,
  "entries": {
   "spr/S-BLOW/76": {
    "bytes": 15942,
@@ -432,13 +432,13 @@
    "placeholder": false
   },
   "font/disp18": {
-   "bytes": 122212,
-   "sha256": "65112e6a3b60d84f",
+   "bytes": 125674,
+   "sha256": "80de4203531ccff7",
    "placeholder": false
   },
   "font/disp24": {
-   "bytes": 198380,
-   "sha256": "418792e1d68a439c",
+   "bytes": 203976,
+   "sha256": "8384a75d39da88f7",
    "placeholder": false
   },
   "font/disp56": {
@@ -462,13 +462,13 @@
    "placeholder": false
   },
   "font/sans14": {
-   "bytes": 88573,
-   "sha256": "137d1316d0912ca8",
+   "bytes": 91113,
+   "sha256": "ce5e7afff490de7c",
    "placeholder": false
   },
   "font/sans16": {
-   "bytes": 109791,
-   "sha256": "064b21ce56141f01",
+   "bytes": 112965,
+   "sha256": "ae723c760f365b3a",
    "placeholder": false
   },
   "snd/boot-welcome": {

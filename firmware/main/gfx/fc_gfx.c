@@ -218,10 +218,10 @@ static void draw_op(const op_t *o, int sy0, int sy1) {
     return;
   }
   int A = o->alpha + (o->alpha > 127);  /* 0..256 */
-  const uint8_t *idx = NULL;
+  const fc_img_surface_t *idx = NULL;
   /* 单帧静态图（卡面、蛋糕、图标）直接从 RLE 逐行画，不占解码缓存（卡面一张就 64 KB） */
   bool direct = o->type == OP_IMG && o->im.frames == 1;
-  if ((o->type == OP_IMG && !direct) || o->type == OP_AFF) { idx = fc_img_frame(&o->im, o->frame); if (!idx) return; }
+  if ((o->type == OP_IMG && !direct) || o->type == OP_AFF) { idx = fc_img_surface(&o->im, o->frame); if (!idx) return; }
   for (int y = y0; y < y1; y++) {
     uint16_t *row = g_strip + (y - sy0) * FC_W;
     switch (o->type) {
@@ -294,7 +294,7 @@ static void draw_op(const op_t *o, int sy0, int sy1) {
           }
           break;
         }
-        const uint8_t *src = idx + sy * iw;
+        const uint8_t *src = fc_img_row(idx, sy);
         for (int x = o->x0; x < o->x1; x++) {
           int sx = x - o->p[0];
           if (sx < 0 || sx >= iw) continue;
@@ -314,7 +314,7 @@ static void draw_op(const op_t *o, int sy0, int sy1) {
           if (uq < 0 || vq < 0) continue;
           int sx = uq >> 1, sy = vq >> 1;
           if (sx < 0 || sy < 0 || sx >= iw || sy >= ih) continue;
-          uint8_t i = idx[sy * iw + sx];
+          uint8_t i = fc_img_row(idx, sy)[sx];
           if (i) { const uint8_t *pp = o->im.pal + 2 * (i - 1); PUT(row + x, (uint16_t)(pp[0] | (pp[1] << 8)), A); }
         }
         break; }

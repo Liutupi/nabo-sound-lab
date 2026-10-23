@@ -1,0 +1,394 @@
+{
+  "schema": "soundlab-wireless-duel-development-validation-v1",
+  "version": "0.2.0-dev",
+  "status": "real_RF_verified_user_deferred_physical_play",
+  "source_branch": "feature/wireless-duel",
+  "candidate_revision": "fragmented-sprite-cache-v3",
+  "candidate_files": {
+    "app.bin": {
+      "sha256": "5d8440c6494d2464b379c49f0af31e12e658e4e2c80ace6e058325c1308c4d24",
+      "bytes": 832512
+    },
+    "assets.bin": {
+      "sha256": "5fc895c4ef5ef14a0aa90f40ca027d75806c40f4e7a44860f8538d1d5fa61edb",
+      "bytes": 1897404
+    },
+    "partitions.bin": {
+      "sha256": "43311cbc95711332aa26b5e5002a58a9099b1a3be0b394408bc7b2b5dd986d86",
+      "bytes": 3072
+    },
+    "bootloader.bin": {
+      "sha256": "1a5213932fcd0fe40abe98756afe7edc75080cde37804ee2a5ade7188a94a7ea",
+      "bytes": 21024
+    },
+    "merged.bin": {
+      "sha256": "6085b81101e8d4d5bae8271e538e1ec0fce09e9708051a55e702692141b89243",
+      "bytes": 3994556
+    }
+  },
+  "features": {
+    "entry": "play/duel",
+    "connection": "two badges ESP-NOW channel 6 without router",
+    "input": "physical OK press timestamps; no microphone or pitch judgement",
+    "rounds": 3,
+    "bpms": [
+      90,
+      105,
+      120
+    ],
+    "score_max_per_round": 1000,
+    "chinese_main_px": 16,
+    "score_px": 22
+  },
+  "build": {
+    "target": "esp32c3",
+    "idf": "5.5.3",
+    "success": true,
+    "app_partition_bytes": 2031616,
+    "assets_partition_bytes": 6291456,
+    "app_free_bytes": 1199104,
+    "assets_free_bytes": 4394052,
+    "separate_build_and_config": true
+  },
+  "host_rules": {
+    "assertions": 4576,
+    "c_js_exact_snapshots": 52584,
+    "mutations_rejected": 4
+  },
+  "host_network": {
+    "passed": true,
+    "totals": {
+      "scenarios": 41,
+      "assertions": 1044260,
+      "completed_three_round_matches": 27,
+      "match_packets_delivered": 9356,
+      "match_packets_dropped": 1630,
+      "match_duplicates_queued": 1724,
+      "match_out_of_order_deliveries": 996,
+      "match_single_inflight_rejections": 5,
+      "last_packets_delivered": 367,
+      "device_tested": false
+    },
+    "mutations_rejected": 11,
+    "physical_radio_test": false,
+    "evidence": {
+      "path": "tests/duel_host/network-validation.json",
+      "sha256": "da0bb260d30e70e3af41caea89f08fb370f9198b74a09338e2dc77c4a180cf6d"
+    }
+  },
+  "host_radio_lifecycle": {
+    "wireless_assertions": 1947,
+    "disabled_stub_assertions": 13,
+    "mutation_rejections": 3,
+    "actual_radio_driver_allocation_tested": false
+  },
+  "host_ui": {
+    "frames": 292,
+    "states_and_variants": 24,
+    "incremental_full_pixel_mismatches": 0,
+    "display_list_overflows": 0,
+    "max_display_ops": 40,
+    "action_mapping_checked": true,
+    "text_ink_overlaps": 0,
+    "chinese_minimum_nominal_px": 16,
+    "scores_nominal_px": 22,
+    "missing_glyphs": 0,
+    "evidence": {
+      "path": "tests/duel_host/ui-validation.json",
+      "sha256": "9db454f03422999c8594479c21fec434e0ccd075270417cae010b4f845d37b12"
+    }
+  },
+  "art": {
+    "entries": 95,
+    "unchanged_entries": 91,
+    "font_entries_expanded": 4,
+    "all_existing_character_props_boot_audio_byte_identical": true,
+    "overview": "docs/images/duel-firmware-overview.png",
+    "overview_type": "Production C RGB565 host render, not optical device photograph",
+    "device_A_overview": {
+      "path": "docs/images/duel-device-A-v3-overview.png",
+      "sha256": "5ddeb043a3efed06e1eb3d73a2ce3cf81201db604b983408667401830e7bee59",
+      "background": "#0A0716",
+      "type": "actual C3 direct framebuffer contact sheet, not optical photo"
+    },
+    "preservation_review_sha256": "5761b8930a9ff51599f23c78f972fe150485014449f91c952d6f72670335f188"
+  },
+  "devices": {
+    "A": {
+      "candidate_v3_written": true,
+      "full_readback_verified": true,
+      "radio_init_tested": true,
+      "awaiting_physical_wake": false,
+      "write_parts": [
+        "app.bin@0x10000"
+      ],
+      "non_target_sectors_preserved": true,
+      "volume_preserved": 100,
+      "radio_entry_exit_cycles": 10,
+      "radio_heap_bytes_samples": [
+        13332,
+        13308,
+        13308,
+        13308,
+        13308,
+        13308,
+        13308,
+        13308,
+        13308,
+        13308
+      ],
+      "radio_largest_bytes_samples": [
+        7680,
+        7680,
+        7680,
+        7680,
+        7680,
+        7680,
+        7680,
+        7680,
+        7680,
+        7680
+      ],
+      "echo_idle_cache_bytes": 14400,
+      "chorus_cache_bytes": 25952,
+      "framebuffer_captures_complete": 7,
+      "steady_host_perf": {
+        "frames": 253,
+        "avg_ms": 3,
+        "max_ms": 9,
+        "over_33ms": 0,
+        "heap": 13332,
+        "largest": 7680,
+        "uptime_ms": 30663
+      },
+      "steady_echo_perf": {
+        "frames": 253,
+        "avg_ms": 5,
+        "max_ms": 11,
+        "over_33ms": 0,
+        "heap": 28660,
+        "largest": 7680,
+        "uptime_ms": 75545
+      },
+      "audio_read_write_errors": 0,
+      "crash_markers": 0,
+      "evidence_sha256": "4088cb09d8a3293a660b21833928130af4c536c1e2fbb1639df4448d24b2d913",
+      "overview": {
+        "path": "docs/images/duel-device-A-v3-overview.png",
+        "sha256": "5ddeb043a3efed06e1eb3d73a2ce3cf81201db604b983408667401830e7bee59",
+        "background": "#0A0716",
+        "type": "actual C3 direct framebuffer contact sheet, not optical photo"
+      },
+      "real_RF_three_round_match_verified": true,
+      "physical_button_acceptance": false
+    },
+    "B": {
+      "identified": true,
+      "backup_in_progress": false,
+      "written": true,
+      "full_readback_verified": true,
+      "verified_before_first_boot": true,
+      "boot_components_started_successfully": true,
+      "radio_init_tested": true,
+      "original_boot_replaced_for_new_partition_offset": true,
+      "original_active_Muse_NVS_PHY_retained_in_place": false,
+      "original_Muse_complete_verified_backup_available": true,
+      "non_target_sectors_preserved_before_boot": true,
+      "radio_heap_bytes": 13472,
+      "radio_largest_bytes": 7680,
+      "echo_idle_cache_bytes": 14400,
+      "initial_volume": 80,
+      "accepted_framebuffer_captures": 2,
+      "rejected_USB_captures_not_repaired": 1,
+      "evidence_sha256": "9b6255b83c2d4a0d2d12739d3facda5274397c714922e8a28b6516bb3f3ec1f7",
+      "real_RF_three_round_match_verified": true,
+      "physical_button_acceptance": false
+    }
+  },
+  "two_badge_test": {
+    "pairing": true,
+    "complete_match": true,
+    "ten_matches": true,
+    "disconnect": true,
+    "range": false,
+    "button_and_audio_latency": false,
+    "host_role_swap": true,
+    "muted_play": true,
+    "win_loss_tie_actual_C3_framebuffers": true,
+    "controlled_serial_input": true,
+    "physical_user_play": false
+  },
+  "protected_release": {
+    "version": "v0.1.2",
+    "frozen_bins_unchanged": true,
+    "community_project": 1538,
+    "community_submission_unchanged": true
+  },
+  "limitations": [
+    "Real RF runs used controlled serial key edges. Physical button feel, audio/display timing and range remain unverified; user deferred play.",
+    "Normal-match counters and intentional hard-disconnect transmission failures are recorded separately.",
+    "A permanently partitioned link cannot make both devices learn a final decision simultaneously.",
+    "Existing v0.1.2 pitch subharmonic, old unexplained reset and subjective voice-plosive open items are not claimed fixed."
+  ],
+  "updated_at": "2026-10-24T00:51:07.270208+08:00",
+  "host_legacy_ui": {
+    "frames": 11613,
+    "per_profile": 3871,
+    "profiles": [
+      "normal",
+      "malloc_request_max_13824",
+      "malloc_request_max_7680"
+    ],
+    "all_profile_pixels_equal": true,
+    "incremental_full_mismatches": 0,
+    "overflow": 0,
+    "missing_glyphs": 0,
+    "max_ops": 324,
+    "all_17_legacy_entries": true,
+    "all_12_echo_voices": true,
+    "all_86_images_and_1061_frames": true,
+    "evidence": {
+      "path": "device-validation/duel-0.2.0/legacy-ui-regression.json",
+      "sha256": "40b7b049ef4469ca985a6a98089e3c82e7be89c01eecfb3e6ef3ba7ff9e6d599"
+    }
+  },
+  "fragmentation_fix": {
+    "trigger": "Actual badge after Wi-Fi stop had largest block 13824 < 120*120 sprite bytes 14400; echo image decode failed",
+    "solution": "Prefer contiguous allocation; on failure use two row ranges, 120px = 2*7200B; keep original pixels and actions",
+    "tested_on_device": true,
+    "host_pixel_regression_passed": true,
+    "no_per_frame_reallocation": true,
+    "fixed_static_metadata_cost_c3_bytes": 192,
+    "device_scope": "A: after ten radio lifecycle cycles, native 120px echo and 120+76+76 choir screenshots and cache byte counts passed.",
+    "host_evidence_sha256": "7ee431f9c922a99cae1c163d7810e96366216d0316d998e4a3cae741281cbe21",
+    "source_review_sha256": "492e74dd2fc2e38e9ab837b95823e94629fbce7d3a4e913a773321beb3865179"
+  },
+  "superseded_candidate_A": {
+    "revision": "final-confirmation-v2",
+    "app_sha256": "d80679cec6f75bac10300fea95109cf69c65a36aa6174aa3e2bea7093551b407",
+    "full_readback_verified": true,
+    "radio_init_and_10_cycles_passed": true,
+    "radio_heap_bytes": 13508,
+    "radio_largest_bytes": 7680,
+    "menu_after_radio_heap_bytes": 37816,
+    "menu_after_radio_largest_bytes": 13824,
+    "persistent_volume": 100,
+    "regression": "echo 120px NABO missing after Wi-Fi; candidate withdrawn before B installation"
+  },
+  "real_RF": {
+    "scope": "Two real C3 badges, real ESP-NOW, controlled serial key input; user deferred physical play.",
+    "complete_matches": 12,
+    "complete_rounds": 36,
+    "consecutive_matches": 10,
+    "host_role_swap": true,
+    "nonzero_score_and_win_loss_tie": true,
+    "muted_guest_three_round_scores": [
+      1000,
+      1000,
+      1000
+    ],
+    "round_performance": {
+      "frames": {
+        "samples": 72,
+        "min": 301,
+        "max": 364
+      },
+      "elapsed_ms": {
+        "samples": 72,
+        "min": 9932,
+        "max": 12012
+      },
+      "fps": {
+        "samples": 72,
+        "min": 30.29796,
+        "max": 30.31312
+      },
+      "avg_ms": {
+        "samples": 72,
+        "min": 3,
+        "max": 4
+      },
+      "max_ms": {
+        "samples": 72,
+        "min": 20,
+        "max": 27
+      },
+      "over_33ms": {
+        "samples": 72,
+        "min": 0,
+        "max": 0
+      },
+      "audio_write_err": {
+        "samples": 72,
+        "min": 0,
+        "max": 0
+      },
+      "audio_read_err": {
+        "samples": 72,
+        "min": 0,
+        "max": 0
+      }
+    },
+    "slow_frame_total": 0,
+    "guest_sync_rtt_ms": {
+      "samples": 1786,
+      "min": 3,
+      "max": 4
+    },
+    "normal_match_RF_drop_fail_zero": true,
+    "unexpected_crash_or_reset_observed": false,
+    "physical_key_timing_tested": false,
+    "report_sha256": "a5725b0c4bb8fa70a67b99d0bad8de7535e9a43d64353f92cdceede34362b485",
+    "overview": {
+      "path": "docs/images/duel-device-real-rf-overview.png",
+      "sha256": "d0622699a6c314e75eaef26fcc96665711e225f20867114fd272bcac6e03a84d",
+      "background": "#0A0716",
+      "type": "actual C3 RGB565 framebuffer contact sheet"
+    },
+    "hard_drop": {
+      "passed": true,
+      "A_held_in_ROM_without_Flash_write": true,
+      "B_LOST_from_command_started_seconds": 8.280999999999949,
+      "B_LOST_from_ROM_confirmed_seconds": 7.57799999999952,
+      "last_RF_packet_timestamp_exposed": false,
+      "abort_text_pixel_mismatches": 0,
+      "no_FALSE_FINAL_observed": true,
+      "A_normal_restart_and_settings_check_passed": true,
+      "expected_RF_transmission_failures_after_peer_loss_recorded_separately": true,
+      "evidence_sha256": "5d683f27050590328b7949104a29ab94c21fd105dc427c16ed350d8d00fc9817"
+    },
+    "manual_play": {
+      "performed": false,
+      "user_decision": "deferred",
+      "monitor_stopped": true,
+      "feedback_accepted": false
+    },
+    "range_tested": false,
+    "audio_visual_physical_latency_tested": false,
+    "release_ready": false
+  },
+  "release": {
+    "tag": "v0.2.0-preview.1",
+    "version": "0.2.0-preview.1",
+    "channel": "prerelease",
+    "url": "https://github.com/Liutupi/nabo-sound-lab/releases/tag/v0.2.0-preview.1",
+    "firmware_internal_version": "0.2.0-dev",
+    "rebuilt_for_publication": false,
+    "stable_acceptance_complete": false,
+    "merged_single_file_device_flash_tested": false,
+    "B_separate_boot_table_app_assets_migration_tested": true
+  },
+  "public_image_metadata_sanitized": {
+    "count": 7,
+    "pixels_unchanged": true,
+    "private_raw_captures_untouched": true,
+    "sanitization_report_sha256": "e80602803cdfe789151afcf2ddbe55fdb37ca4d513be126bcf18f6e6d4364c56"
+  },
+  "publication_preparation_checks": {
+    "host_tool_path_lookup_portable": true,
+    "rules_and_network_toolchain_smoke_passed": true,
+    "ui_rechecked_frames": 292,
+    "ui_violations": 0,
+    "production_source_hashes_unchanged": 40
+  }
+}

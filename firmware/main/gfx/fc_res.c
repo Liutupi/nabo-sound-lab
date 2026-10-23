@@ -41,12 +41,12 @@ bool fc_img_open(const char *name, fc_img_t *im) {
   return true;
 }
 
-static void decode_into(const fc_img_t *im, int k, uint8_t *buf) {
+static void decode_into(const fc_img_t *im, int k, const fc_img_surface_t *s) {
   const uint8_t *fr = im->data + rd32(im->offs + 4 * k);
   bool delta = k > 0;
   for (int y = 0; y < im->h; y++) {
     const uint8_t *p = fr + rd16(fr + 2 * y);
-    uint8_t *row = buf + y * im->w;
+    uint8_t *row = (uint8_t *)fc_img_row(s, y);
     int x = 0;
     while (x < im->w) {
       uint8_t c = *p++; int L = (c & 0x7F) + 1;
@@ -64,18 +64,36 @@ static void decode_into(const fc_img_t *im, int k, uint8_t *buf) {
 #ifndef FC_IMG_BUDGET
 #define FC_IMG_BUDGET (32 * 1024)   /* 合唱 120² + 2×76² = 25952 B；32 KiB 能容纳，24 KiB 不行 */
 #endif
-static struct { const uint8_t *key; int frame; uint8_t *buf; uint32_t bytes; uint32_t used, epoch; } g_cache[CACHE_N];
+static struct { const uint8_t *key; int frame; fc_img_surface_t surface; uint32_t bytes, used, epoch; } g_cache[CACHE_N];
 static uint32_t g_tick, g_epoch = 1, g_bytes;
 
 void fc_img_epoch(void) { g_epoch++; }
 static void slot_free(int i) {
-  if (g_cache[i].buf) { g_bytes -= g_cache[i].bytes; free(g_cache[i].buf); }
-  g_cache[i].buf = NULL; g_cache[i].key = NULL; g_cache[i].bytes = 0;
+  g_bytes -= g_cache[i].bytes;
+  free((void *)g_cache[i].surface.part[0]); free((void *)g_cache[i].surface.part[1]);
+  memset(&g_cache[i], 0, sizeof(g_cache[i]));
 }
-void fc_img_cache_clear(void) { for (int i = 0; i < CACHE_N; i++) if (g_cache[i].buf) slot_free(i); g_bytes = 0; }
+void fc_img_cache_clear(void) { for (int i = 0; i < CACHE_N; i++) if (g_cache[i].key) slot_free(i); g_bytes = 0; }
 uint32_t fc_img_cache_bytes(void) { return g_bytes; }
 
-static int slot_alloc(uint32_t bytes) {
+static bool surface_alloc(fc_img_surface_t *s, const fc_img_t *im) {
+  s->w = im->w; s->split = im->h;
+  s->part[0] = (uint8_t *)malloc((uint32_t)im->w * im->h); s->part[1] = NULL;
+  if (s->part[0]) return true;
+  if (im->h < 2) return false;
+  /* Fragmented C3 heap: retain original pixels with two independently allocated
+   * row ranges. No reservation while radio is idle, or per-frame allocation. */
+  s->split = im->h / 2;
+  s->part[0] = (uint8_t *)malloc((uint32_t)im->w * s->split);
+  if (!s->part[0]) return false;
+  s->part[1] = (uint8_t *)malloc((uint32_t)im->w * (im->h - s->split));
+  if (s->part[1]) return true;
+  free((void *)s->part[0]); s->part[0] = NULL; return false;
+}
+
+static int slot_alloc(const fc_img_t *im) {
+  uint32_t bytes = (uint32_t)im->w * im->h;
+  if (bytes > FC_IMG_BUDGET) return -1;
   for (;;) {
     int empty = -1, lru = -1;
     for (int i = 0; i < CACHE_N; i++) {
@@ -83,8 +101,10 @@ static int slot_alloc(uint32_t bytes) {
       else if (g_cache[i].epoch != g_epoch && (lru < 0 || g_cache[i].used < g_cache[lru].used)) lru = i;   /* 本帧显示列表里引用着的不能淘汰 */
     }
     if (empty >= 0 && g_bytes + bytes <= FC_IMG_BUDGET) {
-      g_cache[empty].buf = (uint8_t *)malloc(bytes);
-      if (!g_cache[empty].buf) { if (lru < 0) return -1; slot_free(lru); continue; }   /* 堆不够：再淘汰一个 */
+      if (!surface_alloc(&g_cache[empty].surface, im)) {
+        if (lru < 0) return -1;
+        slot_free(lru); continue;
+      }   /* 堆不够：再淘汰一个；分块失败已经释放临时块 */
       g_cache[empty].bytes = bytes; g_bytes += bytes; return empty;
     }
     if (lru < 0) return -1;
@@ -92,7 +112,8 @@ static int slot_alloc(uint32_t bytes) {
   }
 }
 
-const uint8_t *fc_img_frame(const fc_img_t *im, int frame) {
+const fc_img_surface_t *fc_img_surface(const fc_img_t *im, int frame) {
+  if (!im || !im->data || !im->w || !im->h || !im->frames) return NULL;
   if (frame < 0) frame = 0;
   if (frame >= im->frames) frame = im->frames - 1;
   int hit = -1, base = -1, reusable = -1;
@@ -104,24 +125,30 @@ const uint8_t *fc_img_frame(const fc_img_t *im, int frame) {
   }
   g_tick++;
   if (hit < 0) {
-    uint32_t bytes = (uint32_t)im->w * im->h;
     int cur;
     if (base >= 0 && g_cache[base].epoch != g_epoch) { hit = base; cur = g_cache[base].frame; }   /* 原地推进 */
     else {
       /* A stale frame of this image is equally reusable when it is later than
        * the requested frame. Restart its decoder, not its allocation. A base
        * already pinned by this epoch may be copied but never modified/evicted. */
-      hit = reusable >= 0 ? reusable : slot_alloc(bytes);
+      hit = reusable >= 0 ? reusable : slot_alloc(im);
       if (hit < 0) return NULL;
       g_cache[hit].key = im->data;
-      if (base >= 0 && g_cache[base].key == im->data) { memcpy(g_cache[hit].buf, g_cache[base].buf, bytes); cur = g_cache[base].frame; }
-      else { decode_into(im, 0, g_cache[hit].buf); cur = 0; }
+      if (base >= 0 && g_cache[base].key == im->data) {
+        for (int y = 0; y < im->h; y++) memcpy((uint8_t *)fc_img_row(&g_cache[hit].surface, y), fc_img_row(&g_cache[base].surface, y), im->w);
+        cur = g_cache[base].frame;
+      } else { decode_into(im, 0, &g_cache[hit].surface); cur = 0; }
     }
-    while (cur < frame) decode_into(im, ++cur, g_cache[hit].buf);
+    while (cur < frame) decode_into(im, ++cur, &g_cache[hit].surface);
     g_cache[hit].frame = frame;
   }
   g_cache[hit].used = g_tick; g_cache[hit].epoch = g_epoch;
-  return g_cache[hit].buf;
+  return &g_cache[hit].surface;
+}
+
+const uint8_t *fc_img_frame(const fc_img_t *im, int frame) {
+  const fc_img_surface_t *s = fc_img_surface(im, frame);
+  return s && !s->part[1] ? s->part[0] : NULL;
 }
 
 /* ---------- 字体 ---------- */

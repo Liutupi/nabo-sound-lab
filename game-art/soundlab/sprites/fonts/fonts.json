@@ -3,10 +3,10 @@
   "source": "ZCOOLQingKeHuangYou-Regular.ttf",
   "source_sha256": "54f0c0df4308cd74cd0f2fd3494ae054dbc4a1fd6fa7d71f4807eb4cdd8b4136",
   "px": 26,
-  "glyphs": 831,
+  "glyphs": 853,
   "line_h": 27,
   "ascent": 23,
-  "bytes": 198380,
+  "bytes": 203976,
   "fallback": "·↑→↓↕⇅▦▲▶▼◀◉○◎♨♩♪♫♭♮♯〰〽",
   "missing": "∿≋⊐⋮⏤◔⚙✈✋✲"
  },
@@ -14,10 +14,10 @@
   "source": "ZCOOLQingKeHuangYou-Regular.ttf",
   "source_sha256": "54f0c0df4308cd74cd0f2fd3494ae054dbc4a1fd6fa7d71f4807eb4cdd8b4136",
   "px": 19,
-  "glyphs": 831,
+  "glyphs": 853,
   "line_h": 20,
   "ascent": 17,
-  "bytes": 122212,
+  "bytes": 125674,
   "fallback": "·↑→↓↕⇅▦▲▶▼◀◉○◎♨♩♪♫♭♮♯〰〽",
   "missing": "∿≋⊐⋮⏤◔⚙✈✋✲"
  },
@@ -25,10 +25,10 @@
   "source": "SourceHanSansCN-Medium.otf",
   "source_sha256": "a94e558a2fe972bee4f46bce0843abff37063fd68c33f1e7d9058f6f09432b01",
   "px": 16,
-  "glyphs": 831,
+  "glyphs": 853,
   "line_h": 24,
   "ascent": 19,
-  "bytes": 109791,
+  "bytes": 112965,
   "fallback": "",
   "missing": "∿≋⊐⋮⏤◔⚙✈✋✲"
  },
@@ -36,10 +36,10 @@
   "source": "SourceHanSansCN-Medium.otf",
   "source_sha256": "a94e558a2fe972bee4f46bce0843abff37063fd68c33f1e7d9058f6f09432b01",
   "px": 14,
-  "glyphs": 831,
+  "glyphs": 853,
   "line_h": 22,
   "ascent": 17,
-  "bytes": 88573,
+  "bytes": 91113,
   "fallback": "",
   "missing": "∿≋⊐⋮⏤◔⚙✈✋✲"
  },
@@ -87,5 +87,5 @@
   "fallback": "",
   "missing": ""
  },
- "_charset_size": 842
+ "_charset_size": 864
 }

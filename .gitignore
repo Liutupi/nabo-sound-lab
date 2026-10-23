@@ -1,5 +1,6 @@
 # Public source allowlist. Private validation, backups, jobs and caches stay ignored.
 # New public files must be explicitly unignored; no blanket git add of local artifacts.
+
 /*
 !/docs/
 /docs/*
@@ -959,3 +960,46 @@
 !/docs/community/v0.1.2/graphics-manifest.json
 !/docs/community/v0.1.2/image-validation.json
 !/docs/community/v0.1.2/submission-status.json
+
+# Wireless battle development sources and host/device framebuffer evidence.
+!/docs/WIRELESS_DUEL.md
+!/docs/VALIDATION_0_2_0_DEV.json
+!/prototype/wireless-duel.html
+!/prototype/duel-rules.js
+!/firmware/sdkconfig.duel.defaults
+!/firmware/tools/build-duel.ps1
+!/firmware/main/link/
+/firmware/main/link/*
+!/firmware/main/link/sd_radio.c
+!/firmware/main/link/sd_radio.h
+!/firmware/main/ui/duel_model.c
+!/firmware/main/ui/duel_model.h
+!/firmware/main/ui/duel_rules.c
+!/firmware/main/ui/duel_rules.h
+!/firmware/main/ui/sc_duel.c
+!/firmware/main/ui/sc_duel.h
+!/tests/duel_host/
+/tests/duel_host/*
+!/tests/duel_host/rules_test.c
+!/tests/duel_host/trace.js
+!/tests/duel_host/test_rules.py
+!/tests/duel_host/network_test.c
+!/tests/duel_host/test_network.py
+!/tests/duel_host/network-validation.json
+!/tests/duel_host/radio_fault_test.py
+!/tests/duel_host/radio_fault_test_fixture.c
+!/tests/duel_host/radio_fault_test_mock.h
+!/tests/duel_host/test_ui.py
+!/tests/duel_host/ui-validation.json
+!/docs/images/duel-*.png
+!/tests/duel_host/test_fragmented_cache.py
+!/tests/duel_host/fragmented_cache_driver.c
+!/tests/duel_host/test_legacy_ui.py
+!/firmware/sdkconfig.duel
+!/tests/duel_host/host_tools.py
+!/tests/duel_host/README.md
+!/tools/verify_preview_release.py
+!/docs/FLASHING_0_2_0_PREVIEW.md
+!/docs/RELEASE_v0.2.0-preview.1.md
+!/docs/ART_DELIVERY_0_2_0_PREVIEW.json
+!/CHANGELOG.md

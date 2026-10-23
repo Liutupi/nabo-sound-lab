@@ -74,6 +74,7 @@ code{font-family:var(--mono);font-size:12px;color:var(--cyan)}
         <a href="new-games.html?game=flight">哼歌飞行</a>
         <a href="new-games.html?game=clap">拍手节奏</a>
         <a href="new-games.html?game=sampler">采样琴</a>
+        <a href="wireless-duel.html">无线节奏对战 · 开发原型</a>
       </nav>
     </div>
     <div class="card">
@@ -1018,7 +1019,7 @@ const SPLASH={id:'splash',name:'开机',noSrc:true,t0:0,
     fw:['正式版用新片段 S-WELCOME：戴上耳机 → 打碟 → 挥手（120×120）；原型里暂用算命机的 N-WELCOME 占位','平线、波形、频谱柱都是纯填色，用正弦表','0.1.2 开机语音：“NABO，陪你玩音乐”；沿用赛博算命机的阳光小男孩音色，由固件播放交付录音','减弱闪烁模式：不做错位、频谱柱静止、提示不闪']}};
 
 const NEW_TOY=(id,name,en,ic)=>({id,name,en,ic,url:'new-games.html?game='+id});
-const ITEMS=[{sep:'玩 · 声音玩具'},ECHO,SHOUT,CANDLE,ROPE,RANGE,NEW_TOY('flight','哼歌飞行','HUM FLIGHT','✈'),NEW_TOY('clap','拍手节奏','CLAP BEAT','✋'),NEW_TOY('sampler','采样琴','SAMPLER','♫'),
+const ITEMS=[{sep:'玩 · 声音玩具'},ECHO,SHOUT,CANDLE,ROPE,RANGE,NEW_TOY('flight','哼歌飞行','HUM FLIGHT','✈'),NEW_TOY('clap','拍手节奏','CLAP BEAT','✋'),NEW_TOY('sampler','采样琴','SAMPLER','♫'),{id:'duel',name:'无线对战',en:'2P',ic:'♫',url:'wireless-duel.html'},
   {sep:'看 · 声音可视化'},SPEC,WATER,SCOPE,CHROMA,DBM,{sep:'练 · 音乐工具'},TUNER,GUITAR,BEAT,PITCH,{sep:'其他'},SETTINGS];
 const MENU={id:'menu',sel:1,scroll:0,
   move(d){let s=this.sel;do{s=(s+d+ITEMS.length)%ITEMS.length}while(ITEMS[s].sep);this.sel=s},

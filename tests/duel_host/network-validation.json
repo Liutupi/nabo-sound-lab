@@ -1,0 +1,247 @@
+{
+  "scope": "production pure C state machine, simulated two-clock packet queue; no ESP-IDF, radio, hardware, display or physical key validation",
+  "device_tested": false,
+  "esp32_built": false,
+  "compiler": "existing TCC host compiler",
+  "production_sha256": {
+    "duel_model.c": "7f0c7e193305305ff0632e35a31e2df97e7ec4b06c84d58f7df8a825ca0b0cc2",
+    "duel_model.h": "208bdd6d51f5d599d10f33b2c54f41ca66dd98fba8bc037cfb6acc7578d56dc5",
+    "duel_rules.c": "809b87fc064934a650c5627f8ed63ab85cdac144b6d7c570ae5f098629f4e0dd",
+    "duel_rules.h": "11f6cb4d2ef4db6e28c1b0e23d058890cb5586156f567a25804d2eeef0aab73c"
+  },
+  "test_sha256": {
+    "network_test.c": "3677db018e6e6a3e892ef0556da4f0e7bb3d0f3e695c43127229453a9125632d",
+    "test_network.py": "1df57873f9b1f081b60a97aa4276e479382e2683915f36107059e453eb0112ce"
+  },
+  "simulation": {
+    "tick_ms": 5,
+    "base_delivery_ms": 8,
+    "bounded_main_packet_jitter_ms": 23,
+    "duplicate_extra_delay_max_ms": 600,
+    "loss_percent": 20,
+    "duplicate_percent": 25,
+    "one_send_inflight_ms": 8,
+    "host_guest_clock_offsets_ms": [
+      0,
+      4157,
+      -27103,
+      15037,
+      -9123
+    ],
+    "uint32_clock_wrap": true,
+    "packet_crc_corruption_bits": 352,
+    "scores": "host all perfect; guest alternating +90/-90/0ms",
+    "timestamp_source": "local monotonic pressed_at, not packet arrival",
+    "not_covered": [
+      "physical key/debounce latency",
+      "LCD/audio presentation timing",
+      "real ESP-NOW RF",
+      "clock drift",
+      "malicious authenticated peer resistance"
+    ]
+  },
+  "tests": {
+    "wire": {
+      "passed": true,
+      "exit_code": 0,
+      "stdout": "{\"scenarios\":1,\"assertions\":714,\"completed_three_round_matches\":0,\"match_packets_delivered\":0,\"match_packets_dropped\":0,\"match_duplicates_queued\":0,\"match_out_of_order_deliveries\":0,\"match_single_inflight_rejections\":0,\"last_packets_delivered\":11,\"device_tested\":false}",
+      "stderr": ""
+    },
+    "identity": {
+      "passed": true,
+      "exit_code": 0,
+      "stdout": "{\"scenarios\":1,\"assertions\":98,\"completed_three_round_matches\":0,\"match_packets_delivered\":0,\"match_packets_dropped\":0,\"match_duplicates_queued\":0,\"match_out_of_order_deliveries\":0,\"match_single_inflight_rejections\":0,\"last_packets_delivered\":11,\"device_tested\":false}",
+      "stderr": ""
+    },
+    "replay": {
+      "passed": true,
+      "exit_code": 0,
+      "stdout": "{\"scenarios\":1,\"assertions\":743,\"completed_three_round_matches\":0,\"match_packets_delivered\":0,\"match_packets_dropped\":0,\"match_duplicates_queued\":0,\"match_out_of_order_deliveries\":0,\"match_single_inflight_rejections\":0,\"last_packets_delivered\":130,\"device_tested\":false}",
+      "stderr": ""
+    },
+    "timeouts": {
+      "passed": true,
+      "exit_code": 0,
+      "stdout": "{\"scenarios\":1,\"assertions\":259,\"completed_three_round_matches\":0,\"match_packets_delivered\":0,\"match_packets_dropped\":0,\"match_duplicates_queued\":0,\"match_out_of_order_deliveries\":0,\"match_single_inflight_rejections\":0,\"last_packets_delivered\":1,\"device_tested\":false}",
+      "stderr": ""
+    },
+    "ack_loss": {
+      "passed": true,
+      "exit_code": 0,
+      "stdout": "{\"scenarios\":1,\"assertions\":138,\"completed_three_round_matches\":0,\"match_packets_delivered\":0,\"match_packets_dropped\":0,\"match_duplicates_queued\":0,\"match_out_of_order_deliveries\":0,\"match_single_inflight_rejections\":0,\"last_packets_delivered\":23,\"device_tested\":false}",
+      "stderr": ""
+    },
+    "partitions": {
+      "passed": true,
+      "exit_code": 0,
+      "stdout": "{\"scenarios\":4,\"assertions\":12988,\"completed_three_round_matches\":0,\"match_packets_delivered\":0,\"match_packets_dropped\":0,\"match_duplicates_queued\":0,\"match_out_of_order_deliveries\":0,\"match_single_inflight_rejections\":0,\"last_packets_delivered\":41,\"device_tested\":false}",
+      "stderr": ""
+    },
+    "old_packet_keepalive": {
+      "passed": true,
+      "exit_code": 0,
+      "stdout": "{\"scenarios\":1,\"assertions\":415,\"completed_three_round_matches\":0,\"match_packets_delivered\":0,\"match_packets_dropped\":0,\"match_duplicates_queued\":0,\"match_out_of_order_deliveries\":0,\"match_single_inflight_rejections\":0,\"last_packets_delivered\":41,\"device_tested\":false}",
+      "stderr": ""
+    },
+    "room_bounds": {
+      "passed": true,
+      "exit_code": 0,
+      "stdout": "{\"scenarios\":1,\"assertions\":67,\"completed_three_round_matches\":0,\"match_packets_delivered\":0,\"match_packets_dropped\":0,\"match_duplicates_queued\":0,\"match_out_of_order_deliveries\":0,\"match_single_inflight_rejections\":0,\"last_packets_delivered\":1,\"device_tested\":false}",
+      "stderr": ""
+    },
+    "round_bound": {
+      "passed": true,
+      "exit_code": 0,
+      "stdout": "{\"scenarios\":1,\"assertions\":54,\"completed_three_round_matches\":0,\"match_packets_delivered\":0,\"match_packets_dropped\":0,\"match_duplicates_queued\":0,\"match_out_of_order_deliveries\":0,\"match_single_inflight_rejections\":0,\"last_packets_delivered\":11,\"device_tested\":false}",
+      "stderr": ""
+    },
+    "final_confirmation": {
+      "passed": true,
+      "exit_code": 0,
+      "stdout": "{\"scenarios\":2,\"assertions\":3971,\"completed_three_round_matches\":0,\"match_packets_delivered\":0,\"match_packets_dropped\":0,\"match_duplicates_queued\":0,\"match_out_of_order_deliveries\":0,\"match_single_inflight_rejections\":0,\"last_packets_delivered\":367,\"device_tested\":false}",
+      "stderr": ""
+    },
+    "full": {
+      "passed": true,
+      "exit_code": 0,
+      "stdout": "{\"scenarios\":41,\"assertions\":1044260,\"completed_three_round_matches\":27,\"match_packets_delivered\":9356,\"match_packets_dropped\":1630,\"match_duplicates_queued\":1724,\"match_out_of_order_deliveries\":996,\"match_single_inflight_rejections\":5,\"last_packets_delivered\":367,\"device_tested\":false}",
+      "stderr": ""
+    }
+  },
+  "mutations": [
+    {
+      "name": "session_guard",
+      "executed": true,
+      "rejected": true,
+      "test_result": {
+        "passed": false,
+        "exit_code": 2,
+        "stdout": "",
+        "stderr": "FAIL tests/duel_host/network_test.c:76: memcmp(&old,&s.m[to],sizeof old)==0"
+      }
+    },
+    {
+      "name": "wire_checksum",
+      "executed": true,
+      "rejected": true,
+      "test_result": {
+        "passed": false,
+        "exit_code": 2,
+        "stdout": "",
+        "stderr": "FAIL tests/duel_host/network_test.c:85: !sd_valid(p,SD_WIRE)"
+      }
+    },
+    {
+      "name": "same_round_conflict",
+      "executed": true,
+      "rejected": true,
+      "test_result": {
+        "passed": false,
+        "exit_code": 2,
+        "stdout": "",
+        "stderr": "FAIL tests/duel_host/network_test.c:77: memcmp(&old,&s.m[to],sizeof old)==0"
+      }
+    },
+    {
+      "name": "disconnect_timeout",
+      "executed": true,
+      "rejected": true,
+      "test_result": {
+        "passed": false,
+        "exit_code": 2,
+        "stdout": "",
+        "stderr": "FAIL tests/duel_host/network_test.c:165: s.m[0].stage==SD_LOST&&s.m[1].stage==SD_LOST"
+      }
+    },
+    {
+      "name": "ack_commit",
+      "executed": true,
+      "rejected": true,
+      "test_result": {
+        "passed": false,
+        "exit_code": 2,
+        "stdout": "",
+        "stderr": "FAIL tests/duel_host/network_test.c:176: s.m[1].stage!=SD_PLAY"
+      }
+    },
+    {
+      "name": "old_sequence_guard",
+      "executed": true,
+      "rejected": true,
+      "test_result": {
+        "passed": false,
+        "exit_code": 2,
+        "stdout": "",
+        "stderr": "FAIL tests/duel_host/network_test.c:206: s.m[0].stage==SD_LOST&&s.m[1].stage==SD_LOST"
+      }
+    },
+    {
+      "name": "final_ok_guard",
+      "executed": true,
+      "rejected": true,
+      "test_result": {
+        "passed": false,
+        "exit_code": 2,
+        "stdout": "",
+        "stderr": "FAIL tests/duel_host/network_test.c:220: !m->ready"
+      }
+    },
+    {
+      "name": "round_start_guard",
+      "executed": true,
+      "rejected": true,
+      "test_result": {
+        "passed": false,
+        "exit_code": 2,
+        "stdout": "",
+        "stderr": "FAIL tests/duel_host/network_test.c:34: sd_valid(p,n)"
+      }
+    },
+    {
+      "name": "host_final_authority",
+      "executed": true,
+      "rejected": true,
+      "test_result": {
+        "passed": false,
+        "exit_code": 2,
+        "stdout": "",
+        "stderr": "FAIL tests/duel_host/network_test.c:233: s.m[0].stage==SD_FINAL&&s.m[1].stage==SD_FINAL"
+      }
+    },
+    {
+      "name": "abort_reason",
+      "executed": true,
+      "rejected": true,
+      "test_result": {
+        "passed": false,
+        "exit_code": 2,
+        "stdout": "",
+        "stderr": "FAIL tests/duel_host/network_test.c:240: sd_get32(s.last[0][SD_LEAVE]+16)==1"
+      }
+    },
+    {
+      "name": "abort_after_final",
+      "executed": true,
+      "rejected": true,
+      "test_result": {
+        "passed": false,
+        "exit_code": 2,
+        "stdout": "",
+        "stderr": "FAIL tests/duel_host/network_test.c:240: s.m[0].stage==SD_LOST"
+      }
+    }
+  ],
+  "passed": true,
+  "totals": {
+    "scenarios": 41,
+    "assertions": 1044260,
+    "completed_three_round_matches": 27,
+    "match_packets_delivered": 9356,
+    "match_packets_dropped": 1630,
+    "match_duplicates_queued": 1724,
+    "match_out_of_order_deliveries": 996,
+    "match_single_inflight_rejections": 5,
+    "last_packets_delivered": 367,
+    "device_tested": false
+  }
+}

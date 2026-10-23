@@ -1,0 +1,118 @@
+{
+  "schema": "nabo-soundlab-public-art-delivery-v1",
+  "release_tag": "v0.2.0-preview.1",
+  "firmware_version": "0.2.0-dev",
+  "app_sha256": "5d8440c6494d2464b379c49f0af31e12e658e4e2c80ace6e058325c1308c4d24",
+  "assets_sha256": "5fc895c4ef5ef14a0aa90f40ca027d75806c40f4e7a44860f8538d1d5fa61edb",
+  "all_86_character_prop_resources_unchanged": true,
+  "boot_voice_PCM_unchanged": true,
+  "resource_entries": 95,
+  "unchanged_entries": 91,
+  "font_entries_expanded": 4,
+  "main_Chinese_min_px": 16,
+  "score_px": 22,
+  "host_UI_frames": 292,
+  "host_UI_violations": 0,
+  "host_UI_validation_sha256": "9db454f03422999c8594479c21fec434e0ccd075270417cae010b4f845d37b12",
+  "host_legacy_UI_frames": 11613,
+  "new_character_generation": false,
+  "character_mirrored": false,
+  "real_two_device_RF_tested": true,
+  "controlled_serial_input": true,
+  "physical_user_play_deferred": true,
+  "source_identity": "costume/final.png and existing props, original frame pixels retained",
+  "device_framebuffers": [
+    {
+      "path": "docs/images/duel-device-A-v3-choir.png",
+      "sha256": "d4841449ea30971c5319cb6a7d274af8f70cb9937047f13159b91a20f0baa0a5",
+      "native_resolution": [
+        240,
+        320
+      ],
+      "capture_pixels_unchanged": true,
+      "private_capture_metadata_published": false
+    },
+    {
+      "path": "docs/images/duel-device-A-v3-choose.png",
+      "sha256": "2a44a5fa945df37f2fa27e5e41c430705e8b7407f79161f6c5058315d416f6f5",
+      "native_resolution": [
+        240,
+        320
+      ],
+      "capture_pixels_unchanged": true,
+      "private_capture_metadata_published": false
+    },
+    {
+      "path": "docs/images/duel-device-A-v3-echo.png",
+      "sha256": "5ca177065fff31fedeed1031cea75807a8b9d106b48d16ad30c0db30478dfea7",
+      "native_resolution": [
+        240,
+        320
+      ],
+      "capture_pixels_unchanged": true,
+      "private_capture_metadata_published": false
+    },
+    {
+      "path": "docs/images/duel-device-A-v3-host-room.png",
+      "sha256": "a24de33ddd3d478415fdc2f922b2868ce3984170772366bb0a33b63c8930b732",
+      "native_resolution": [
+        240,
+        320
+      ],
+      "capture_pixels_unchanged": true,
+      "private_capture_metadata_published": false
+    },
+    {
+      "path": "docs/images/duel-device-A-v3-menu.png",
+      "sha256": "12c1ed353058516990de80e48c4337d188d9f70175d8306e06bfc29e7d26f56b",
+      "native_resolution": [
+        240,
+        320
+      ],
+      "capture_pixels_unchanged": true,
+      "private_capture_metadata_published": false
+    },
+    {
+      "path": "docs/images/duel-device-A-v3-sampler.png",
+      "sha256": "bbf723dc93965d3a0c39729301e08211069cc59f50fc9b82aa84084664655761",
+      "native_resolution": [
+        240,
+        320
+      ],
+      "capture_pixels_unchanged": true,
+      "private_capture_metadata_published": false
+    },
+    {
+      "path": "docs/images/duel-device-A-v3-settings.png",
+      "sha256": "ab3572188019e03f66ffd3fc43fb4c589719de7626ce306191156a458361d1be",
+      "native_resolution": [
+        240,
+        320
+      ],
+      "capture_pixels_unchanged": true,
+      "private_capture_metadata_published": false
+    }
+  ],
+  "overviews": [
+    {
+      "path": "docs/images/duel-firmware-overview.png",
+      "sha256": "bb7233b9b949d1f0956af447640558367641ad89aba66923d534207268c4fa24",
+      "background": "#0A0716"
+    },
+    {
+      "path": "docs/images/duel-prototype-overview.png",
+      "sha256": "a1ea4b514bf55aef3bd4c959282043359e22826278600588c272532e4e31bb0b",
+      "background": "#0A0716"
+    },
+    {
+      "path": "docs/images/duel-device-A-v3-overview.png",
+      "sha256": "5ddeb043a3efed06e1eb3d73a2ce3cf81201db604b983408667401830e7bee59",
+      "background": "#0A0716"
+    },
+    {
+      "path": "docs/images/duel-device-real-rf-overview.png",
+      "sha256": "d0622699a6c314e75eaef26fcc96665711e225f20867114fd272bcac6e03a84d",
+      "background": "#0A0716"
+    }
+  ]
+}

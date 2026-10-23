@@ -27,9 +27,12 @@ extern const sl_scene_t SC_BOOT, SC_MENU;
 static const sl_scene_t *g_scene;
 static uint32_t g_t0, g_up_t, g_toast_t, g_rng = 20261023;
 static bool g_held[3], g_up_pending;
+static uint32_t g_key_ms;
 static char g_toast[48];
 
 __attribute__((weak)) void sl_settings_save(void) {}
+__attribute__((weak)) uint32_t sl_clock_ms(void) { return VT; }
+uint32_t sl_key_time(void) { return g_key_ms; }
 __attribute__((weak)) void sl_volume_apply(uint8_t volume) { (void)volume; }
 __attribute__((weak)) void sl_mic_last(int16_t *dst, int n) { memset(dst, 0, sizeof(int16_t) * (size_t)n); }
 
@@ -78,7 +81,11 @@ void sl_ui_back(void) {
 
 /* 按键：▲ 单击延迟 300 ms 判断是否双击（双击返回）；主菜单的 ▲ 立刻响应；OK 支持按住 */
 void sl_ui_key(int k, bool down) {
+  sl_ui_key_at(k, down, sl_clock_ms());
+}
+void sl_ui_key_at(int k, bool down, uint32_t pressed_ms) {
   if (k < 0 || k > 2 || g_held[k] == down) return;
+  g_key_ms = pressed_ms;
   g_held[k] = down;
   const sl_scene_t *s = g_scene;
   if (!down) { if (k == K_OK && s->ok_up) s->ok_up(); return; }

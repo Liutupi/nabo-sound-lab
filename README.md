@@ -2,9 +2,13 @@
 
 戴上耳机，和 NABO 一起玩音乐。用于 FoloToy AI Passport 工牌的独立离线固件，ESP32-C3 / 8MB Flash / 240×320 / ES8311。
 
-**首次公开发布：v0.1.2，实机修订 r4。** 已有验证范围和已知问题公开列出；固件不需要 Wi-Fi，也不包含小智聊天功能。
+**无线对战预览版：v0.2.0-preview.1。** 两块工牌直连，三轮比节奏；无需路由器、互联网或账号。内部版本为已实测的0.2.0-dev，实体手感、视听同步和距离测试仍待验。单机离线，对战内临时开启ESP-NOW；不包含小智聊天功能。
 
-[下载固件](https://github.com/Liutupi/nabo-sound-lab/releases/tag/v0.1.2) · [刷机说明](docs/FLASHING.md) · [实测与已知问题](docs/VALIDATION_v0.1.2.md) · [构建说明](docs/BUILD.md)
+[下载无线对战预览版](https://github.com/Liutupi/nabo-sound-lab/releases/tag/v0.2.0-preview.1) · [预览版安装](docs/FLASHING_0_2_0_PREVIEW.md) · [发布说明](docs/RELEASE_v0.2.0-preview.1.md) · [稳定版v0.1.2](https://github.com/Liutupi/nabo-sound-lab/releases/tag/v0.1.2) · [构建说明](docs/BUILD.md)
+
+开发分支新增「玩 → 无线对战」：两块工牌直连，同一谱面，四拍预备后看拍点按OK，三轮比节奏。不唱歌、不辨音高，静音也能玩。[可玩双屏原型](prototype/wireless-duel.html) · [规则与开发版验收](docs/WIRELESS_DUEL.md)。0.2.0-dev与正式v0.1.2分开，设备验证状态见[开发记录](docs/VALIDATION_0_2_0_DEV.json)。
+
+2026-10-24已在两块真实C3完成12局、36轮受控联机测试，含连续10局、轮换房主和静音得分，约30FPS；突然断联后正确作废。[双机实测总览](docs/images/duel-device-real-rf-overview.png)。实体按键手感、音效同步和距离测试待验，正式发布仍为v0.1.2。
 
 ![NABO 音乐人](docs/images/nabo-musician.png)
 
@@ -12,6 +16,7 @@
 
 | 分组 | 内容 |
 |---|---|
+| 双机对战（预览） | 四位房号直连、看拍点按OK、三轮累计、音效可关、断联作废 |
 | 玩声音 | 12种变声复读、喊叫跑酷、吹蜡烛、长音走钢丝、声部卡、哼歌飞行、拍手节奏、采样琴 |
 | 看声音 | 频谱仪、声纹瀑布、示波器、和弦环、分贝计 |
 | 练音乐 | 调音器、吉他工具箱、节拍检测、音准曲线 |
@@ -23,11 +28,15 @@
 
 ## 固件下载与安装
 
+无线对战下载v0.2.0-preview.1的完整ZIP，按[预览版安装说明](docs/FLASHING_0_2_0_PREVIEW.md)操作。内部显示0.2.0-dev为正常现象。已安装声音实验室且布局相同的设备升级app和assets；其他玩法先备份，再安装配套完整布局。预览版已做真实双机受控测试，实体手感、视听同步、距离及完整merged一次直刷仍待验。
+
+### 稳定版v0.1.2
+
 首次安装下载 **nabo-soundlab-0.1.2-merged.bin**，从0x0写入，选择ESP32-C3和8MB Flash。此安装会替换原有玩法，先自行备份。已有相同分区的声音实验室0.1.1/0.1.2，按刷机说明只升级app和assets以保留设置。不要把其他玩法的分区地址直接套用到本项目。
 
 Release 同时提供完整ZIP、分立镜像、manifest.json和SHA256SUMS.txt。发布的是已验证的冻结二进制，未为发布重新编译。当前实物验证覆盖r4 app和assets；实物保留旧boot，完整包包含匹配构建输出的新boot，未另做整包首次安装的端到端实测。
 
-## 实测范围
+## 稳定版v0.1.2的实测范围
 
 0/40/80%经三次受控芯片重启后读取一致；12种变声录放完成，音频API读写错误0；首录处理峰值0.680ms。四个正式性能窗口30.30FPS、慢帧0；实际变声演出仍有慢帧。
 

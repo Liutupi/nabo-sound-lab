@@ -1,0 +1,2444 @@
+{
+  "scope": "production C UI host RGB565 rendering, not optical photographs or wireless device verification",
+  "frames": 292,
+  "states_and_variants": 24,
+  "incremental_full_pixel_mismatches": 0,
+  "display_list_overflows": 0,
+  "max_display_ops": 40,
+  "action_mapping_checked": true,
+  "text_ink_overlaps": 0,
+  "chinese_minimum_nominal_px": 16,
+  "scores_nominal_px": 22,
+  "native_resolution": [
+    240,
+    320
+  ],
+  "missing_glyphs": 0,
+  "countdown_verified": [
+    4,
+    3,
+    2,
+    1
+  ],
+  "native_sprite_resources": {
+    "spr/S-CHEER/76": {
+      "bytes": 27520,
+      "frames": 18,
+      "sha256": "698cb4b54946b7664af8c9a6fa1129b3e715e2cb396371b0498bc560de294961"
+    },
+    "spr/S-DRUM/76": {
+      "bytes": 6391,
+      "frames": 5,
+      "sha256": "2600472e945bfa8d34461ce715d3e04b2868ffe3c0ff4654713624297bd1275e"
+    },
+    "spr/S-HEADPHONE/76": {
+      "bytes": 21569,
+      "frames": 24,
+      "sha256": "15a9c6c63eee464edfcd1646925255a7cc9afe73c0d1def4d9e5efd8ffccc8ef"
+    },
+    "spr/S-NOD/76": {
+      "bytes": 17636,
+      "frames": 12,
+      "sha256": "c1c4614ea15477452a7551a3d251e5a3f9dd7ead0a967bfc8c3cc4db428bda09"
+    },
+    "spr/S-OOPS/76": {
+      "bytes": 20877,
+      "frames": 14,
+      "sha256": "8a7478cc5d31797dd29aa6cb98721db31cffd045e3a42dde23b4654cd5eb2e4b"
+    }
+  },
+  "violations": [],
+  "source_sha256": {
+    "firmware\\main\\ui\\duel_model.c": "7f0c7e193305305ff0632e35a31e2df97e7ec4b06c84d58f7df8a825ca0b0cc2",
+    "firmware\\main\\ui\\duel_rules.c": "809b87fc064934a650c5627f8ed63ab85cdac144b6d7c570ae5f098629f4e0dd",
+    "firmware\\main\\ui\\newgames_model.c": "698812c88072eb5a3697e40e7e505265b18b17f39760087814c19c85f50f1eff",
+    "firmware\\main\\ui\\sc_core.c": "99b3fff22aeb9f3323172f7a774c038f60897f42ecdebf8d042e06292e74fbf9",
+    "firmware\\main\\ui\\sc_duel.c": "4107835c78c8822fdc36a64f92e9d66db7f19c26c69ef5092a970aecc34100ae",
+    "firmware\\main\\ui\\sc_echo.c": "e01c21459d64e07e9170af39bf123e0d070a8cdf3d9847b0abeb47937f034039",
+    "firmware\\main\\ui\\sc_guitar.c": "889a2d476f9117d19e41468e3570e6c841489a18764cd1bb325df5dc291aa61c",
+    "firmware\\main\\ui\\sc_newgames.c": "68596812c282609e1ffba914264371621be884a1b4fb021462951516dd7dce8c",
+    "firmware\\main\\ui\\sc_tools.c": "a42450c1e4e5f28059f51dbe9f8fe20f3d520e771fc1e9f43d64c6b4d81292e6",
+    "firmware\\main\\ui\\sc_toys.c": "bf795843d457fe29c0c27cce6bda3545bfdca7b05dc53467b8c6fea5d3f61433",
+    "firmware\\main\\ui\\sc_viz.c": "c0028a7bda4a10f8677e09a0c470df421a4602f04dbb97bcaad8164d6d940d0d",
+    "firmware\\main\\ui\\scenes.c": "1e9cb602fa962aaea285ab9f2e3efef3c3edc6445b98e7b29cda546266085785",
+    "firmware\\main\\ui\\sl_audio.c": "8cd6d707ff305318e253a3891cce963903795d42eb1ecc65b730404eadb51d96",
+    "firmware\\main\\ui\\sl_sampler.c": "39eda2253156304fcf88f81f3df8cfa728f561720192ed517bcf210a159c6252",
+    "firmware\\main\\ui\\sl_ui.c": "784f536b9e7c44399cdf1bc72f357b0cf97ff1059903f3222f778d50d0f6b519",
+    "firmware\\main\\gfx\\fc_gfx.c": "3b8b0b5721832f24e2e8a183ae73251f1fa1958f0aae722b660bf626a3bce3b9",
+    "firmware\\main\\gfx\\fc_res.c": "dbdbd19d410d2718578df4936b0b0d9935fde536b0c3aee8cd6aa1f267964adf",
+    "firmware\\main\\mic\\nabo_mic.c": "da4906df58ae30620eec19570aac8fba461c7b64d8281c6c98757e9ce907d3ae",
+    "firmware\\main\\voice\\nabo_voice.c": "242aaab2d8f9b098a51a2afe30a5e4fe35c992505b7c5b13b63f233a4df318f3",
+    "tests\\ui_host\\sl_host.c": "8961afd67417656952440407fc1f2c57050d02e0816b369a9dba5411af93fd3a"
+  },
+  "assets_sha256": "5fc895c4ef5ef14a0aa90f40ca027d75806c40f4e7a44860f8538d1d5fa61edb",
+  "cases": [
+    {
+      "case": "choose",
+      "stage": 0,
+      "outcome": 1,
+      "variant": 0,
+      "text": [
+        {
+          "x": 8,
+          "y": 4,
+          "w": 60,
+          "h": 18,
+          "font": 18,
+          "missing": 0,
+          "text": "无线对战"
+        },
+        {
+          "x": 215,
+          "y": 8,
+          "w": 17,
+          "h": 11,
+          "font": 14,
+          "missing": 0,
+          "text": "2P"
+        },
+        {
+          "x": 41,
+          "y": 120,
+          "w": 159,
+          "h": 18,
+          "font": 16,
+          "missing": 0,
+          "text": "看拍点，按 OK 比节奏"
+        },
+        {
+          "x": 88,
+          "y": 160,
+          "w": 64,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "创建房间"
+        },
+        {
+          "x": 88,
+          "y": 202,
+          "w": 64,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "寻找房间"
+        },
+        {
+          "x": 36,
+          "y": 241,
+          "w": 168,
+          "h": 18,
+          "font": 16,
+          "missing": 0,
+          "text": "无需路由器 · 不比音高"
+        },
+        {
+          "x": 87,
+          "y": 303,
+          "w": 32,
+          "h": 14,
+          "font": 16,
+          "missing": 0,
+          "text": "▲▲"
+        },
+        {
+          "x": 122,
+          "y": 303,
+          "w": 32,
+          "h": 16,
+          "font": 16,
+          "missing": 0,
+          "text": "返回"
+        },
+        {
+          "x": 51,
+          "y": 272,
+          "w": 139,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "▲▼ 选择   OK 进入"
+        }
+      ],
+      "sprite": [
+        {
+          "id": "S-HEADPHONE",
+          "size": 76,
+          "x": 120,
+          "y": 76,
+          "t": 20363
+        }
+      ],
+      "native_png": "docs/images/duel-firmware-choose.png"
+    },
+    {
+      "case": "search-four-rooms",
+      "stage": 1,
+      "outcome": 1,
+      "variant": 0,
+      "text": [
+        {
+          "x": 8,
+          "y": 4,
+          "w": 60,
+          "h": 18,
+          "font": 18,
+          "missing": 0,
+          "text": "无线对战"
+        },
+        {
+          "x": 174,
+          "y": 8,
+          "w": 58,
+          "h": 11,
+          "font": 14,
+          "missing": 0,
+          "text": "RHYTHM"
+        },
+        {
+          "x": 64,
+          "y": 44,
+          "w": 112,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "选择相同房间号"
+        },
+        {
+          "x": 94,
+          "y": 85,
+          "w": 52,
+          "h": 15,
+          "font": 22,
+          "missing": 0,
+          "text": "4826"
+        },
+        {
+          "x": 94,
+          "y": 125,
+          "w": 52,
+          "h": 15,
+          "font": 22,
+          "missing": 0,
+          "text": "4961"
+        },
+        {
+          "x": 94,
+          "y": 165,
+          "w": 52,
+          "h": 15,
+          "font": 22,
+          "missing": 0,
+          "text": "5096"
+        },
+        {
+          "x": 94,
+          "y": 205,
+          "w": 52,
+          "h": 15,
+          "font": 22,
+          "missing": 0,
+          "text": "5231"
+        },
+        {
+          "x": 87,
+          "y": 303,
+          "w": 32,
+          "h": 14,
+          "font": 16,
+          "missing": 0,
+          "text": "▲▲"
+        },
+        {
+          "x": 122,
+          "y": 303,
+          "w": 32,
+          "h": 16,
+          "font": 16,
+          "missing": 0,
+          "text": "返回"
+        },
+        {
+          "x": 51,
+          "y": 272,
+          "w": 139,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "▲▼ 选择   OK 加入"
+        }
+      ],
+      "sprite": [],
+      "native_png": "docs/images/duel-firmware-search-four-rooms.png"
+    },
+    {
+      "case": "host-room",
+      "stage": 2,
+      "outcome": 1,
+      "variant": 0,
+      "text": [
+        {
+          "x": 8,
+          "y": 4,
+          "w": 60,
+          "h": 18,
+          "font": 18,
+          "missing": 0,
+          "text": "无线对战"
+        },
+        {
+          "x": 174,
+          "y": 8,
+          "w": 58,
+          "h": 11,
+          "font": 14,
+          "missing": 0,
+          "text": "RHYTHM"
+        },
+        {
+          "x": 62,
+          "y": 45,
+          "w": 117,
+          "h": 15,
+          "font": 22,
+          "missing": 0,
+          "text": "ROOM 4826"
+        },
+        {
+          "x": 64,
+          "y": 167,
+          "w": 112,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "等待另一块工牌"
+        },
+        {
+          "x": 48,
+          "y": 196,
+          "w": 144,
+          "h": 18,
+          "font": 16,
+          "missing": 0,
+          "text": "对方选这个房号加入"
+        },
+        {
+          "x": 87,
+          "y": 303,
+          "w": 32,
+          "h": 14,
+          "font": 16,
+          "missing": 0,
+          "text": "▲▲"
+        },
+        {
+          "x": 122,
+          "y": 303,
+          "w": 32,
+          "h": 16,
+          "font": 16,
+          "missing": 0,
+          "text": "返回"
+        },
+        {
+          "x": 62,
+          "y": 272,
+          "w": 116,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "双击▲ 退出房间"
+        }
+      ],
+      "sprite": [
+        {
+          "id": "S-HEADPHONE",
+          "size": 76,
+          "x": 120,
+          "y": 112,
+          "t": 28363
+        }
+      ],
+      "native_png": "docs/images/duel-firmware-host-room.png"
+    },
+    {
+      "case": "join-request",
+      "stage": 3,
+      "outcome": 1,
+      "variant": 0,
+      "text": [
+        {
+          "x": 8,
+          "y": 4,
+          "w": 60,
+          "h": 18,
+          "font": 18,
+          "missing": 0,
+          "text": "无线对战"
+        },
+        {
+          "x": 174,
+          "y": 8,
+          "w": 58,
+          "h": 11,
+          "font": 14,
+          "missing": 0,
+          "text": "RHYTHM"
+        },
+        {
+          "x": 62,
+          "y": 45,
+          "w": 117,
+          "h": 15,
+          "font": 22,
+          "missing": 0,
+          "text": "ROOM 4826"
+        },
+        {
+          "x": 64,
+          "y": 167,
+          "w": 112,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "有对手申请加入"
+        },
+        {
+          "x": 64,
+          "y": 196,
+          "w": 112,
+          "h": 18,
+          "font": 16,
+          "missing": 0,
+          "text": "确认房号后接受"
+        },
+        {
+          "x": 87,
+          "y": 303,
+          "w": 32,
+          "h": 14,
+          "font": 16,
+          "missing": 0,
+          "text": "▲▲"
+        },
+        {
+          "x": 122,
+          "y": 303,
+          "w": 32,
+          "h": 16,
+          "font": 16,
+          "missing": 0,
+          "text": "返回"
+        },
+        {
+          "x": 91,
+          "y": 271,
+          "w": 59,
+          "h": 18,
+          "font": 16,
+          "missing": 0,
+          "text": "OK 接受"
+        }
+      ],
+      "sprite": [
+        {
+          "id": "S-HEADPHONE",
+          "size": 76,
+          "x": 120,
+          "y": 112,
+          "t": 32363
+        }
+      ],
+      "native_png": "docs/images/duel-firmware-join-request.png"
+    },
+    {
+      "case": "join-wait",
+      "stage": 4,
+      "outcome": 1,
+      "variant": 0,
+      "text": [
+        {
+          "x": 8,
+          "y": 4,
+          "w": 60,
+          "h": 18,
+          "font": 18,
+          "missing": 0,
+          "text": "无线对战"
+        },
+        {
+          "x": 174,
+          "y": 8,
+          "w": 58,
+          "h": 11,
+          "font": 14,
+          "missing": 0,
+          "text": "RHYTHM"
+        },
+        {
+          "x": 62,
+          "y": 45,
+          "w": 117,
+          "h": 15,
+          "font": 22,
+          "missing": 0,
+          "text": "ROOM 4826"
+        },
+        {
+          "x": 80,
+          "y": 167,
+          "w": 80,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "已申请加入"
+        },
+        {
+          "x": 49,
+          "y": 196,
+          "w": 143,
+          "h": 18,
+          "font": 16,
+          "missing": 0,
+          "text": "等待房主按 OK 接受"
+        },
+        {
+          "x": 87,
+          "y": 303,
+          "w": 32,
+          "h": 14,
+          "font": 16,
+          "missing": 0,
+          "text": "▲▲"
+        },
+        {
+          "x": 122,
+          "y": 303,
+          "w": 32,
+          "h": 16,
+          "font": 16,
+          "missing": 0,
+          "text": "返回"
+        },
+        {
+          "x": 78,
+          "y": 272,
+          "w": 84,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "双击▲ 取消"
+        }
+      ],
+      "sprite": [
+        {
+          "id": "S-HEADPHONE",
+          "size": 76,
+          "x": 120,
+          "y": 112,
+          "t": 36363
+        }
+      ],
+      "native_png": "docs/images/duel-firmware-join-wait.png"
+    },
+    {
+      "case": "lobby",
+      "stage": 5,
+      "outcome": 1,
+      "variant": 0,
+      "text": [
+        {
+          "x": 8,
+          "y": 4,
+          "w": 60,
+          "h": 18,
+          "font": 18,
+          "missing": 0,
+          "text": "无线对战"
+        },
+        {
+          "x": 174,
+          "y": 8,
+          "w": 58,
+          "h": 11,
+          "font": 14,
+          "missing": 0,
+          "text": "RHYTHM"
+        },
+        {
+          "x": 62,
+          "y": 45,
+          "w": 117,
+          "h": 15,
+          "font": 22,
+          "missing": 0,
+          "text": "ROOM 4826"
+        },
+        {
+          "x": 81,
+          "y": 162,
+          "w": 79,
+          "h": 18,
+          "font": 16,
+          "missing": 0,
+          "text": "按 OK 准备"
+        },
+        {
+          "x": 72,
+          "y": 193,
+          "w": 96,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "等待对手准备"
+        },
+        {
+          "x": 44,
+          "y": 228,
+          "w": 152,
+          "h": 16,
+          "font": 16,
+          "missing": 0,
+          "text": "同一谱面 · 三轮累计"
+        },
+        {
+          "x": 87,
+          "y": 303,
+          "w": 32,
+          "h": 14,
+          "font": 16,
+          "missing": 0,
+          "text": "▲▲"
+        },
+        {
+          "x": 122,
+          "y": 303,
+          "w": 32,
+          "h": 16,
+          "font": 16,
+          "missing": 0,
+          "text": "返回"
+        },
+        {
+          "x": 64,
+          "y": 271,
+          "w": 112,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "双方准备后开始"
+        }
+      ],
+      "sprite": [
+        {
+          "id": "S-HEADPHONE",
+          "size": 76,
+          "x": 120,
+          "y": 112,
+          "t": 40363
+        }
+      ],
+      "native_png": "docs/images/duel-firmware-lobby.png"
+    },
+    {
+      "case": "armed",
+      "stage": 6,
+      "outcome": 1,
+      "variant": 0,
+      "text": [
+        {
+          "x": 8,
+          "y": 4,
+          "w": 60,
+          "h": 18,
+          "font": 18,
+          "missing": 0,
+          "text": "无线对战"
+        },
+        {
+          "x": 174,
+          "y": 8,
+          "w": 58,
+          "h": 11,
+          "font": 14,
+          "missing": 0,
+          "text": "RHYTHM"
+        },
+        {
+          "x": 40,
+          "y": 38,
+          "w": 161,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "第 2 / 3 轮 · 105 BPM"
+        },
+        {
+          "x": 72,
+          "y": 175,
+          "w": 96,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "准备跟上拍点"
+        },
+        {
+          "x": 51,
+          "y": 205,
+          "w": 139,
+          "h": 18,
+          "font": 16,
+          "missing": 0,
+          "text": "先数四拍，再按 OK"
+        },
+        {
+          "x": 87,
+          "y": 303,
+          "w": 32,
+          "h": 14,
+          "font": 16,
+          "missing": 0,
+          "text": "▲▲"
+        },
+        {
+          "x": 122,
+          "y": 303,
+          "w": 32,
+          "h": 16,
+          "font": 16,
+          "missing": 0,
+          "text": "返回"
+        },
+        {
+          "x": 78,
+          "y": 271,
+          "w": 84,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "▼ 音效开关"
+        }
+      ],
+      "sprite": [
+        {
+          "id": "S-HEADPHONE",
+          "size": 76,
+          "x": 120,
+          "y": 114,
+          "t": 44363
+        }
+      ],
+      "native_png": "docs/images/duel-firmware-armed.png"
+    },
+    {
+      "case": "play",
+      "stage": 7,
+      "outcome": 1,
+      "variant": 0,
+      "text": [
+        {
+          "x": 8,
+          "y": 4,
+          "w": 60,
+          "h": 18,
+          "font": 18,
+          "missing": 0,
+          "text": "无线对战"
+        },
+        {
+          "x": 174,
+          "y": 8,
+          "w": 58,
+          "h": 11,
+          "font": 14,
+          "missing": 0,
+          "text": "RHYTHM"
+        },
+        {
+          "x": 40,
+          "y": 38,
+          "w": 161,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "第 2 / 3 轮 · 105 BPM"
+        },
+        {
+          "x": 59,
+          "y": 140,
+          "w": 123,
+          "h": 18,
+          "font": 16,
+          "missing": 0,
+          "text": "拍点到线，按 OK"
+        },
+        {
+          "x": 114,
+          "y": 244,
+          "w": 13,
+          "h": 15,
+          "font": 22,
+          "missing": 0,
+          "text": "0"
+        },
+        {
+          "x": 87,
+          "y": 303,
+          "w": 32,
+          "h": 14,
+          "font": 16,
+          "missing": 0,
+          "text": "▲▲"
+        },
+        {
+          "x": 122,
+          "y": 303,
+          "w": 32,
+          "h": 16,
+          "font": 16,
+          "missing": 0,
+          "text": "返回"
+        },
+        {
+          "x": 51,
+          "y": 271,
+          "w": 139,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "▼ 音效开   OK 跟打"
+        }
+      ],
+      "sprite": [
+        {
+          "id": "S-DRUM",
+          "size": 76,
+          "x": 120,
+          "y": 94,
+          "t": 3967
+        }
+      ],
+      "native_png": "docs/images/duel-firmware-play.png"
+    },
+    {
+      "case": "round-result",
+      "stage": 8,
+      "outcome": 1,
+      "variant": 0,
+      "text": [
+        {
+          "x": 8,
+          "y": 4,
+          "w": 60,
+          "h": 18,
+          "font": 18,
+          "missing": 0,
+          "text": "无线对战"
+        },
+        {
+          "x": 174,
+          "y": 8,
+          "w": 58,
+          "h": 11,
+          "font": 14,
+          "missing": 0,
+          "text": "RHYTHM"
+        },
+        {
+          "x": 54,
+          "y": 50,
+          "w": 16,
+          "h": 16,
+          "font": 16,
+          "missing": 0,
+          "text": "你"
+        },
+        {
+          "x": 162,
+          "y": 50,
+          "w": 32,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "对手"
+        },
+        {
+          "x": 43,
+          "y": 76,
+          "w": 39,
+          "h": 15,
+          "font": 22,
+          "missing": 0,
+          "text": "875"
+        },
+        {
+          "x": 159,
+          "y": 76,
+          "w": 39,
+          "h": 15,
+          "font": 22,
+          "missing": 0,
+          "text": "750"
+        },
+        {
+          "x": 88,
+          "y": 199,
+          "w": 64,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "本轮完成"
+        },
+        {
+          "x": 60,
+          "y": 232,
+          "w": 121,
+          "h": 16,
+          "font": 16,
+          "missing": 0,
+          "text": "累计 1625 : 1375"
+        },
+        {
+          "x": 87,
+          "y": 303,
+          "w": 32,
+          "h": 14,
+          "font": 16,
+          "missing": 0,
+          "text": "▲▲"
+        },
+        {
+          "x": 122,
+          "y": 303,
+          "w": 32,
+          "h": 16,
+          "font": 16,
+          "missing": 0,
+          "text": "返回"
+        },
+        {
+          "x": 67,
+          "y": 272,
+          "w": 107,
+          "h": 16,
+          "font": 16,
+          "missing": 0,
+          "text": "OK 准备下一轮"
+        }
+      ],
+      "sprite": [
+        {
+          "id": "S-CHEER",
+          "size": 76,
+          "x": 120,
+          "y": 147,
+          "t": 52363
+        }
+      ],
+      "native_png": "docs/images/duel-firmware-round-result.png"
+    },
+    {
+      "case": "final-win",
+      "stage": 9,
+      "outcome": 1,
+      "variant": 0,
+      "text": [
+        {
+          "x": 8,
+          "y": 4,
+          "w": 60,
+          "h": 18,
+          "font": 18,
+          "missing": 0,
+          "text": "无线对战"
+        },
+        {
+          "x": 174,
+          "y": 8,
+          "w": 58,
+          "h": 11,
+          "font": 14,
+          "missing": 0,
+          "text": "RHYTHM"
+        },
+        {
+          "x": 54,
+          "y": 50,
+          "w": 16,
+          "h": 16,
+          "font": 16,
+          "missing": 0,
+          "text": "你"
+        },
+        {
+          "x": 162,
+          "y": 50,
+          "w": 32,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "对手"
+        },
+        {
+          "x": 36,
+          "y": 76,
+          "w": 52,
+          "h": 15,
+          "font": 22,
+          "missing": 0,
+          "text": "1000"
+        },
+        {
+          "x": 152,
+          "y": 76,
+          "w": 52,
+          "h": 15,
+          "font": 22,
+          "missing": 0,
+          "text": "1000"
+        },
+        {
+          "x": 88,
+          "y": 195,
+          "w": 64,
+          "h": 18,
+          "font": 16,
+          "missing": 0,
+          "text": "你赢啦！"
+        },
+        {
+          "x": 49,
+          "y": 230,
+          "w": 143,
+          "h": 15,
+          "font": 22,
+          "missing": 0,
+          "text": "2625 : 2375"
+        },
+        {
+          "x": 87,
+          "y": 303,
+          "w": 32,
+          "h": 14,
+          "font": 16,
+          "missing": 0,
+          "text": "▲▲"
+        },
+        {
+          "x": 122,
+          "y": 303,
+          "w": 32,
+          "h": 16,
+          "font": 16,
+          "missing": 0,
+          "text": "返回"
+        },
+        {
+          "x": 75,
+          "y": 272,
+          "w": 91,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "OK 重新找房"
+        }
+      ],
+      "sprite": [
+        {
+          "id": "S-CHEER",
+          "size": 76,
+          "x": 120,
+          "y": 147,
+          "t": 56363
+        }
+      ],
+      "native_png": "docs/images/duel-firmware-final-win.png"
+    },
+    {
+      "case": "final-tie",
+      "stage": 9,
+      "outcome": 0,
+      "variant": 0,
+      "text": [
+        {
+          "x": 8,
+          "y": 4,
+          "w": 60,
+          "h": 18,
+          "font": 18,
+          "missing": 0,
+          "text": "无线对战"
+        },
+        {
+          "x": 174,
+          "y": 8,
+          "w": 58,
+          "h": 11,
+          "font": 14,
+          "missing": 0,
+          "text": "RHYTHM"
+        },
+        {
+          "x": 54,
+          "y": 50,
+          "w": 16,
+          "h": 16,
+          "font": 16,
+          "missing": 0,
+          "text": "你"
+        },
+        {
+          "x": 162,
+          "y": 50,
+          "w": 32,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "对手"
+        },
+        {
+          "x": 36,
+          "y": 76,
+          "w": 52,
+          "h": 15,
+          "font": 22,
+          "missing": 0,
+          "text": "1000"
+        },
+        {
+          "x": 152,
+          "y": 76,
+          "w": 52,
+          "h": 15,
+          "font": 22,
+          "missing": 0,
+          "text": "1000"
+        },
+        {
+          "x": 80,
+          "y": 196,
+          "w": 80,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "势均力敌！"
+        },
+        {
+          "x": 49,
+          "y": 230,
+          "w": 143,
+          "h": 15,
+          "font": 22,
+          "missing": 0,
+          "text": "2625 : 2625"
+        },
+        {
+          "x": 87,
+          "y": 303,
+          "w": 32,
+          "h": 14,
+          "font": 16,
+          "missing": 0,
+          "text": "▲▲"
+        },
+        {
+          "x": 122,
+          "y": 303,
+          "w": 32,
+          "h": 16,
+          "font": 16,
+          "missing": 0,
+          "text": "返回"
+        },
+        {
+          "x": 75,
+          "y": 272,
+          "w": 91,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "OK 重新找房"
+        }
+      ],
+      "sprite": [
+        {
+          "id": "S-NOD",
+          "size": 76,
+          "x": 120,
+          "y": 147,
+          "t": 60363
+        }
+      ],
+      "native_png": "docs/images/duel-firmware-final-tie.png"
+    },
+    {
+      "case": "final-loss",
+      "stage": 9,
+      "outcome": -1,
+      "variant": 0,
+      "text": [
+        {
+          "x": 8,
+          "y": 4,
+          "w": 60,
+          "h": 18,
+          "font": 18,
+          "missing": 0,
+          "text": "无线对战"
+        },
+        {
+          "x": 174,
+          "y": 8,
+          "w": 58,
+          "h": 11,
+          "font": 14,
+          "missing": 0,
+          "text": "RHYTHM"
+        },
+        {
+          "x": 54,
+          "y": 50,
+          "w": 16,
+          "h": 16,
+          "font": 16,
+          "missing": 0,
+          "text": "你"
+        },
+        {
+          "x": 162,
+          "y": 50,
+          "w": 32,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "对手"
+        },
+        {
+          "x": 36,
+          "y": 76,
+          "w": 52,
+          "h": 15,
+          "font": 22,
+          "missing": 0,
+          "text": "1000"
+        },
+        {
+          "x": 152,
+          "y": 76,
+          "w": 52,
+          "h": 15,
+          "font": 22,
+          "missing": 0,
+          "text": "1000"
+        },
+        {
+          "x": 80,
+          "y": 196,
+          "w": 80,
+          "h": 16,
+          "font": 16,
+          "missing": 0,
+          "text": "下次再战！"
+        },
+        {
+          "x": 49,
+          "y": 230,
+          "w": 143,
+          "h": 15,
+          "font": 22,
+          "missing": 0,
+          "text": "2625 : 3000"
+        },
+        {
+          "x": 87,
+          "y": 303,
+          "w": 32,
+          "h": 14,
+          "font": 16,
+          "missing": 0,
+          "text": "▲▲"
+        },
+        {
+          "x": 122,
+          "y": 303,
+          "w": 32,
+          "h": 16,
+          "font": 16,
+          "missing": 0,
+          "text": "返回"
+        },
+        {
+          "x": 75,
+          "y": 272,
+          "w": 91,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "OK 重新找房"
+        }
+      ],
+      "sprite": [
+        {
+          "id": "S-OOPS",
+          "size": 76,
+          "x": 120,
+          "y": 147,
+          "t": 64363
+        }
+      ],
+      "native_png": "docs/images/duel-firmware-final-loss.png"
+    },
+    {
+      "case": "disconnected",
+      "stage": 10,
+      "outcome": 1,
+      "variant": 0,
+      "text": [
+        {
+          "x": 8,
+          "y": 4,
+          "w": 60,
+          "h": 18,
+          "font": 18,
+          "missing": 0,
+          "text": "无线对战"
+        },
+        {
+          "x": 174,
+          "y": 8,
+          "w": 58,
+          "h": 11,
+          "font": 14,
+          "missing": 0,
+          "text": "RHYTHM"
+        },
+        {
+          "x": 80,
+          "y": 160,
+          "w": 80,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "本局已作废"
+        },
+        {
+          "x": 56,
+          "y": 191,
+          "w": 128,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "未连接或连接中断"
+        },
+        {
+          "x": 48,
+          "y": 223,
+          "w": 144,
+          "h": 18,
+          "font": 16,
+          "missing": 0,
+          "text": "请双方重新进入房间"
+        },
+        {
+          "x": 87,
+          "y": 303,
+          "w": 32,
+          "h": 14,
+          "font": 16,
+          "missing": 0,
+          "text": "▲▲"
+        },
+        {
+          "x": 122,
+          "y": 303,
+          "w": 32,
+          "h": 16,
+          "font": 16,
+          "missing": 0,
+          "text": "返回"
+        },
+        {
+          "x": 91,
+          "y": 272,
+          "w": 59,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "OK 重试"
+        }
+      ],
+      "sprite": [
+        {
+          "id": "S-OOPS",
+          "size": 76,
+          "x": 120,
+          "y": 102,
+          "t": 68363
+        }
+      ],
+      "native_png": "docs/images/duel-firmware-disconnected.png"
+    },
+    {
+      "case": "search-empty",
+      "stage": 1,
+      "outcome": 1,
+      "variant": 1,
+      "text": [
+        {
+          "x": 8,
+          "y": 4,
+          "w": 60,
+          "h": 18,
+          "font": 18,
+          "missing": 0,
+          "text": "无线对战"
+        },
+        {
+          "x": 174,
+          "y": 8,
+          "w": 58,
+          "h": 11,
+          "font": 14,
+          "missing": 0,
+          "text": "RHYTHM"
+        },
+        {
+          "x": 64,
+          "y": 44,
+          "w": 112,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "选择相同房间号"
+        },
+        {
+          "x": 56,
+          "y": 190,
+          "w": 128,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "正在寻找附近工牌"
+        },
+        {
+          "x": 56,
+          "y": 217,
+          "w": 128,
+          "h": 18,
+          "font": 16,
+          "missing": 0,
+          "text": "请对方先创建房间"
+        },
+        {
+          "x": 87,
+          "y": 303,
+          "w": 32,
+          "h": 14,
+          "font": 16,
+          "missing": 0,
+          "text": "▲▲"
+        },
+        {
+          "x": 122,
+          "y": 303,
+          "w": 32,
+          "h": 16,
+          "font": 16,
+          "missing": 0,
+          "text": "返回"
+        },
+        {
+          "x": 51,
+          "y": 272,
+          "w": 139,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "▲▼ 选择   OK 加入"
+        }
+      ],
+      "sprite": [
+        {
+          "id": "S-HEADPHONE",
+          "size": 76,
+          "x": 120,
+          "y": 128,
+          "t": 72363
+        }
+      ],
+      "native_png": "docs/images/duel-firmware-search-empty.png"
+    },
+    {
+      "case": "syncing",
+      "stage": 5,
+      "outcome": 1,
+      "variant": 2,
+      "text": [
+        {
+          "x": 8,
+          "y": 4,
+          "w": 60,
+          "h": 18,
+          "font": 18,
+          "missing": 0,
+          "text": "无线对战"
+        },
+        {
+          "x": 174,
+          "y": 8,
+          "w": 58,
+          "h": 11,
+          "font": 14,
+          "missing": 0,
+          "text": "RHYTHM"
+        },
+        {
+          "x": 62,
+          "y": 45,
+          "w": 117,
+          "h": 15,
+          "font": 22,
+          "missing": 0,
+          "text": "ROOM 4826"
+        },
+        {
+          "x": 56,
+          "y": 163,
+          "w": 128,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "正在同步，请稍候"
+        },
+        {
+          "x": 72,
+          "y": 193,
+          "w": 96,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "等待对手准备"
+        },
+        {
+          "x": 56,
+          "y": 227,
+          "w": 128,
+          "h": 18,
+          "font": 16,
+          "missing": 0,
+          "text": "正在校准联机计时"
+        },
+        {
+          "x": 87,
+          "y": 303,
+          "w": 32,
+          "h": 14,
+          "font": 16,
+          "missing": 0,
+          "text": "▲▲"
+        },
+        {
+          "x": 122,
+          "y": 303,
+          "w": 32,
+          "h": 16,
+          "font": 16,
+          "missing": 0,
+          "text": "返回"
+        },
+        {
+          "x": 64,
+          "y": 271,
+          "w": 112,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "双方准备后开始"
+        }
+      ],
+      "sprite": [
+        {
+          "id": "S-HEADPHONE",
+          "size": 76,
+          "x": 120,
+          "y": 112,
+          "t": 76363
+        }
+      ],
+      "native_png": "docs/images/duel-firmware-syncing.png"
+    },
+    {
+      "case": "both-ready",
+      "stage": 5,
+      "outcome": 1,
+      "variant": 3,
+      "text": [
+        {
+          "x": 8,
+          "y": 4,
+          "w": 60,
+          "h": 18,
+          "font": 18,
+          "missing": 0,
+          "text": "无线对战"
+        },
+        {
+          "x": 174,
+          "y": 8,
+          "w": 58,
+          "h": 11,
+          "font": 14,
+          "missing": 0,
+          "text": "RHYTHM"
+        },
+        {
+          "x": 62,
+          "y": 45,
+          "w": 117,
+          "h": 15,
+          "font": 22,
+          "missing": 0,
+          "text": "ROOM 4826"
+        },
+        {
+          "x": 80,
+          "y": 163,
+          "w": 80,
+          "h": 16,
+          "font": 16,
+          "missing": 0,
+          "text": "你已准备好"
+        },
+        {
+          "x": 72,
+          "y": 193,
+          "w": 96,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "对手已准备好"
+        },
+        {
+          "x": 44,
+          "y": 228,
+          "w": 152,
+          "h": 16,
+          "font": 16,
+          "missing": 0,
+          "text": "同一谱面 · 三轮累计"
+        },
+        {
+          "x": 87,
+          "y": 303,
+          "w": 32,
+          "h": 14,
+          "font": 16,
+          "missing": 0,
+          "text": "▲▲"
+        },
+        {
+          "x": 122,
+          "y": 303,
+          "w": 32,
+          "h": 16,
+          "font": 16,
+          "missing": 0,
+          "text": "返回"
+        },
+        {
+          "x": 64,
+          "y": 271,
+          "w": 112,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "双方准备后开始"
+        }
+      ],
+      "sprite": [
+        {
+          "id": "S-HEADPHONE",
+          "size": 76,
+          "x": 120,
+          "y": 112,
+          "t": 80363
+        }
+      ],
+      "native_png": "docs/images/duel-firmware-both-ready.png"
+    },
+    {
+      "case": "result-pending",
+      "stage": 8,
+      "outcome": 1,
+      "variant": 4,
+      "text": [
+        {
+          "x": 8,
+          "y": 4,
+          "w": 60,
+          "h": 18,
+          "font": 18,
+          "missing": 0,
+          "text": "无线对战"
+        },
+        {
+          "x": 174,
+          "y": 8,
+          "w": 58,
+          "h": 11,
+          "font": 14,
+          "missing": 0,
+          "text": "RHYTHM"
+        },
+        {
+          "x": 54,
+          "y": 50,
+          "w": 16,
+          "h": 16,
+          "font": 16,
+          "missing": 0,
+          "text": "你"
+        },
+        {
+          "x": 162,
+          "y": 50,
+          "w": 32,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "对手"
+        },
+        {
+          "x": 43,
+          "y": 76,
+          "w": 39,
+          "h": 15,
+          "font": 22,
+          "missing": 0,
+          "text": "875"
+        },
+        {
+          "x": 159,
+          "y": 87,
+          "w": 39,
+          "h": 4,
+          "font": 22,
+          "missing": 0,
+          "text": "..."
+        },
+        {
+          "x": 56,
+          "y": 201,
+          "w": 128,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "正在确认双方成绩"
+        },
+        {
+          "x": 87,
+          "y": 303,
+          "w": 32,
+          "h": 14,
+          "font": 16,
+          "missing": 0,
+          "text": "▲▲"
+        },
+        {
+          "x": 122,
+          "y": 303,
+          "w": 32,
+          "h": 16,
+          "font": 16,
+          "missing": 0,
+          "text": "返回"
+        },
+        {
+          "x": 64,
+          "y": 272,
+          "w": 112,
+          "h": 16,
+          "font": 16,
+          "missing": 0,
+          "text": "成绩确认后继续"
+        }
+      ],
+      "sprite": [
+        {
+          "id": "S-HEADPHONE",
+          "size": 76,
+          "x": 120,
+          "y": 147,
+          "t": 84363
+        }
+      ],
+      "native_png": "docs/images/duel-firmware-result-pending.png"
+    },
+    {
+      "case": "radio-error",
+      "stage": 10,
+      "outcome": 1,
+      "variant": 5,
+      "text": [
+        {
+          "x": 8,
+          "y": 4,
+          "w": 60,
+          "h": 18,
+          "font": 18,
+          "missing": 0,
+          "text": "无线对战"
+        },
+        {
+          "x": 174,
+          "y": 8,
+          "w": 58,
+          "h": 11,
+          "font": 14,
+          "missing": 0,
+          "text": "RHYTHM"
+        },
+        {
+          "x": 72,
+          "y": 160,
+          "w": 96,
+          "h": 16,
+          "font": 16,
+          "missing": 0,
+          "text": "无线未能启动"
+        },
+        {
+          "x": 72,
+          "y": 191,
+          "w": 96,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "请返回后重试"
+        },
+        {
+          "x": 48,
+          "y": 223,
+          "w": 144,
+          "h": 18,
+          "font": 16,
+          "missing": 0,
+          "text": "请双方重新进入房间"
+        },
+        {
+          "x": 87,
+          "y": 303,
+          "w": 32,
+          "h": 14,
+          "font": 16,
+          "missing": 0,
+          "text": "▲▲"
+        },
+        {
+          "x": 122,
+          "y": 303,
+          "w": 32,
+          "h": 16,
+          "font": 16,
+          "missing": 0,
+          "text": "返回"
+        },
+        {
+          "x": 91,
+          "y": 272,
+          "w": 59,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "OK 重试"
+        }
+      ],
+      "sprite": [
+        {
+          "id": "S-OOPS",
+          "size": 76,
+          "x": 120,
+          "y": 102,
+          "t": 88363
+        }
+      ],
+      "native_png": "docs/images/duel-firmware-radio-error.png"
+    },
+    {
+      "case": "perfect",
+      "stage": 7,
+      "outcome": 1,
+      "variant": 6,
+      "text": [
+        {
+          "x": 8,
+          "y": 4,
+          "w": 60,
+          "h": 18,
+          "font": 18,
+          "missing": 0,
+          "text": "无线对战"
+        },
+        {
+          "x": 174,
+          "y": 8,
+          "w": 58,
+          "h": 11,
+          "font": 14,
+          "missing": 0,
+          "text": "RHYTHM"
+        },
+        {
+          "x": 40,
+          "y": 38,
+          "w": 161,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "第 2 / 3 轮 · 105 BPM"
+        },
+        {
+          "x": 59,
+          "y": 140,
+          "w": 123,
+          "h": 18,
+          "font": 16,
+          "missing": 0,
+          "text": "拍点到线，按 OK"
+        },
+        {
+          "x": 96,
+          "y": 242,
+          "w": 48,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "精准！"
+        },
+        {
+          "x": 87,
+          "y": 303,
+          "w": 32,
+          "h": 14,
+          "font": 16,
+          "missing": 0,
+          "text": "▲▲"
+        },
+        {
+          "x": 122,
+          "y": 303,
+          "w": 32,
+          "h": 16,
+          "font": 16,
+          "missing": 0,
+          "text": "返回"
+        },
+        {
+          "x": 51,
+          "y": 271,
+          "w": 139,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "▼ 音效开   OK 跟打"
+        }
+      ],
+      "sprite": [
+        {
+          "id": "S-DRUM",
+          "size": 76,
+          "x": 120,
+          "y": 94,
+          "t": 3967
+        }
+      ],
+      "native_png": "docs/images/duel-firmware-perfect.png"
+    },
+    {
+      "case": "hit",
+      "stage": 7,
+      "outcome": 1,
+      "variant": 7,
+      "text": [
+        {
+          "x": 8,
+          "y": 4,
+          "w": 60,
+          "h": 18,
+          "font": 18,
+          "missing": 0,
+          "text": "无线对战"
+        },
+        {
+          "x": 174,
+          "y": 8,
+          "w": 58,
+          "h": 11,
+          "font": 14,
+          "missing": 0,
+          "text": "RHYTHM"
+        },
+        {
+          "x": 40,
+          "y": 38,
+          "w": 161,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "第 2 / 3 轮 · 105 BPM"
+        },
+        {
+          "x": 59,
+          "y": 140,
+          "w": 123,
+          "h": 18,
+          "font": 16,
+          "missing": 0,
+          "text": "拍点到线，按 OK"
+        },
+        {
+          "x": 104,
+          "y": 241,
+          "w": 32,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "命中"
+        },
+        {
+          "x": 87,
+          "y": 303,
+          "w": 32,
+          "h": 14,
+          "font": 16,
+          "missing": 0,
+          "text": "▲▲"
+        },
+        {
+          "x": 122,
+          "y": 303,
+          "w": 32,
+          "h": 16,
+          "font": 16,
+          "missing": 0,
+          "text": "返回"
+        },
+        {
+          "x": 51,
+          "y": 271,
+          "w": 139,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "▼ 音效开   OK 跟打"
+        }
+      ],
+      "sprite": [
+        {
+          "id": "S-DRUM",
+          "size": 76,
+          "x": 120,
+          "y": 94,
+          "t": 3967
+        }
+      ],
+      "native_png": "docs/images/duel-firmware-hit.png"
+    },
+    {
+      "case": "extra",
+      "stage": 7,
+      "outcome": 1,
+      "variant": 8,
+      "text": [
+        {
+          "x": 8,
+          "y": 4,
+          "w": 60,
+          "h": 18,
+          "font": 18,
+          "missing": 0,
+          "text": "无线对战"
+        },
+        {
+          "x": 174,
+          "y": 8,
+          "w": 58,
+          "h": 11,
+          "font": 14,
+          "missing": 0,
+          "text": "RHYTHM"
+        },
+        {
+          "x": 40,
+          "y": 38,
+          "w": 161,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "第 2 / 3 轮 · 105 BPM"
+        },
+        {
+          "x": 59,
+          "y": 140,
+          "w": 123,
+          "h": 18,
+          "font": 16,
+          "missing": 0,
+          "text": "拍点到线，按 OK"
+        },
+        {
+          "x": 96,
+          "y": 241,
+          "w": 48,
+          "h": 18,
+          "font": 16,
+          "missing": 0,
+          "text": "多按了"
+        },
+        {
+          "x": 87,
+          "y": 303,
+          "w": 32,
+          "h": 14,
+          "font": 16,
+          "missing": 0,
+          "text": "▲▲"
+        },
+        {
+          "x": 122,
+          "y": 303,
+          "w": 32,
+          "h": 16,
+          "font": 16,
+          "missing": 0,
+          "text": "返回"
+        },
+        {
+          "x": 51,
+          "y": 271,
+          "w": 139,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "▼ 音效开   OK 跟打"
+        }
+      ],
+      "sprite": [
+        {
+          "id": "S-DRUM",
+          "size": 76,
+          "x": 120,
+          "y": 94,
+          "t": 3967
+        }
+      ],
+      "native_png": "docs/images/duel-firmware-extra.png"
+    },
+    {
+      "case": "muted",
+      "stage": 7,
+      "outcome": 1,
+      "variant": 9,
+      "text": [
+        {
+          "x": 8,
+          "y": 4,
+          "w": 60,
+          "h": 18,
+          "font": 18,
+          "missing": 0,
+          "text": "无线对战"
+        },
+        {
+          "x": 174,
+          "y": 8,
+          "w": 58,
+          "h": 11,
+          "font": 14,
+          "missing": 0,
+          "text": "RHYTHM"
+        },
+        {
+          "x": 40,
+          "y": 38,
+          "w": 161,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "第 2 / 3 轮 · 105 BPM"
+        },
+        {
+          "x": 59,
+          "y": 140,
+          "w": 123,
+          "h": 18,
+          "font": 16,
+          "missing": 0,
+          "text": "拍点到线，按 OK"
+        },
+        {
+          "x": 114,
+          "y": 244,
+          "w": 13,
+          "h": 15,
+          "font": 22,
+          "missing": 0,
+          "text": "0"
+        },
+        {
+          "x": 87,
+          "y": 303,
+          "w": 32,
+          "h": 14,
+          "font": 16,
+          "missing": 0,
+          "text": "▲▲"
+        },
+        {
+          "x": 122,
+          "y": 303,
+          "w": 32,
+          "h": 16,
+          "font": 16,
+          "missing": 0,
+          "text": "返回"
+        },
+        {
+          "x": 51,
+          "y": 271,
+          "w": 139,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "▼ 音效关   OK 跟打"
+        }
+      ],
+      "sprite": [
+        {
+          "id": "S-DRUM",
+          "size": 76,
+          "x": 120,
+          "y": 94,
+          "t": 3967
+        }
+      ],
+      "native_png": "docs/images/duel-firmware-muted.png"
+    },
+    {
+      "case": "choose-search",
+      "stage": 0,
+      "outcome": 1,
+      "variant": 10,
+      "text": [
+        {
+          "x": 8,
+          "y": 4,
+          "w": 60,
+          "h": 18,
+          "font": 18,
+          "missing": 0,
+          "text": "无线对战"
+        },
+        {
+          "x": 215,
+          "y": 8,
+          "w": 17,
+          "h": 11,
+          "font": 14,
+          "missing": 0,
+          "text": "2P"
+        },
+        {
+          "x": 41,
+          "y": 120,
+          "w": 159,
+          "h": 18,
+          "font": 16,
+          "missing": 0,
+          "text": "看拍点，按 OK 比节奏"
+        },
+        {
+          "x": 88,
+          "y": 160,
+          "w": 64,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "创建房间"
+        },
+        {
+          "x": 88,
+          "y": 202,
+          "w": 64,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "寻找房间"
+        },
+        {
+          "x": 36,
+          "y": 241,
+          "w": 168,
+          "h": 18,
+          "font": 16,
+          "missing": 0,
+          "text": "无需路由器 · 不比音高"
+        },
+        {
+          "x": 87,
+          "y": 303,
+          "w": 32,
+          "h": 14,
+          "font": 16,
+          "missing": 0,
+          "text": "▲▲"
+        },
+        {
+          "x": 122,
+          "y": 303,
+          "w": 32,
+          "h": 16,
+          "font": 16,
+          "missing": 0,
+          "text": "返回"
+        },
+        {
+          "x": 51,
+          "y": 272,
+          "w": 139,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "▲▼ 选择   OK 进入"
+        }
+      ],
+      "sprite": [
+        {
+          "id": "S-HEADPHONE",
+          "size": 76,
+          "x": 120,
+          "y": 76,
+          "t": 108363
+        }
+      ],
+      "native_png": "docs/images/duel-firmware-choose-search.png"
+    },
+    {
+      "case": "final-host-ack-lost",
+      "stage": 9,
+      "outcome": 98,
+      "variant": 0,
+      "text": [
+        {
+          "x": 8,
+          "y": 4,
+          "w": 60,
+          "h": 18,
+          "font": 18,
+          "missing": 0,
+          "text": "无线对战"
+        },
+        {
+          "x": 174,
+          "y": 8,
+          "w": 58,
+          "h": 11,
+          "font": 14,
+          "missing": 0,
+          "text": "RHYTHM"
+        },
+        {
+          "x": 54,
+          "y": 50,
+          "w": 16,
+          "h": 16,
+          "font": 16,
+          "missing": 0,
+          "text": "你"
+        },
+        {
+          "x": 162,
+          "y": 50,
+          "w": 32,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "对手"
+        },
+        {
+          "x": 36,
+          "y": 76,
+          "w": 52,
+          "h": 15,
+          "font": 22,
+          "missing": 0,
+          "text": "1000"
+        },
+        {
+          "x": 152,
+          "y": 76,
+          "w": 52,
+          "h": 15,
+          "font": 22,
+          "missing": 0,
+          "text": "1000"
+        },
+        {
+          "x": 88,
+          "y": 195,
+          "w": 64,
+          "h": 18,
+          "font": 16,
+          "missing": 0,
+          "text": "你赢啦！"
+        },
+        {
+          "x": 49,
+          "y": 230,
+          "w": 143,
+          "h": 15,
+          "font": 22,
+          "missing": 0,
+          "text": "2625 : 2375"
+        },
+        {
+          "x": 87,
+          "y": 303,
+          "w": 32,
+          "h": 14,
+          "font": 16,
+          "missing": 0,
+          "text": "▲▲"
+        },
+        {
+          "x": 122,
+          "y": 303,
+          "w": 32,
+          "h": 16,
+          "font": 16,
+          "missing": 0,
+          "text": "返回"
+        },
+        {
+          "x": 75,
+          "y": 272,
+          "w": 91,
+          "h": 17,
+          "font": 16,
+          "missing": 0,
+          "text": "OK 重新找房"
+        }
+      ],
+      "sprite": [
+        {
+          "id": "S-CHEER",
+          "size": 76,
+          "x": 120,
+          "y": 147,
+          "t": 112363
+        }
+      ],
+      "native_png": "docs/images/duel-firmware-final-host-ack-lost.png"
+    }
+  ]
+}

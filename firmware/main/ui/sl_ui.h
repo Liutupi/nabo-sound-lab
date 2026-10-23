@@ -87,6 +87,9 @@ void sl_ui_go_id(const char *id);
 void sl_ui_back(void);
 const sl_scene_t *sl_ui_scene(void);
 void sl_ui_key(int k, bool down);
+void sl_ui_key_at(int k, bool down, uint32_t pressed_ms); /* Physical timestamp, not render time. */
+uint32_t sl_key_time(void);
+uint32_t sl_clock_ms(void);              /* Platform monotonic wall clock; host defaults to VT. */
 void sl_ui_step(int dt);
 void sl_ui_render(fc_flush_fn flush, void *ctx, bool force);
 uint32_t sl_ui_t0(void);

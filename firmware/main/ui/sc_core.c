@@ -57,11 +57,14 @@ const sl_scene_t SC_BOOT = {.id = "boot", .name = "开机", .up_now = true, .ent
 
 /* ---------------- 主菜单 ---------------- */
 extern const sl_scene_t SC_ECHO, SC_SHOUT, SC_CANDLE, SC_ROPE, SC_RANGE, SC_SPEC, SC_WATER, SC_SCOPE, SC_CHROMA, SC_DB, SC_TUNER, SC_GUITAR, SC_BEAT, SC_PITCH, SC_SETTINGS,
-    SC_FLIGHT, SC_CLAP, SC_SAMPLER;
+    SC_FLIGHT, SC_CLAP, SC_SAMPLER, SC_DUEL;
 typedef struct { const char *sep; const sl_scene_t *sc; const char *soon, *soon_ic; } item_t;
 static const item_t ITEMS[] = {
   {"玩 · 声音玩具", 0, 0, 0}, {0, &SC_ECHO, 0, 0}, {0, &SC_SHOUT, 0, 0}, {0, &SC_CANDLE, 0, 0}, {0, &SC_ROPE, 0, 0}, {0, &SC_RANGE, 0, 0},
   {0, &SC_FLIGHT, 0, 0}, {0, &SC_CLAP, 0, 0}, {0, &SC_SAMPLER, 0, 0},
+#if !defined(ESP_PLATFORM) || defined(SOUNDLAB_WIRELESS_DUEL)
+  {0, &SC_DUEL, 0, 0},
+#endif
   {"看 · 声音可视化", 0, 0, 0}, {0, &SC_SPEC, 0, 0}, {0, &SC_WATER, 0, 0}, {0, &SC_SCOPE, 0, 0}, {0, &SC_CHROMA, 0, 0}, {0, &SC_DB, 0, 0},
   {"练 · 音乐工具", 0, 0, 0}, {0, &SC_TUNER, 0, 0}, {0, &SC_GUITAR, 0, 0}, {0, &SC_BEAT, 0, 0}, {0, &SC_PITCH, 0, 0},
   {"其他", 0, 0, 0}, {0, &SC_SETTINGS, 0, 0},
@@ -78,7 +81,8 @@ static void m_ok(void) {
 }
 static void menu_draw(void) {
   for (int i = 0; i < 32; i++) { int h = MIC.bands[i] * 70 / 255; if (h) fc_rect(i * 15 / 2 + 1, 100 - h, 6, h, mix565(BARC[i], C_BG, 550), 255); }
-  const char *role = m_sel < 9 ? "S-MIC-IDLE" : m_sel >= 16 && m_sel <= 19 ? "S-GUITAR-IDLE" : "S-IDLE";
+  const sl_scene_t *selected = ITEMS[m_sel].sc;
+  const char *role = selected==&SC_DUEL ? "S-DRUM" : selected==&SC_TUNER||selected==&SC_GUITAR||selected==&SC_BEAT||selected==&SC_PITCH ? "S-GUITAR-IDLE" : m_sel<=8 ? "S-MIC-IDLE" : "S-IDLE";
   nabo(role, 76, 120, 54, (int)VT);
   T(&F_DISP24, "声音实验室", 120, 108, C_WHITE, AL_C);
   T(&F_MONO14, "NABO SOUND LAB", 120, 128, C_CYAN, AL_C);

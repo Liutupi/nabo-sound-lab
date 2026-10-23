@@ -35,6 +35,8 @@
 
 #include "ui/sl_ui.h"
 #include "ui/sc_newgames.h"
+#include "ui/sc_duel.h"
+#include "link/sd_radio.h"
 
 static const char *TAG = "soundlab";
 
@@ -92,6 +94,7 @@ static void flush_wait(void)
 /* ---------- 平台钩子（sl_ui / sl_audio 要的） ---------- */
 void sl_audio_lock(void) { if (s_audio_mx) xSemaphoreTake(s_audio_mx, portMAX_DELAY); }
 void sl_audio_unlock(void) { if (s_audio_mx) xSemaphoreGive(s_audio_mx); }
+uint32_t sl_clock_ms(void) { return (uint32_t)(esp_timer_get_time()/1000); }
 void sl_mic_last(int16_t *dst, int n)
 {
     uint32_t w = atomic_load(&s_wp);
@@ -235,6 +238,7 @@ static void command(char *cmd, char *out, size_t n)
                  (unsigned)s_input_diag, (unsigned)s_input_diag_drop);
         size_t used = strlen(out);
         if (used + 2 < n) { out[used++] = ' '; sl_newgames_status(out + used, n - used); }
+        if (!strcmp(sl_ui_scene()->id,"duel")) { used = strlen(out); if (used+2<n) {out[used++]=' ';sl_duel_status(out+used,n-used);} }
     }
 }
 static void console_poll(void)
@@ -327,7 +331,7 @@ static void ui_task(void *arg)
                 if (len <= 0 || len >= (int)sizeof line || !usb_serial_jtag_is_connected() ||
                     usb_serial_jtag_write_bytes(line, (size_t)len, 0) != len) s_input_diag_drop++;
             }
-            sl_ui_key(ev.key, ev.down);
+            sl_ui_key_at(ev.key, ev.down, (uint32_t)(ev.at_us/1000));
         }
         console_poll();
         if (s_mic_capture_pending) { s_mic_capture_pending = false; mic_snapshot(); }
@@ -355,6 +359,7 @@ static void ui_task(void *arg)
         if (atomic_load(&s_save_pending) && esp_timer_get_time() > s_save_at) save_now();
         if (keep_awake()) atomic_store(&s_last_input_us, esp_timer_get_time());
         if (esp_timer_get_time() - atomic_load(&s_last_input_us) > IDLE_SLEEP_US) {
+            sd_radio_end();
             flush_wait();
             atomic_store(&s_sleep_now, true);
             vTaskSuspend(NULL);

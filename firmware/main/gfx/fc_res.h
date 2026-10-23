@@ -16,8 +16,16 @@ typedef struct {
   uint8_t loop;
 } fc_img_t;
 bool fc_img_open(const char *name, fc_img_t *img);
-/* 返回第 frame 帧的索引图（w×h，0 = 透明）。顺序播放解差分，回绕复用空闲槽从头解码。
- * 同一 epoch 内返回的指针不会被后续请求修改/淘汰；下一 epoch 才允许复用。 */
+/* 索引帧可能在整行边界分为两块；逐行访问不要求堆上有 w×h 连续空间。
+ * 连续帧 part[1]=NULL、split=h；fc_img_row 要求 0<=y<h。
+ * 同一 epoch 内 surface/行指针不会被后续请求修改/淘汰；下一 epoch 才允许复用。 */
+typedef struct { const uint8_t *part[2]; uint16_t w, split; } fc_img_surface_t;
+const fc_img_surface_t *fc_img_surface(const fc_img_t *img, int frame);
+static inline const uint8_t *fc_img_row(const fc_img_surface_t *s, int y) {
+  return y < s->split ? s->part[0] + y * s->w : s->part[1] + (y - s->split) * s->w;
+}
+/* 返回连续 w×h 索引图（0 = 透明）；缓存分块或分配失败时返回 NULL。
+ * 顺序播放解差分，回绕复用槽从头解码；指针生命周期与 surface 相同。 */
 const uint8_t *fc_img_frame(const fc_img_t *img, int frame);
 static inline uint16_t fc_img_color(const fc_img_t *img, uint8_t idx) {
   const uint8_t *p = img->pal + 2 * (idx - 1); return (uint16_t)(p[0] | (p[1] << 8));
