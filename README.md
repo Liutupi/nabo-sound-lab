@@ -48,3 +48,7 @@ Release 同时提供完整ZIP、分立镜像、manifest.json和SHA256SUMS.txt。
 | docs/ | 刷机、构建、实测、发布说明与原尺寸截图 |
 
 本机设备备份、NVS、环境录音、原始设备日志、生成服务任务元数据和缓存未上传。源码MIT；NABO形象和美术不随MIT授权，见[NOTICE](NOTICE.md)及[第三方说明](THIRD_PARTY_NOTICES.md)。本项目与FoloToy官方无关联。
+
+## 社区展示材料
+
+[五张宣传图与玩法介绍](docs/community/v0.1.2/README.md)。已提交AI Passport玩法社区审核，状态与固件验证范围见材料说明。

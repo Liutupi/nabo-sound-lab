@@ -1,0 +1,60 @@
+{
+  "reviewed_at": "2026-10-23T21:17:55.320340+08:00",
+  "status": "passed",
+  "image_count": 5,
+  "aspect_ratio": "3:4",
+  "all_native_size": [
+    1080,
+    1440
+  ],
+  "overview_background": "#0A0716",
+  "all_five_reviewed_at_full_resolution": true,
+  "text_within_safe_bounds": true,
+  "fonts_loaded": true,
+  "approved_NABO_identity_preserved": true,
+  "no_mirrored_art": true,
+  "source_UI": "v0.1.2 production renderer host screenshots; not optical device photos",
+  "website_preview_order_verified": true,
+  "website_saved_images_decoded": [
+    900,
+    1200
+  ],
+  "cover": "01-cover.png",
+  "images": [
+    {
+      "name": "01-cover.png",
+      "width": 1080,
+      "height": 1440,
+      "bytes": 691723,
+      "sha256": "4000b0117335bf2915702ceae94e535ec2ab30d1569389d0259d6ff0767ab67c"
+    },
+    {
+      "name": "02-voice-toys.png",
+      "width": 1080,
+      "height": 1440,
+      "bytes": 300997,
+      "sha256": "f4688ae91b345f4a804895871a5541db8ddc89f7222e091a5607b13f8a499795"
+    },
+    {
+      "name": "03-hum-clap-sample.png",
+      "width": 1080,
+      "height": 1440,
+      "bytes": 269078,
+      "sha256": "acc90dda25da949f3f7c562c2c2242bedfabd9eba33b8006bc19bbc8b6553d54"
+    },
+    {
+      "name": "04-see-sound.png",
+      "width": 1080,
+      "height": 1440,
+      "bytes": 283776,
+      "sha256": "c25facfba531acf47d6264798c7506c17aeb8bfe40c700f1dc068e59f7e477e7"
+    },
+    {
+      "name": "05-music-tools.png",
+      "width": 1080,
+      "height": 1440,
+      "bytes": 282545,
+      "sha256": "223afee9c3156c3416f36c1d70eda3d75eb2b577037814b0a4076e3ce5097ea5"
+    }
+  ]
+}

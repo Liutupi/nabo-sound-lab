@@ -941,3 +941,21 @@
 !/tools/pack_assets_soundlab.py
 !/tools/pack_props_soundlab.py
 !/tools/verify_release.py
+
+# Community v0.1.2 public artwork and copy
+!/docs/community/
+/docs/community/*
+!/docs/community/v0.1.2/
+/docs/community/v0.1.2/*
+!/docs/community/v0.1.2/01-cover.png
+!/docs/community/v0.1.2/02-voice-toys.png
+!/docs/community/v0.1.2/03-hum-clap-sample.png
+!/docs/community/v0.1.2/04-see-sound.png
+!/docs/community/v0.1.2/05-music-tools.png
+!/docs/community/v0.1.2/overview.png
+!/docs/community/v0.1.2/README.md
+!/docs/community/v0.1.2/COPY_ZH.md
+!/docs/community/v0.1.2/listing-content.json
+!/docs/community/v0.1.2/graphics-manifest.json
+!/docs/community/v0.1.2/image-validation.json
+!/docs/community/v0.1.2/submission-status.json

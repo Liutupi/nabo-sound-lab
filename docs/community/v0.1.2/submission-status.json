@@ -1,0 +1,31 @@
+{
+  "submission_date": "2026-10-23",
+  "verified_at": "2026-10-23T21:17:55.320340+08:00",
+  "project_id": 1538,
+  "revision_id": 3544,
+  "title": "NABO 声音实验室 · 开口就有戏",
+  "state": "审核中",
+  "submission_confirmed": true,
+  "publicly_published": false,
+  "creator_console_url": "https://ai-passport.folotoy.cn/account/?project=1538",
+  "public_entry_url": null,
+  "image_count": 5,
+  "ordered_images": [
+    "01-cover.png",
+    "02-voice-toys.png",
+    "03-hum-clap-sample.png",
+    "04-see-sound.png",
+    "05-music-tools.png"
+  ],
+  "description_and_instructions_persisted": true,
+  "changelog_persisted": true,
+  "firmware": {
+    "name": "nabo-soundlab-0.1.2-merged.bin",
+    "bytes": 3979780,
+    "sha256": "037570a8b8bbfdde4c8740899afad59a2a44a9f7367f46045d647317fb46a93c",
+    "community_redownload_exact": true,
+    "same_as_GitHub_release": true
+  },
+  "release_url": "https://github.com/Liutupi/nabo-sound-lab/releases/tag/v0.1.2",
+  "known_limits_disclosed": true
+}

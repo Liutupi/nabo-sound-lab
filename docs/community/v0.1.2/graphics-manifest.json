@@ -1,0 +1,77 @@
+{
+  "size": [
+    1080,
+    1440
+  ],
+  "aspect_ratio": "3:4",
+  "background": "#0A0716",
+  "ordered_images": [
+    "01-cover.png",
+    "02-voice-toys.png",
+    "03-hum-clap-sample.png",
+    "04-see-sound.png",
+    "05-music-tools.png"
+  ],
+  "render_method": "Deterministic SVG/HTML layout; approved unchanged transparent NABO art and firmware host-rendered UI",
+  "character_identity": "Approved musician costume; no mirrored art or regenerated face/logo",
+  "screen_provenance": "v0.1.2 production-renderer host screens, shared visual layouts; not optical device photos",
+  "source_sha256": {
+    "game-art/soundlab/grok-start/cutouts/S-DJ.png": "51afff24c91d823a696a0e0755a94ea67080cbd48942a66dd93e8294d9ef873f",
+    "dist/soundlab-0.1.2/offline-review/integrated/screens/boot-2.8s.png": "33834078e4c968c833b28f6be61a02dd16bdffa57a30f6630d89206f67b3e134",
+    "dist/soundlab-0.1.2/offline-review/integrated/screens/echo-play.png": "2903c6991094aa032129990c0f5d8749ba6f06125d0b213017eeea107e2276ba",
+    "dist/soundlab-0.1.2/offline-review/integrated/screens/shout-run.png": "a5f7653e393391a6a6cda0ae34377fe20780f132395adb0beebc2ed9d67caa88",
+    "game-art/soundlab/props/masters/cake.png": "f08414da2b612ea0e81f4524c428beaee7923233139c2a12317f081fdf860e85",
+    "game-art/soundlab/grok-start/cutouts/S-ROPE-READY.png": "3b0e165dab67ff40e9fc3fe1516a9ceef3b3d71995a4077860acd8072a87c3d2",
+    "game-art/soundlab/grok-start/cutouts/S-SING-HIGH.png": "dab8f8e0959d4bd15d66be408a39a093d59cee077da950ab30ef408f0e0eeeee",
+    "game-art/soundlab/grok-start/cutouts/S-FLOAT.png": "e3cf1bfc005b7b111c8a263a6ce5cd4a8e47bd5e25d73c8e5f5bd9d79c8920eb",
+    "dist/soundlab-0.1.2/offline-review/integrated/screens/flight-running.png": "28291a3039a752f8c1517dec008e2c077b938287ec867c7788cf22a6b1ce1f80",
+    "game-art/soundlab/grok-start/cutouts/S-DRUM.png": "5411ea127017628d4509889516a53aa5862362eaff98b67d36f229765366aba6",
+    "dist/soundlab-0.1.2/offline-review/integrated/screens/clap-running.png": "4cfff1fb01adc6e30bb9bedf8b814d8d641b9b72f2240f01026633c82675aed8",
+    "game-art/soundlab/grok-start/cutouts/S-GUITAR-STRUM.png": "c493a69bed139fa0d5aec117fc33faa74db2b05d3943208e80464feb6ae34ef1",
+    "dist/soundlab-0.1.2/offline-review/integrated/screens/sampler-recorded.png": "1aaea3234c534f44cea514124ea7920406ca9870fdc70e75487afbf7d4191789",
+    "dist/soundlab-0.1.2/offline-review/integrated/screens/spec-mirror.png": "d48c35b574a5d6fe9fc8f8867d49cf789c24679962e3d19608938ce45587074c",
+    "dist/soundlab-0.1.2/offline-review/integrated/screens/waterfall.png": "6eea6237372c41e75ec13efb65e12c79b41844533b70b3c35344afcb872f277c",
+    "dist/soundlab-0.1.2/offline-review/integrated/screens/tuner-guitar.png": "3706ec8abd36daf09afdfcb7426f2048267d10a028a1814ceffcb74430643365",
+    "dist/soundlab-0.1.2/offline-review/integrated/screens/guitar-1.png": "b031e36c913eb2a4058365da553b0b6805f5b113a2c42989945cdc3435e65c5a"
+  },
+  "generated_images": false,
+  "firmware": "nabo-soundlab-0.1.2-merged.bin",
+  "firmware_sha256": "037570a8b8bbfdde4c8740899afad59a2a44a9f7367f46045d647317fb46a93c",
+  "final_images": [
+    {
+      "name": "01-cover.png",
+      "width": 1080,
+      "height": 1440,
+      "bytes": 691723,
+      "sha256": "4000b0117335bf2915702ceae94e535ec2ab30d1569389d0259d6ff0767ab67c"
+    },
+    {
+      "name": "02-voice-toys.png",
+      "width": 1080,
+      "height": 1440,
+      "bytes": 300997,
+      "sha256": "f4688ae91b345f4a804895871a5541db8ddc89f7222e091a5607b13f8a499795"
+    },
+    {
+      "name": "03-hum-clap-sample.png",
+      "width": 1080,
+      "height": 1440,
+      "bytes": 269078,
+      "sha256": "acc90dda25da949f3f7c562c2c2242bedfabd9eba33b8006bc19bbc8b6553d54"
+    },
+    {
+      "name": "04-see-sound.png",
+      "width": 1080,
+      "height": 1440,
+      "bytes": 283776,
+      "sha256": "c25facfba531acf47d6264798c7506c17aeb8bfe40c700f1dc068e59f7e477e7"
+    },
+    {
+      "name": "05-music-tools.png",
+      "width": 1080,
+      "height": 1440,
+      "bytes": 282545,
+      "sha256": "223afee9c3156c3416f36c1d70eda3d75eb2b577037814b0a4076e3ce5097ea5"
+    }
+  ]
+}
