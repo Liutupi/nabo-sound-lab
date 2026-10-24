@@ -17,7 +17,9 @@ The firmware does not include Xiaozhi chat.
 echo controls follow the recording/playback state and OK stops playback; volume
 supports UP to decrease and DOWN to increase, stopping at 0% and 100%. Existing
 NABO artwork and colors are preserved. See [controls and tests](tests/interaction_host/README.md)
-and [pitch ambiguity rejection](tests/mic_host/README.md). These source changes
+and [pitch ambiguity rejection](tests/mic_host/README.md). Echo playback also adds
+speech-level normalization, filtered recording, clearer robot modulation and quieter
+radio hiss; see [voice quality checks](tests/voice_host/README.md). These source changes
 are not included in the frozen Release images below and require separate device
 acceptance.
 

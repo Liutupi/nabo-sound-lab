@@ -8,7 +8,7 @@
 
 [下载无线对战预览版](https://github.com/Liutupi/nabo-sound-lab/releases/tag/v0.2.0-preview.1) · [预览版安装](docs/FLASHING_0_2_0_PREVIEW.md) · [发布说明](docs/RELEASE_v0.2.0-preview.1.md) · [稳定版v0.1.2](https://github.com/Liutupi/nabo-sound-lab/releases/tag/v0.1.2) · [构建说明](docs/BUILD.md)
 
-**未发布的源码改进：** 共用底栏按键即时高亮；复读按状态显示操作、播放中OK停止；音量支持▲减/▼加，0–100%到边即停。保留现有NABO造型与配色。见[操作与测试](tests/interaction_host/README.zh_CN.md)和[音高抗误判改进](tests/mic_host/README.zh_CN.md)。这些源码改进尚未更新到下方冻结Release镜像，实机验收另行进行。
+**未发布的源码改进：** 共用底栏按键即时高亮；复读按状态显示操作、播放中OK停止；音量支持▲减/▼加，0–100%到边即停。保留现有NABO造型与配色。见[操作与测试](tests/interaction_host/README.zh_CN.md)和[音高抗误判改进](tests/mic_host/README.zh_CN.md)。复读还加入持续音量归一化、录音滤波、更清晰的机器人调制及更轻的对讲机尾噪，见[音质检查](tests/voice_host/README.zh_CN.md)。这些源码改进尚未更新到下方冻结Release镜像，实机验收另行进行。
 
 开发分支新增「玩 → 无线对战」：两块工牌直连，同一谱面，四拍预备后看拍点按OK，三轮比节奏。不唱歌、不辨音高，静音也能玩。[可玩双屏原型](prototype/wireless-duel.html) · [规则与开发版验收](docs/WIRELESS_DUEL.md)。0.2.0-dev与正式v0.1.2分开，设备验证状态见[开发记录](docs/VALIDATION_0_2_0_DEV.json)。
 

@@ -336,16 +336,18 @@ function click(accent,at){
   o.connect(g).connect(outputBus);o.start(t);o.stop(t+0.03);S.muteUntil=Math.max(S.muteUntil,t+0.035); // 咔嗒 25 ms，只跳过约 35 ms
 }
 // ================= 复读链路（固件 nabo_voice 的参考实现） =================
-// 录音：16 kHz → 两两平均（整数四舍五入）降到 8 kHz → IMA ADPCM 4 bit，每 256 个采样一块（块头存预测值和步长下标，可以随机访问）
-// 播放：从 8 kHz 解码结果线性插值读取（读指针速度决定音调），先按录音峰值把音量拉到 0.8（增益 ≤ 6），再做效果和5ms首尾包络，最后限幅。重复回跳和对讲机换段另作局部去咔哒。
+// 录音：16 kHz → 去直流 + 15-tap 抗混叠滤波 → 8 kHz IMA ADPCM；仍为3秒流式录音。
+// 播放：三次插值，按20ms RMS的80分位归一化（最多32倍），分效果补偿 + 软限幅 + 5ms首尾包络。
 // 工牌没有 PSRAM，固件里全部边解码边处理（流式），不展开整段 16 kHz 音频；所以每种效果都写成“按输出下标逐点计算”的形式。
 const STEP=[7,8,9,10,11,12,13,14,16,17,19,21,23,25,28,31,34,37,41,45,50,55,60,66,73,80,88,97,107,118,130,143,157,173,190,209,230,253,279,307,337,371,408,449,494,544,598,658,724,796,876,963,1060,1166,1282,1411,1552,1707,1878,2066,2272,2499,2749,3024,3327,3660,4026,4428,4871,5358,5894,6484,7132,7845,8630,9493,10442,11487,12635,13899,15289,16818,18500,20350,22385,24623,27086,29794,32767];
 const IDXT=[-1,-1,-1,-1,2,4,6,8];
 const toI16=v=>clamp(Math.round(v*32767),-32768,32767);
 function adpcmRoundTrip(x){ // x：16 kHz 浮点 → Int16Array（8 kHz 解码结果，和固件逐样一致）
-  const n=Math.floor(x.length/2),out=new Int16Array(n);let pred=0,idx=0;
+  const n=Math.min(24000,Math.floor(x.length/2)),out=new Int16Array(n),hist=new Int16Array(15);let pred=0,idx=0,dc=0,pos=0;
+  const fir=[-30,197,310,-781,-1885,1587,9777,14418,9777,1587,-1885,-781,310,197,-30];
   for(let i=0;i<n;i++){
-    const smp=(toI16(x[2*i])+toI16(x[2*i+1])+1)>>1;
+    for(let k=0;k<2;k++){const v=toI16(x[2*i+k]);dc+=Math.trunc((v*65536-dc)/32);hist[pos]=clamp(v-Math.floor(dc/65536),-32768,32767);pos=(pos+1)%15}
+    let sum=0;for(let j=0;j<15;j++)sum+=hist[(pos+j)%15]*fir[j];const smp=clamp(Math.floor((sum+16384)/32768),-32768,32767);
     let step=STEP[idx],diff=smp-pred,code=0;if(diff<0){code=8;diff=-diff}
     let vp=step>>3;if(diff>=step){code|=4;diff-=step;vp+=step}step>>=1;
     if(diff>=step){code|=2;diff-=step;vp+=step}step>>=1;if(diff>=step){code|=1;vp+=step}
@@ -353,9 +355,10 @@ function adpcmRoundTrip(x){ // x：16 kHz 浮点 → Int16Array（8 kHz 解码�
   return out;
 }
 const adpcmBytes=n8=>Math.ceil(n8/256)*132; // 每块 4 字节块头 + 128 字节数据
-function voiceGainQ8(d){let pk=0;for(const v of d)pk=Math.max(pk,Math.abs(v));return pk?Math.min(1536,Math.floor(26214*256/pk)):256}
+const VOICE_LEVEL=[32,38,45,54,64,76,91,108,128,152,181,215,256,304,362,431,512,609,724,861,1024,1218,1448,1722,2048,2435,2896,3444,4096,4871,5793,6889,8192,9742,11585,13777,16384,19484,23170,27554,32768];
+function voiceGainQ8(d){const bins=new Uint16Array(41);let count=0;for(let start=0;start+160<=d.length;start+=160){let ss=0;for(let j=0;j<160;j++)ss+=d[start+j]*d[start+j];const rms=Math.floor(Math.sqrt(Math.floor(ss/160)));let k=0;while(k<40&&rms>VOICE_LEVEL[k])k++;bins[k]++;if(k>=3)count++}if(!count)return 256;const rank=Math.floor((count*4+4)/5);let sum=0,k=3;for(;k<40;k++){sum+=bins[k];if(sum>=rank)break}return clamp(Math.floor(6000*256/VOICE_LEVEL[k]),64,8192)}
 // 从 8 kHz 解码结果读一个点（t 以 8 kHz 采样为单位），乘增益，返回 -1..1 左右的浮点
-function srcAt(d,g,t){if(t<0)return 0;const i=Math.floor(t),f=t-i,a=i<d.length?d[i]:0,b=i+1<d.length?d[i+1]:0;return(a+(b-a)*f)*g/256/32768}
+function srcAt(d,g,t){if(t<0)return 0;const i=Math.floor(t),f=Math.floor((t-i)*65536),at=k=>k>=0&&k<d.length?d[k]:0,a=at(i-1),b=at(i),c=at(i+1),e=at(i+2);let q=Math.floor((3*(b-c)+e-a)*f/65536);q=Math.floor((2*a-5*b+4*c-e+q)*f/65536);return (b+Math.floor((c-a+q)*f/131072))*g/256/32768}
 const rd=(d,g,n,pos)=>{const o=new Float32Array(n);for(let i=0;i<n;i++)o[i]=srcAt(d,g,pos(i));return o};
 // 调制延迟：颤音、外星人、合唱团都用它（固件里是一段环形缓冲 + 正弦表）
 function vib(x,hz,depth){const D=SR*depth,base=D+2,o=new Float32Array(x.length);
@@ -363,17 +366,17 @@ function vib(x,hz,depth){const D=SR*depth,base=D+2,o=new Float32Array(x.length);
 const VOICES=[
   {n:'花栗鼠',d:'快 1.5 倍，音调升高',fx:(d,g)=>rd(d,g,Math.floor(d.length*4/3),i=>i*0.75)},
   {n:'大叔',d:'慢 0.72 倍，音调降低',fx:(d,g)=>rd(d,g,Math.floor(d.length*200/72),i=>i*0.36)},
-  {n:'机器人',d:'70 Hz 环形调制 + 降位',fx:(d,g)=>rd(d,g,d.length*2,i=>i*0.5).map((v,i)=>Math.round(v*Math.sin(2*Math.PI*70*i/SR)*1.2*16)/16)},
+  {n:'机器人',d:'70 Hz 环形调制',fx:(d,g)=>rd(d,g,d.length*2,i=>i*0.5).map((v,i)=>(v*3+v*Math.sin(2*Math.PI*70*i/SR)*7)/8)},
   {n:'倒放',d:'把你的话倒过来说',fx:(d,g)=>{const n=d.length*2;return rd(d,g,n,i=>(n-1-i)*0.5)}},
   {n:'山谷回声',d:'180 ms 回声，反馈 0.45',fx:(d,g)=>{const x=rd(d,g,d.length*2,i=>i*0.5),dl=Math.round(SR*0.18),y=new Float32Array(x.length+SR),o=new Float32Array(y.length);
-    for(let i=0;i<y.length;i++){y[i]=(x[i]||0)+(i>=dl?y[i-dl]*0.45:0);o[i]=y[i]*0.6}return o}},
+    for(let i=0;i<y.length;i++){y[i]=(x[i]||0)+(i>=dl?y[i-dl]*0.45:0);o[i]=y[i]*0.85}return o}},
   {n:'没电了',d:'越说越慢、越说越低，最后没电',fx:(d,g)=>{ // 读指针速度从 1.0 掉到 0.4，末尾再淡出
     const n=d.length*2,o=[];let p=0;while(p<n-1){const q=p/n;o.push(srcAt(d,g,p*0.5)*(q>0.85?(1-q)/0.15:1));p+=1-0.6*q*q}return Float32Array.from(o)}},
   {n:'颤音',d:'6 Hz 颤音，像在发抖',fx:(d,g)=>vib(rd(d,g,d.length*2,i=>i*0.5),6,0.0045)},
   {n:'外星人',d:'升调 + 快速颤音',fx:(d,g)=>vib(rd(d,g,Math.floor(d.length*200/135),i=>i*0.675),11,0.002)},
   {n:'对讲机',d:'窄带 + 失真 + 呲啦声',fx:(d,g)=>{const x=rd(d,g,d.length*2,i=>i*0.5),tail=Math.floor(SR*0.3),o=new Float32Array(x.length+tail),R=mulberry32(1234);let hp=0,lp=0,px=0;
     for(let i=0;i<x.length;i++){hp=0.9*(hp+x[i]-px);px=x[i];lp+=0.45*(hp-lp);o[i]=Math.tanh(lp*4)*0.6*Math.min(1,(x.length-1-i)/80)}
-    for(let k=0;k<tail;k++)o[x.length+k]=(R()*2-1)*0.25*(1-k/tail)*Math.min(1,k/80);return o}},
+    let peak=0;for(const v of d)peak=Math.max(peak,Math.abs(v));const strength=Math.min(1,peak*g/256/32768);for(let k=0;k<tail;k++)o[x.length+k]=(R()*2-1)*0.0625*strength*(1-k/tail)*Math.min(1,k/80);return o}},
   {n:'合唱团',d:'三个 NABO 一起说',fx:(d,g)=>{const x=rd(d,g,d.length*2,i=>i*0.5),a=vib(x,0.8,0.012),b=vib(x,1.3,0.018);
     return x.map((v,i)=>(v+a[i]*0.8+b[i]*0.8+srcAt(d,g,i*0.63)*0.5)*0.4)}},
   {n:'卡带结巴',d:'随机重复片段，像卡带',fx:(d,g)=>{const x=rd(d,g,d.length*2,i=>i*0.5),seg=Math.round(SR*0.11),o=[];let s=1;
@@ -381,7 +384,9 @@ const VOICES=[
       for(let r=0;r<rep;r++)for(let j=0;j<ch.length;j++){let e=48;if(rep===3&&r>0)e=Math.min(e,j);if(rep===3&&r<rep-1)e=Math.min(e,ch.length-1-j);o.push(ch[j]*e/48)}}return Float32Array.from(o)}},
   {n:'原声',d:'只经过 8 kHz ADPCM，听听工牌的录音音质',fx:(d,g)=>rd(d,g,d.length*2,i=>i*0.5)},
 ];
-function renderVoice(raw,v){const d=adpcmRoundTrip(raw),g=voiceGainQ8(d),x=d.length?VOICES[v].fx(d,g):new Float32Array();return{d,g,out:x.map((s,i)=>clamp(s*Math.min(1,i/80,(x.length-1-i)/80),-1,1))}}
+const VOICE_TRIM=[294,333,320,256,294,282,294,294,256,410,256,256];
+function renderVoice(raw,v){const d=adpcmRoundTrip(raw),g=voiceGainQ8(d),x=d.length?VOICES[v].fx(d,g):new Float32Array();return{d,g,out:x.map((s,i)=>{s*=VOICE_TRIM[v]/256;const a=Math.abs(s);if(a>0.75)s=Math.sign(s)*(0.75+(a-0.75)*0.1875/(a-0.75+0.1875));return s*Math.min(1,i/80,(x.length-1-i)/80)})}}
+
 
 // ================= 屏幕 =================
 let scr=null;const nowMs=()=>performance.now();

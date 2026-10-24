@@ -11,6 +11,7 @@ on:
       - 'tests/interaction_host/**'
       - 'prototype/index.html'
       - 'tests/mic_host/**'
+      - 'tests/voice_host/**'
       - '.github/workflows/microphone-dsp.yml'
   pull_request:
     paths:
@@ -22,6 +23,7 @@ on:
       - 'tests/interaction_host/**'
       - 'prototype/index.html'
       - 'tests/mic_host/**'
+      - 'tests/voice_host/**'
       - '.github/workflows/microphone-dsp.yml'
   workflow_dispatch:
 
@@ -29,6 +31,26 @@ permissions:
   contents: read
 
 jobs:
+  voice:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+      - run: python -m pip install numpy
+      - name: Voice loudness, filtering, clipping, streaming and C/JS parity
+        env:
+          CC: gcc
+          NV_UBSAN: '1'
+        run: python tests/voice_host/test_quality.py
+
   pitch:
     runs-on: ubuntu-24.04
     timeout-minutes: 5

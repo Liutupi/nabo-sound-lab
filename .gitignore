@@ -1027,3 +1027,8 @@
 # Paired current overview and build instructions.
 !/README.zh_CN.md
 !/docs/BUILD.zh_CN.md
+
+# Deterministic voice quality tests and paired instructions; no generated audio.
+!/tests/voice_host/test_quality.py
+!/tests/voice_host/README.md
+!/tests/voice_host/README.zh_CN.md

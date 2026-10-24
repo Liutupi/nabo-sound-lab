@@ -16,6 +16,7 @@ extern "C" {
 #define NV_ECHO_DL     2880                      // 180 ms
 #define NV_EDGE_RAMP   (NV_SR / 200)             // 5 ms, streamed; no extra PCM buffer
 #define NV_SPLICE_RAMP (NV_SR * 3 / 1000)        // 3 ms around a stutter repeat
+#define NV_LEVEL_BINS   41
 
 enum {
     NV_CHIPMUNK, NV_OLDMAN, NV_ROBOT, NV_REVERSE, NV_ECHO, NV_LOWBAT,
@@ -33,9 +34,13 @@ typedef struct {
     nv_block_t blk[NV_MAX_BLOCKS];
     int32_t n8;            // 已编码的 8 kHz 采样数
     int32_t pred, idx;     // 编码器状态
-    int16_t pend;          // 落单的 16 kHz 采样
     uint8_t has_pend;
     int32_t peak;          // 解码值的最大绝对值（= 编码器预测值）
+    int32_t dc_q16;        // Recording-only DC blocker, ~80 Hz
+    int16_t fir[15];       // Anti-alias history; no expanded recording buffer
+    uint8_t fir_pos;
+    uint64_t level_energy;
+    uint16_t level_n, levels[NV_LEVEL_BINS]; // 20 ms decoded RMS histogram
 } nv_rec_t;
 
 typedef struct {

@@ -48,6 +48,26 @@ static inline int32_t tanh_q15(int32_t x_q15) {   // 输入 Q15（实数 = x/327
 void nv_rec_start(nv_rec_t *r) {
     tables();
     r->n8 = 0; r->pred = 0; r->idx = 0; r->has_pend = 0; r->peak = 0;
+    r->dc_q16 = 0; r->fir_pos = 0; r->level_energy = 0; r->level_n = 0;
+    memset(r->fir, 0, sizeof r->fir); memset(r->levels, 0, sizeof r->levels);
+}
+
+/* Quarter-octave RMS bins. Use sustained speech, rather than a single handling
+ * click or DC offset, to set playback gain. Fixed metadata; no heap allocation. */
+static const uint16_t LEVEL[NV_LEVEL_BINS] = {
+    32,38,45,54,64,76,91,108,128,152,181,215,256,304,362,431,512,609,724,861,
+    1024,1218,1448,1722,2048,2435,2896,3444,4096,4871,5793,6889,8192,9742,
+    11585,13777,16384,19484,23170,27554,32768
+};
+static uint32_t root_u64(uint64_t v) {
+    uint64_t bit = 1ULL << 62, out = 0;
+    while (bit > v) bit >>= 2;
+    while (bit) {
+        if (v >= out + bit) { v -= out + bit; out = (out >> 1) + bit; }
+        else out >>= 1;
+        bit >>= 2;
+    }
+    return (uint32_t)out;
 }
 
 static void encode(nv_rec_t *r, int32_t smp) {
@@ -67,23 +87,44 @@ static void encode(nv_rec_t *r, int32_t smp) {
     int j = i % NV_BLOCK;
     b->data[j >> 1] |= (uint8_t)((code & 15) << ((j & 1) * 4));
     r->n8++;
+    r->level_energy += (int64_t)r->pred * r->pred;
+    if (++r->level_n == 160) {
+        uint32_t rms = root_u64(r->level_energy / 160);
+        int bin = 0; while (bin < NV_LEVEL_BINS - 1 && rms > LEVEL[bin]) bin++;
+        r->levels[bin]++; r->level_n = 0; r->level_energy = 0;
+    }
 }
 
 int nv_rec_push(nv_rec_t *r, const int16_t *x16, int n) {
+    /* 15-tap 3.5 kHz low-pass before 2:1 decimation. Two-point averaging
+     * previously folded high-frequency microphone noise into the voice band. */
+    static const int16_t FIR[15] = {-30,197,310,-781,-1885,1587,9777,14418,
+                                   9777,1587,-1885,-781,310,197,-30};
     int k = 0;
     for (; k < n; k++) {
-        if (!r->has_pend) { r->pend = x16[k]; r->has_pend = 1; continue; }
         if (r->n8 >= NV_MAX_8K) break;
-        encode(r, ((int32_t)r->pend + x16[k] + 1) >> 1);   // 两两平均，四舍五入（同原型）
-        r->has_pend = 0;
+        r->dc_q16 += (int32_t)(((int64_t)x16[k] * 65536 - r->dc_q16) / 32);
+        int32_t hp = x16[k] - (r->dc_q16 >> 16);
+        r->fir[r->fir_pos] = (int16_t)CLAMP(hp, -32768, 32767);
+        r->fir_pos = (r->fir_pos + 1) % 15;
+        r->has_pend ^= 1;
+        if (r->has_pend) continue;
+        int64_t sum = 0;
+        for (int j = 0; j < 15; j++) sum += (int32_t)r->fir[(r->fir_pos + j) % 15] * FIR[j];
+        encode(r, CLAMP((sum + 16384) >> 15, -32768, 32767));
     }
     return k;
 }
 
 int32_t nv_gain_q8(const nv_rec_t *r) {
-    if (!r->peak) return 256;
-    int32_t g = (int32_t)((26214LL * 256) / r->peak);   // 峰值拉到 0.8
-    return g > 1536 ? 1536 : g;                        // 增益不超过 6
+    unsigned count = 0;
+    for (int i = 3; i < NV_LEVEL_BINS; i++) count += r->levels[i];
+    if (!count) return 256; /* Do not turn silence/very faint noise into speech. */
+    unsigned rank = (count * 4 + 4) / 5, sum = 0;
+    int bin = 3;
+    for (; bin < NV_LEVEL_BINS - 1; bin++) { sum += r->levels[bin]; if (sum >= rank) break; }
+    int32_t g = 6000 * 256 / LEVEL[bin];
+    return CLAMP(g, 64, 8192); /* Up to32x for quiet speech, unchanged codec volume. */
 }
 
 /* ---------------- 解码 ---------------- */
@@ -121,8 +162,12 @@ int16_t nv_dec_get(nv_dec_t *d, int32_t i) {
 // 8 kHz 位置 t（Q16）插值读取并乘增益，返回 Q15
 static inline int32_t src_q16(nv_player_t *p, nv_dec_t *d, uint64_t t) {
     int32_t i = (int32_t)(t >> 16), f = (int32_t)(t & 0xFFFF);
-    int32_t a = nv_dec_get(d, i), b = nv_dec_get(d, i + 1);
-    int32_t v = a + (int32_t)(((int64_t)(b - a) * f) >> 16);
+    /* Cubic reconstruction retains consonants better than linear upsampling. */
+    int32_t a = nv_dec_get(d, i - 1), b = nv_dec_get(d, i);
+    int32_t c = nv_dec_get(d, i + 1), e = nv_dec_get(d, i + 2);
+    int32_t q = (int32_t)((int64_t)(3 * (b - c) + e - a) * f >> 16);
+    q = (int32_t)((int64_t)(2 * a - 5 * b + 4 * c - e + q) * f >> 16);
+    int32_t v = b + (int32_t)((int64_t)(c - a + q) * f >> 17);
     return (int32_t)(((int64_t)v * p->g_q8) >> 8);
 }
 // 第 i 个输出点读 i·num/den（8 kHz 单位）
@@ -149,7 +194,7 @@ static uint32_t mulberry32(uint32_t *a) {
 void nv_play_start(nv_player_t *p, const nv_rec_t *r, int voice) {
     tables();
     memset(p, 0, sizeof *p);
-    p->rec = r; p->voice = voice; p->g_q8 = nv_gain_q8(r); p->L2 = (uint32_t)r->n8 * 2;
+    p->rec = r; p->voice = voice >= 0 && voice < NV_COUNT ? voice : NV_ORIGINAL; p->g_q8 = nv_gain_q8(r); p->L2 = (uint32_t)r->n8 * 2;
     nv_dec_init(&p->da, r); nv_dec_init(&p->db, r);
     uint32_t n8 = (uint32_t)r->n8;
     switch (voice) {
@@ -200,15 +245,15 @@ static int32_t next_sample(nv_player_t *p) {
     case NV_REVERSE:  return src_q16(p, &p->da, ((uint64_t)(p->L2 - 1 - i)) << 15);
     case NV_ROBOT: {
         int32_t x = src_rate(p, &p->da, i, 1, 2);
-        int64_t y = ((int64_t)x * sin_at(i, 700) >> 15) * 39322 >> 15;   // ×sin×1.2（39322 = 1.2·32768）
-        return (int32_t)(((y + 1024) >> 11) * 2048);                          // 16 级量化：round(v·16)/16
+        int32_t wet = (int32_t)((int64_t)x * sin_at(i, 700) >> 15);
+        return (int32_t)(((int64_t)x * 3 + (int64_t)wet * 7) / 8);
     }
     case NV_ECHO: {
         int32_t x = i < p->L2 ? src_rate(p, &p->da, i, 1, 2) : 0;
         int32_t *slot = &p->echo[i % NV_ECHO_DL];
         int32_t y = x + (int32_t)(((int64_t)*slot * 29491) >> 16);    // y[i-dl]×0.45
         *slot = y;
-        return (int32_t)(((int64_t)y * 39322) >> 16);                 // ×0.6
+        return (int32_t)(((int64_t)y * 55706) >> 16);                 // Clear dry voice + echoes
     }
     case NV_VIBRATO: { base_x(p, i); return vib_read(p, i, 72, 60); }
     case NV_ALIEN: {
@@ -223,15 +268,18 @@ static int32_t next_sample(nv_player_t *p) {
     case NV_WALKIE: {
         if (i < p->L2) {
             int32_t x = src_rate(p, &p->da, i, 1, 2);
-            p->hp = (int32_t)(((int64_t)(p->hp + x - p->px) * 58982) >> 16);   // 0.9
+            /* Q8 filter state avoids audible integer-rounding bias on soft speech. */
+            p->hp = (int32_t)(((int64_t)p->hp + (int64_t)(x - p->px) * 256) * 58982 / 65536);
             p->px = x;
-            p->lp += (int32_t)(((int64_t)(p->hp - p->lp) * 29491) >> 16);      // 0.45
-            int32_t y = (int32_t)(((int64_t)tanh_q15(p->lp * 4) * 39322) >> 16); // tanh(4·lp)×0.6
+            p->lp += (int32_t)((int64_t)(p->hp - p->lp) * 29491 / 65536);
+            int32_t y = (int32_t)(((int64_t)tanh_q15(p->lp / 64) * 39322) >> 16);
             return ramp(y, p->L2 - 1 - i, NV_EDGE_RAMP);
         }
         uint32_t tail = p->n_out - p->L2, k = i - p->L2;
         int32_t nz = (int32_t)(mulberry32(&p->rng) >> 16) - 32768;          // (2R−1)·32768
-        int32_t y = (int32_t)(((int64_t)nz * (tail - k) / tail) >> 2); // ×0.25×(1−k/tail)
+        int32_t strength = CLAMP((int64_t)p->rec->peak * p->g_q8 / 256, 0, 32768);
+        int32_t y = (int32_t)(((int64_t)nz * (tail - k) / tail) >> 4);
+        y = (int32_t)((int64_t)y * strength / 32768); /* Silence has no radio hiss. */
         return ramp(y, k, NV_EDGE_RAMP); /* speech and hiss meet at zero */
     }
     default: return 0;
@@ -277,6 +325,16 @@ int nv_play_fill(nv_player_t *p, int16_t *out, int n) {
         }
         uint32_t edge = p->i < NV_EDGE_RAMP ? p->i : NV_EDGE_RAMP;
         if (end_left < edge) edge = end_left;
+        /* Consistent perceived level with headroom for modulation and echoes.
+         * A soft knee avoids flat-topped clipping on loud speech or mic taps. */
+        static const uint16_t TRIM[NV_COUNT] = {294,333,320,256,294,282,294,294,256,410,256,256};
+        v = (int32_t)((int64_t)v * TRIM[p->voice] / 256);
+        int32_t a = v < 0 ? -v : v;
+        if (a > 24576) {
+            int32_t excess = a - 24576;
+            a = 24576 + (int32_t)((int64_t)excess * 6144 / (excess + 6144));
+            v = v < 0 ? -a : a;
+        }
         v = ramp(v, edge, NV_EDGE_RAMP);
         out[w++] = (int16_t)CLAMP(v, -32768, 32767);
         p->i++;

@@ -20,7 +20,7 @@ python tools/pack_assets_soundlab.py
 & .irmware	oolsuild.ps1 -Action all -IdfPath <idf目录> -VendorDir <组件目录> -ToolsPath <IDF工具目录>
 ```
 
-宿主测试在tests/。其Windows入口沿用开发期间TCC/Node路径，需安装编译器与Node并调整本机工具路径后运行；未随仓库分发宿主可执行工具或缓存。生成信号由tests/mic_host/gen_signals.py等脚本产生；本仓库不含环境拾音。新的独立检查见[交互测试](../tests/interaction_host/README.zh_CN.md)和[麦克风测试](../tests/mic_host/README.zh_CN.md)。
+宿主测试在tests/。其Windows入口沿用开发期间TCC/Node路径，需安装编译器与Node并调整本机工具路径后运行；未随仓库分发宿主可执行工具或缓存。生成信号由tests/mic_host/gen_signals.py等脚本产生；本仓库不含环境拾音。新的独立检查见[交互测试](../tests/interaction_host/README.zh_CN.md)和[麦克风测试](../tests/mic_host/README.zh_CN.md)及[音质测试](../tests/voice_host/README.zh_CN.md)。
 
 浏览器原型可在项目根目录python -m http.server 8000后打开prototype/index.html；麦克风功能需要浏览器权限。原型不是已刷镜像的替代验收，音量交互已同步到原型，旧占位造型不作为当前固件美术验收依据。
 

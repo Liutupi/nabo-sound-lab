@@ -38,8 +38,9 @@ Host tests live under tests/. Some older Windows entries retain local TCC/Node
 paths and need adjustment; tools and caches are not distributed. Synthetic
 signals come from tests/mic_host/gen_signals.py; environmental recordings are not
 included. New self-contained checks are documented under
-[interaction tests](../tests/interaction_host/README.md) and
-[microphone tests](../tests/mic_host/README.md).
+[interaction tests](../tests/interaction_host/README.md),
+[microphone tests](../tests/mic_host/README.md), and
+[voice quality tests](../tests/voice_host/README.md).
 
 Serve the repository with `python -m http.server 8000` and open
 prototype/index.html. Browser microphone use requires permission. The prototype

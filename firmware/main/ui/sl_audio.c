@@ -117,8 +117,9 @@ void sl_rec_begin(const int16_t *pre, int n) {
   sl_audio_unlock();
 }
 void sl_rec_push(const int16_t *x, int n) {
-  if (!g_rec_on) return;
-  int k = nv_rec_push(&g_rec, x, n); g_rec16 += (uint32_t)k;
+  sl_audio_lock();
+  if (g_rec_on) { int k = nv_rec_push(&g_rec, x, n); g_rec16 += (uint32_t)k; }
+  sl_audio_unlock();
 }
 int sl_rec_end(void) { sl_audio_lock(); g_rec_on = false; int n = g_rec.n8; sl_audio_unlock(); return n; }
 bool sl_rec_on(void) { return g_rec_on; }

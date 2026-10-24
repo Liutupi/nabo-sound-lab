@@ -10,3 +10,19 @@ int nv_render(int voice, int16_t *out, int maxn) {
     return n;
 }
 int nv_sizes(int *rec_size) { *rec_size = (int)sizeof(nv_rec_t); return (int)sizeof(nv_player_t); }
+int nv_record_chunked(const int16_t *x, int n, int chunk) {
+    nv_rec_start(&rec);
+    for (int at = 0; at < n;) {
+        int part = n - at < chunk ? n - at : chunk;
+        int used = nv_rec_push(&rec, x + at, part);
+        at += used;
+        if (used < part) break;
+    }
+    return rec.n8;
+}
+int nv_render_chunked(int voice, int16_t *out, int maxn, int chunk) {
+    nv_play_start(&pl, &rec, voice);
+    int n = 0, w;
+    while (n < maxn && (w = nv_play_fill(&pl, out + n, maxn - n < chunk ? maxn - n : chunk)) > 0) n += w;
+    return n;
+}
