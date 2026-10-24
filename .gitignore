@@ -1032,3 +1032,11 @@
 !/tests/voice_host/test_quality.py
 !/tests/voice_host/README.md
 !/tests/voice_host/README.zh_CN.md
+
+# Paired release notes, upgrade instructions and sanitized validation.
+!/CHANGELOG.zh_CN.md
+!/docs/RELEASE_v0.2.0-preview.2.md
+!/docs/RELEASE_v0.2.0-preview.2.zh_CN.md
+!/docs/FLASHING_0_2_0_PREVIEW_2.md
+!/docs/FLASHING_0_2_0_PREVIEW_2.zh_CN.md
+!/docs/VALIDATION_0_2_0_PREVIEW_2.json

@@ -2,9 +2,10 @@
 
 # Build and assets
 
-The wireless v0.2.0-preview.1 release uses frozen 0.2.0-dev binaries. Its build
+The wireless v0.2.0-preview.2 release uses frozen 0.2.0-dev binaries. Its build
 entry is `firmware/tools/build-duel.ps1 -Action all`, with separate build-duel and
-sdkconfig.duel paths. Both full tested and default configurations are included.
+sdkconfig.duel paths. Tracked defaults describe the build configuration; release
+binaries remain frozen.
 Ordinary build.ps1 omits the wireless menu. Set dependency/tool paths for your
 own environment. See [duel host dependencies](../tests/duel_host/README.md).
 A local rebuild requires its own validation and does not inherit the frozen

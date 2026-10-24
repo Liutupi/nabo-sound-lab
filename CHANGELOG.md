@@ -1,23 +1,39 @@
-# 更新记录
+<p align="right"><a href="CHANGELOG.zh_CN.md">简体中文</a> · <strong>English</strong></p>
 
-## v0.2.0-preview.1 · 2026-10-24
+# Changelog
 
-- 新增两工牌ESP-NOW无线节奏对战：四位房号、明确接受、双方准备、三轮累计，静音可玩，断联作废。
-- 复用NABO音乐人和既有动作，补齐中文字形；主要操作16px、分数22px。
-- 修复无线退出后碎片堆导致120px NABO缺失，复测三人合唱及旧玩法。
-- 两块实物完成12局36轮，包含连续10局与轮换房主，约30.3FPS；另测主动硬断联正确作废。
-- 原样发布已测0.2.0-dev内部镜像，不为发布重新编译。实体手感、视听同步、距离和merged整文件直刷待验，标记为预览版。
+## Unreleased
 
-应用SHA256：`5d8440c6494d2464b379c49f0af31e12e658e4e2c80ace6e058325c1308c4d24`。素材SHA256：`5fc895c4ef5ef14a0aa90f40ca027d75806c40f4e7a44860f8538d1d5fa61edb`。完整镜像、源码提交和附件身份见Release manifest。
+## v0.2.0-preview.2 - 2026-10-24
 
-## v0.1.2 — 2026-10-23，首次公开发布
+- Add immediate button feedback, state-specific Echo hints and OK playback stop without accidental recording.
+- Add volume editing with UP decrease, DOWN increase, clamped limits and saved settings.
+- Keep voice selection and manual/automatic switching available during recording and playback.
+- Improve quiet echo loudness, recording filtering, reconstruction, soft limiting and effect balance; make robot voice clearer and radio tail hiss quieter.
+- Reject ambiguous noisy subharmonic pitch candidates.
+- Preserve NABO art, preview.1 assets, partitions and stored-data formats. Publish the frozen application accepted by the user, with separate full-image and preserving-upgrade instructions.
+- Build/host checks and one-badge app/selection/stop/sound acceptance passed. Full merged installation and this revision's two-device RF/range remain unverified; retain preview status. Complex Echo animations still have slow frames.
 
-- NABO音乐人造型、38段源视频、对应精灵、道具和静态界面资源。
-- 首页“那波，陪你玩音乐！”；同赛博算命机音色，采用用户确认音量的同一PCM。
-- 补齐哼歌飞行、拍手节奏、采样琴；设置新增0–100%持久化音量，0%静音。
-- 保持主要中文提示16px、设置数值22px；修正部分动作锚点及播放映射，首次变声建表前置。
-- app510160B，分区余量1521456B；assets1882628B，分区余量4408828B。
-- app SHA256：fa93210ee93d5e569289c8ed4e87615ca339b3e63266678e0acb5f2480f39869。
-- assets SHA256：37018a9263a5110af7ed8b38ce2f64ed51ba004ae4d7d6327b6eb1bc7e916604。
+See [release notes](docs/RELEASE_v0.2.0-preview.2.md) and [validation](docs/VALIDATION_0_2_0_PREVIEW_2.json). Application SHA-256: `fbbf94fd3cf1fd096124c98b1611b4c55123725a0e7e7c6df6d5305ddc5612ac`.
 
-验证范围及含噪音高误判、历史无人复位、变声慢帧/听感等开放项见docs/VALIDATION_v0.1.2.md。内部0.1.0/0.1.1未在本仓库公开发布，本次保留实际固件版本号0.1.2。
+## v0.2.0-preview.1 - 2026-10-24
+
+- Add two-badge ESP-NOW rhythm duels: four-digit rooms, explicit acceptance, mutual readiness, three rounds, mute support and disconnect invalidation.
+- Reuse the NABO musician and actions, complete Chinese glyphs, and use 16px primary controls / 22px scores.
+- Fix missing 120px sprites after wireless heap fragmentation; check chorus and older games.
+- Validate 12 matches / 36 rounds on two devices, including 10 consecutive matches, rotating hosts and hard disconnect handling, at about30.3 FPS.
+- Publish the tested internal0.2.0-dev images without rebuilding. Physical feel, audiovisual timing, range and full merged-image installation remained unverified.
+
+Application SHA-256: `5d8440c6494d2464b379c49f0af31e12e658e4e2c80ace6e058325c1308c4d24`. Assets SHA-256: `5fc895c4ef5ef14a0aa90f40ca027d75806c40f4e7a44860f8538d1d5fa61edb`. The release manifest identifies the other components and attachments.
+
+## v0.1.2 - 2026-10-23
+
+- First public release with the NABO musician, 38 source animation clips, runtime sprites, props and static UI assets.
+- Home greeting reuses the approved young-boy voice and PCM from the fortune-machine application.
+- Add humming flight, clap rhythm, sampler piano and saved0–100% main volume with true mute at0%.
+- Keep primary Chinese hints at16px and settings values at22px; fix action anchors/playback mappings and initialize voice tables before first playback.
+- Application510160B, remaining app partition1521456B; assets1882628B, remaining asset partition4408828B.
+- Application SHA-256: `fa93210ee93d5e569289c8ed4e87615ca339b3e63266678e0acb5f2480f39869`.
+- Assets SHA-256: `37018a9263a5110af7ed8b38ce2f64ed51ba004ae4d7d6327b6eb1bc7e916604`.
+
+See the historical validation under `docs/VALIDATION_v0.1.2.md` for noisy-pitch, unexplained reset and voice timing/listening limits. Internal0.1.0/0.1.1 were not public releases; the actual firmware version remains0.1.2.

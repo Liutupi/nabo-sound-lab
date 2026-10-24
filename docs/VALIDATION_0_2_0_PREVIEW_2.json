@@ -1,0 +1,53 @@
+{
+  "schema": "nabo-soundlab-preview-validation-v1",
+  "release_tag": "v0.2.0-preview.2",
+  "date": "2026-10-24",
+  "build_source_commit": "555125b7b9a6398fa5293c147cb2d3c4e8e05f80",
+  "Build": "PASS",
+  "Host tests": "PASS",
+  "Device tests": "PASS",
+  "target": "ESP32-C3, 8MB Flash, ESP-IDF 5.5.3",
+  "application_sha256": "fbbf94fd3cf1fd096124c98b1611b4c55123725a0e7e7c6df6d5305ddc5612ac",
+  "merged_sha256": "2e5f71d459980abd6c2a64bff0b74ba830bcff591a45b2dd32fea51d6c037c51",
+  "matching_elf_sha256": "bfc05038d9be15a4da49ffc659d03036d413bb78f5aba5e9bdca363fa7d1db5b",
+  "assets_sha256": "5fc895c4ef5ef14a0aa90f40ca027d75806c40f4e7a44860f8538d1d5fa61edb",
+  "host_tests": [
+    "12 deterministic audio inputs x12 effects: production C / actual prototype parity, streaming, loudness, click robustness, DC/alias filtering, headroom, pitch/robot sidebands and RAM bounds under UBSan",
+    "14 production UI/audio states with UBSan and actual prototype button/mode/stop regressions; pitch 48 signals /1625 frames",
+    "Ordinary and wireless ESP-IDF v5.5.3 builds, merged bytes, partitions and matching ELF identities"
+  ],
+  "ci": {
+    "conclusion": "success",
+    "url": "https://github.com/Liutupi/nabo-sound-lab/actions/runs/40090015587"
+  },
+  "device": {
+    "badges_this_revision": 1,
+    "application_only_flash_verified": true,
+    "settings_and_game_records_preserved": true,
+    "protected_region_byte_identical": true,
+    "all_twelve_voices_swept": true,
+    "stop_and_selection_checked": true,
+    "user_controls_accepted": true,
+    "user_listening_result_accepted_for_release": true,
+    "audio_read_errors": 0,
+    "audio_write_errors": 0,
+    "mixer_peak_us": 3245,
+    "mixer_block_ms": 20,
+    "scope": "Mixer timing excludes I/O, recording preprocessing and microphone analysis",
+    "slow_animation_frame_max_ms": 65,
+    "serial_port_released": true
+  },
+  "Unverified": [
+    "Full merged-image first installation and matching new bootloader on hardware",
+    "This revision two-device RF/range and synchronization regression",
+    "Power-cycle acceptance and wider acoustic/listening conditions"
+  ],
+  "compatibility": {
+    "nvs_format_unchanged": true,
+    "partition_layout_unchanged": true,
+    "assets_unchanged_from_preview_1": true,
+    "firmware_internal_version": "0.2.0-dev",
+    "frozen_tested_binaries_not_rebuilt_for_release": true
+  },
+  "privacy": "No device identifiers, stored settings payloads, recordings, raw logs, flash dumps or ELF/MAP debugging artifacts are published."
+}

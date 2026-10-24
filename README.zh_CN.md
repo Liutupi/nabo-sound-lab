@@ -4,11 +4,11 @@
 
 戴上耳机，和 NABO 一起玩音乐。用于 FoloToy AI Passport 工牌的独立离线固件，ESP32-C3 / 8MB Flash / 240×320 / ES8311。
 
-**无线对战预览版：v0.2.0-preview.1。** 两块工牌直连，三轮比节奏；无需路由器、互联网或账号。内部版本为已实测的0.2.0-dev，实体手感、视听同步和距离测试仍待验。单机离线，对战内临时开启ESP-NOW；不包含小智聊天功能。
+**当前预览版：v0.2.0-preview.2 · 复读音质与按键反馈优化。** 内部版本仍显示0.2.0-dev，发布的是用户工牌已验收的冻结应用：小声复读更响、变声更清晰，录放中可换声音/模式，OK停播，音量可双向调整。NABO造型和配色保持。单机离线，对战内临时启用ESP-NOW；不包含小智聊天功能。
 
-[下载无线对战预览版](https://github.com/Liutupi/nabo-sound-lab/releases/tag/v0.2.0-preview.1) · [预览版安装](docs/FLASHING_0_2_0_PREVIEW.md) · [发布说明](docs/RELEASE_v0.2.0-preview.1.md) · [稳定版v0.1.2](https://github.com/Liutupi/nabo-sound-lab/releases/tag/v0.1.2) · [构建说明](docs/BUILD.md)
+[下载preview.2](https://github.com/Liutupi/nabo-sound-lab/releases/tag/v0.2.0-preview.2) · [安装说明](docs/FLASHING_0_2_0_PREVIEW_2.zh_CN.md) · [发布说明](docs/RELEASE_v0.2.0-preview.2.zh_CN.md) · [稳定版v0.1.2](https://github.com/Liutupi/nabo-sound-lab/releases/tag/v0.1.2) · [构建说明](docs/BUILD.zh_CN.md)
 
-**未发布的源码改进：** 共用底栏按键即时高亮；复读按状态显示操作、播放中OK停止；音量支持▲减/▼加，0–100%到边即停。保留现有NABO造型与配色。见[操作与测试](tests/interaction_host/README.zh_CN.md)和[音高抗误判改进](tests/mic_host/README.zh_CN.md)。复读还加入持续音量归一化、录音滤波、更清晰的机器人调制及更轻的对讲机尾噪，见[音质检查](tests/voice_host/README.zh_CN.md)。这些源码改进尚未更新到下方冻结Release镜像，实机验收另行进行。
+见[操作检查](tests/interaction_host/README.zh_CN.md)、[音质检查](tests/voice_host/README.zh_CN.md)及[音高抗误判](tests/mic_host/README.zh_CN.md)。新应用完成单工牌实测并获用户接受；整合镜像安装及本版双机RF/距离回归待验，复杂复读动画仍有慢帧。下方历史冻结版保留各自验证范围。
 
 开发分支新增「玩 → 无线对战」：两块工牌直连，同一谱面，四拍预备后看拍点按OK，三轮比节奏。不唱歌、不辨音高，静音也能玩。[可玩双屏原型](prototype/wireless-duel.html) · [规则与开发版验收](docs/WIRELESS_DUEL.md)。0.2.0-dev与正式v0.1.2分开，设备验证状态见[开发记录](docs/VALIDATION_0_2_0_DEV.json)。
 
@@ -32,7 +32,7 @@
 
 ## 固件下载与安装
 
-无线对战下载v0.2.0-preview.1的完整ZIP，按[预览版安装说明](docs/FLASHING_0_2_0_PREVIEW.md)操作。内部显示0.2.0-dev为正常现象。已安装声音实验室且布局相同的设备升级app和assets；其他玩法先保存需保留的数据，再安装配套完整布局。预览版已做真实双机受控测试，实体手感、视听同步、距离及完整merged一次直刷仍待验。
+下载v0.2.0-preview.2完整ZIP，按[安装说明](docs/FLASHING_0_2_0_PREVIEW_2.zh_CN.md)操作。兼容preview.1设备只需在0x10000更新app即可保留设置和纪录；较旧素材可能还需更新。整合镜像从0x0安装，会覆盖该范围内存储数据。内部显示0.2.0-dev为正常现象。
 
 ### 稳定版v0.1.2
 

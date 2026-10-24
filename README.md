@@ -5,23 +5,20 @@
 Put on your headphones and play music with NABO. An independent offline firmware
 for the FoloToy AI Passport badge: ESP32-C3, 8 MB Flash, 240×320 display and ES8311.
 
-**Wireless duel preview: v0.2.0-preview.1.** Two badges connect directly for three
-rhythm rounds, without a router, internet or account. The tested internal version
-is 0.2.0-dev. Physical key feel, audiovisual synchronization and range remain
-unverified. Single-player use is offline; duels temporarily enable ESP-NOW.
-The firmware does not include Xiaozhi chat.
+**Current preview: v0.2.0-preview.2 — clearer echo and button feedback.**
+The internal firmware still displays0.2.0-dev. This is the frozen application
+accepted on the user's badge, with stronger quiet-speech playback, clearer effects,
+live voice/mode switching, OK stop and two-way volume editing. NABO artwork and
+colors are preserved. Single-player use is offline; duels temporarily enable
+ESP-NOW. The firmware does not include Xiaozhi chat.
 
-[Download duel preview](https://github.com/Liutupi/nabo-sound-lab/releases/tag/v0.2.0-preview.1) · [Preview installation](docs/FLASHING_0_2_0_PREVIEW.md) · [Release notes](docs/RELEASE_v0.2.0-preview.1.md) · [Stable v0.1.2](https://github.com/Liutupi/nabo-sound-lab/releases/tag/v0.1.2) · [Build guide](docs/BUILD.md)
+[Download preview.2](https://github.com/Liutupi/nabo-sound-lab/releases/tag/v0.2.0-preview.2) · [Installation](docs/FLASHING_0_2_0_PREVIEW_2.md) · [Release notes](docs/RELEASE_v0.2.0-preview.2.md) · [Stable v0.1.2](https://github.com/Liutupi/nabo-sound-lab/releases/tag/v0.1.2) · [Build guide](docs/BUILD.md)
 
-**Unreleased source improvements:** common button hints highlight immediately;
-echo controls follow the recording/playback state and OK stops playback; volume
-supports UP to decrease and DOWN to increase, stopping at 0% and 100%. Existing
-NABO artwork and colors are preserved. See [controls and tests](tests/interaction_host/README.md)
-and [pitch ambiguity rejection](tests/mic_host/README.md). Echo playback also adds
-speech-level normalization, filtered recording, clearer robot modulation and quieter
-radio hiss; see [voice quality checks](tests/voice_host/README.md). These source changes
-are not included in the frozen Release images below and require separate device
-acceptance.
+See [controls](tests/interaction_host/README.md), [voice quality checks](tests/voice_host/README.md)
+and [pitch ambiguity rejection](tests/mic_host/README.md). The app was tested on
+one badge and accepted by the user; full merged installation and this revision's
+two-badge RF/range regression remain unverified. Complex echo animations still
+have slow frames. Historical frozen releases below retain their own validation.
 
 The development menu includes wireless duels: both badges use the same chart,
 with four count-in beats and three rounds of OK taps. Singing and pitch detection
@@ -61,13 +58,11 @@ inactivity the badge sleeps; the physical OK key wakes it.
 
 ## Firmware downloads and installation
 
-Download the complete v0.2.0-preview.1 ZIP and follow the
-[preview installation guide](docs/FLASHING_0_2_0_PREVIEW.md). Seeing internal version
-0.2.0-dev is expected. Existing Sound Lab installations with the same layout can
-upgrade app and assets; other applications require the complete matching layout
-and appropriate handling of their stored data. The preview has controlled real
-two-device evidence; physical feel, audiovisual synchronization, range and a
-single merged-image installation remain unverified.
+Download the complete v0.2.0-preview.2 ZIP and follow the
+[installation guide](docs/FLASHING_0_2_0_PREVIEW_2.md). A compatible preview.1
+installation needs only the new app at0x10000 to retain settings and records;
+older assets may also need updating. The complete merged image installs at0x0
+and overwrites stored data in that range. Internal0.2.0-dev is expected.
 
 ### Stable v0.1.2
 

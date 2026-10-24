@@ -2,9 +2,9 @@
 
 # 构建与资源
 
-无线对战预览版v0.2.0-preview.1使用冻结0.2.0-dev镜像。构建入口为 `firmware/tools/build-duel.ps1 -Action all`；使用独立build-duel与sdkconfig.duel，完整已测配置和默认配置均随源码提供。普通build.ps1不启用无线菜单。依赖路径可通过脚本参数设置为自己的ESP-IDF/工具及组件位置。宿主测试依赖配置见tests/duel_host/README.md。重编结果需单独验证，不能替换Release已测镜像的身份。
+无线对战预览版v0.2.0-preview.2使用冻结0.2.0-dev镜像。构建入口为 `firmware/tools/build-duel.ps1 -Action all`；使用独立build-duel与sdkconfig.duel，仓库默认配置描述构建参数，发布二进制保持冻结。普通build.ps1不启用无线菜单。依赖路径可通过脚本参数设置为自己的ESP-IDF/工具及组件位置。宿主测试依赖配置见tests/duel_host/README.md。重编结果需单独验证，不能替换Release已测镜像的身份。
 
-发布包是冻结的v0.1.2 r4镜像；本次发布没有重新编译。自己的构建可能因工具链、时间及配置不同产生不同SHA，不代表公开镜像已被重新实测。
+稳定版发布包是冻结的v0.1.2 r4镜像；本次发布没有重新编译。自己的构建可能因工具链、时间及配置不同产生不同SHA，不代表公开镜像已被重新实测。
 
 依赖：ESP-IDF5.5.3、ESP32-C3工具链；button4.2.0、esp_codec_dev1.6.2，版本见firmware/components/bsp/idf_component.yml。Windows脚本firmware/tools/build.ps1接受-IdfPath、-VendorDir、-ToolsPath；默认路径来自作者本机缓存，需要改成自己的环境。VendorDir中需具备对应版本的button和esp_codec_dev及其依赖。
 

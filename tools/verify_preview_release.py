@@ -1,4 +1,4 @@
-"""Verify an extracted/downloaded v0.2.0-preview.1 asset set (standard library).
+"""Verify an extracted/downloaded frozen v0.2.0 preview asset set (standard library).
 
 Usage: python tools/verify_preview_release.py DIRECTORY [--source-commit SHA]
 Checks are explicit and remain enabled under python -O. Never extracts a ZIP,
@@ -30,6 +30,19 @@ ANCHORED = {
 OFFSETS = {'bootloader.bin': 0, 'partition-table.bin': 0x8000,
            'nabo-soundlab-passport.bin': 0x10000, 'soundlab_assets.bin': 0x200000}
 PNGS = {'duel-device-A-v3-overview.png', 'duel-device-real-rf-overview.png'}
+RELEASES = {
+    VERSION: {'revision': REVISION, 'binaries': ANCHORED, 'pngs': PNGS},
+    '0.2.0-preview.2': {
+        'revision': 'echo-voice-quality-v1', 'pngs': set(),
+        'binaries': {
+            'bootloader.bin': (21024, 'da7beda1e655c45affbbef3b9b9491821b88f8485bda51db13ddaea6635a10ea'),
+            'partition-table.bin': (3072, '43311cbc95711332aa26b5e5002a58a9099b1a3be0b394408bc7b2b5dd986d86'),
+            'nabo-soundlab-passport.bin': (836400, 'fbbf94fd3cf1fd096124c98b1611b4c55123725a0e7e7c6df6d5305ddc5612ac'),
+            'soundlab_assets.bin': (1897404, '5fc895c4ef5ef14a0aa90f40ca027d75806c40f4e7a44860f8538d1d5fa61edb'),
+            'nabo-soundlab-0.2.0-preview.2-merged.bin': (3994556, '2e5f71d459980abd6c2a64bff0b74ba830bcff591a45b2dd32fea51d6c037c51'),
+        },
+    },
+}
 FORBIDDEN = re.compile(r'nvs|backups?|raw[-_]?logs?|private|credentials?|secrets?|\.env|readback|flash[-_]?dump', re.I)
 
 
@@ -157,9 +170,13 @@ def verify(directory, expected_commit=None):
     manifest_bytes = manifest_path.read_bytes()
     manifest = json.loads(manifest_bytes, object_pairs_hook=unique_object)
     need(isinstance(manifest, dict), 'Manifest must be a JSON object')
-    required = {'schema': 'nabo-sound-lab-release-v2', 'release_tag': TAG, 'version': VERSION,
+    version = manifest.get('version')
+    need(isinstance(version, str) and version in RELEASES, 'Unsupported preview version')
+    plan = RELEASES[version]
+    tag, revision, anchored, pngs = 'v' + version, plan['revision'], plan['binaries'], plan['pngs']
+    required = {'schema': 'nabo-sound-lab-release-v2', 'release_tag': tag, 'version': version,
                 'firmware_version': FIRMWARE, 'channel': 'prerelease', 'chip': 'esp32c3',
-                'flash_bytes': FLASH_BYTES, 'revision': REVISION}
+                'flash_bytes': FLASH_BYTES, 'revision': revision}
     for key, value in required.items():
         need(manifest.get(key) == value, 'Unexpected/missing manifest ' + key)
     commit = manifest.get('source_commit')
@@ -168,7 +185,7 @@ def verify(directory, expected_commit=None):
     commit = commit.lower()
     need(expected_commit is None or commit == expected_commit, 'Wrong source commit')
     entries = manifest.get('files')
-    need(isinstance(entries, dict) and set(entries) == set(ANCHORED) | PNGS, 'Unexpected manifest file inventory')
+    need(isinstance(entries, dict) and set(entries) == set(anchored) | pngs, 'Unexpected manifest file inventory')
     archive_name = safe_name(manifest.get('archive_name'), basename=True)
     need(re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9._-]*\.zip', archive_name) is not None, 'Invalid archive_name')
     documents = manifest.get('archive_document_sha256')
@@ -208,22 +225,22 @@ def verify(directory, expected_commit=None):
             need(offset_value(entry.get('offset')) == OFFSETS[name], 'Wrong component offset: ' + name)
         else:
             need('offset' not in entry, 'Unexpected component offset: ' + name)
-        if name in ANCHORED:
-            need((len(data), digest(data)) == ANCHORED[name], 'Accepted V3 binary identity mismatch: ' + name)
+        if name in anchored:
+            need((len(data), digest(data)) == anchored[name], 'Frozen accepted binary identity mismatch: ' + name)
         else:
             need(data.startswith(b'\x89PNG\r\n\x1a\n'), 'Invalid PNG attachment: ' + name)
         files[name] = data
     check_image(files['bootloader.bin'], 'bootloader.bin')
     check_image(files['nabo-soundlab-passport.bin'], 'nabo-soundlab-passport.bin', descriptor=True)
     need(files['soundlab_assets.bin'].startswith(b'FNAS'), 'Invalid FNAS asset magic')
-    gaps = check_merged(files['nabo-soundlab-0.2.0-preview.1-merged.bin'], files)
+    gaps = check_merged(files['nabo-soundlab-' + version + '-merged.bin'], files)
     sizes = check_archive(directory / archive_name, manifest_bytes, files, documents, expected_members)
-    return {'status': 'passed', 'version': VERSION, 'release_tag': TAG, 'firmware_version': FIRMWARE,
-            'revision': REVISION, 'channel': 'prerelease', 'chip': 'esp32c3', 'flash_bytes': FLASH_BYTES,
+    return {'status': 'passed', 'version': version, 'release_tag': tag, 'firmware_version': FIRMWARE,
+            'revision': revision, 'channel': 'prerelease', 'chip': 'esp32c3', 'flash_bytes': FLASH_BYTES,
             'source_commit': commit, 'verified_release_assets': len(expected_attachments),
-            'verified_binary_files': len(ANCHORED), 'verified_png_files': len(PNGS),
+            'verified_binary_files': len(anchored), 'verified_png_files': len(pngs),
             'verified_archive_members': len(sizes), 'archive_member_bytes': sizes,
-            'accepted_v3_binary_sha256': {n: value[1] for n, value in ANCHORED.items()},
+            ('accepted_v3_binary_sha256' if version == '0.2.0-preview.1' else 'accepted_binary_sha256'): {n: value[1] for n, value in anchored.items()},
             'NVS_PHY_blank': True, 'all_noncomponent_gaps_ff': True, 'merged_gap_ranges': gaps}
 
 
