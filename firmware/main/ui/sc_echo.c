@@ -10,8 +10,17 @@ static const char *VD[NV_COUNT] = {"快 1.5 倍，音调升高", "慢 0.72 倍�
                                    "随机重复片段，像卡带", "只经过 8 kHz ADPCM，听听工牌的录音音质"};
 enum { E_IDLE, E_REC, E_PLAY };
 static int e_v, e_m, e_state; static uint32_t e_t0, e_loud, e_end;
-static void e_up(void) { if (e_state != E_IDLE) return; e_v = (e_v + 1) % NV_COUNT; toast(VN[e_v]); }
-static void e_down(void) { if (e_state != E_IDLE) return; e_m ^= 1; toast(e_m ? "自动复读" : "按住说"); }
+/* Keep selection available even when automatic mode is continuously active.
+ * Replaying the retained recording also keeps the sound, name and animation
+ * together; changing modes cancels transient audio before accepting new input. */
+static void e_up(void) {
+  e_v = (e_v + 1) % NV_COUNT;
+  if (e_state == E_PLAY) { sl_voice_play(e_v); e_t0 = VT; }
+}
+static void e_down(void) {
+  if (e_state == E_REC) sl_rec_end();
+  sl_audio_stop_all(); e_state = E_IDLE; e_end = VT; e_m ^= 1;
+}
 static void e_start(void) {
   static int16_t pre[2400];
   sl_mic_last(pre, 2400);   /* 0.15 秒预卷 */
@@ -76,14 +85,10 @@ static void e_draw(void) {
   T(&F_SANS14, "◀", 30, 258, C_DIM, AL_C); T(&F_SANS14, "▶", 210, 258, C_DIM, AL_C);
   T(&F_DISP18, VN[e_v], cx, 258, C_CYAN, AL_C);
   T(&F_SANS14, VD[e_v], cx, 280, C_DIM, AL_C);
-  if (e_state == E_PLAY) {
-    static const hint_t H[] = {{"OK", "停止"}}; hintK(H, 1, true);
-  } else if (e_state == E_REC) {
-    static const hint_t H[] = {{"OK", "松开"}}; hintK(H, e_m ? 0 : 1, true);
-  } else {
-    hint_t H[] = {{"▲", "声音"}, {"▼", e_m ? "按住" : "自动"}, {e_m ? NULL : "OK", "录音"}};
-    hintK(H, 3, true);
-  }
+  hint_t H[] = {{"▲", "声音"}, {"▼", e_m ? "按住" : "自动"},
+                {e_state == E_PLAY || !e_m ? "OK" : NULL,
+                 e_state == E_PLAY ? "停止" : e_state == E_REC ? "松开" : "录音"}};
+  hintK(H, 3, true);
 }
 const sl_scene_t SC_ECHO = {.id = "echo", .name = "复读 NABO", .en = "ECHO NABO", .ic = "◉", .mic = 0, .up = e_up, .down = e_down,
                             .ok_down = e_ok_down, .ok_up = e_ok_up, .leave = e_leave, .update = e_update, .draw = e_draw};

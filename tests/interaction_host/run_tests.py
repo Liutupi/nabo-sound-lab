@@ -144,8 +144,7 @@ def main():
         step(1600); before, _ = frame()
         key(1, 1); key(1, 0)
         lit, _ = frame()
-        # Echo mode toast temporarily owns the footer; test the common feedback
-        # pulse on settings, where no notification masks it.
+        # The same common footer pulse is also checked on the settings list.
         go('settings'); before, _ = frame(); tap(1); lit, _ = frame()
         assert np.any(lit[300:] != before[300:])
         step(160); after, _ = frame()
@@ -163,17 +162,21 @@ def main():
         key(2, 1); feed(600, True)
         assert lib.sl_rec_on() and lib.ix_echo_state() == 1
         _, text = frame('07-echo-recording')
-        assert '松开' in text and '310:声音' not in text
+        assert '松开' in text and '310:声音' in text
         voice, mode = lib.ix_echo_voice(), lib.ix_echo_mode()
-        tap(0, 300); tap(1)
-        assert lib.ix_echo_voice() == voice and lib.ix_echo_mode() == mode
+        tap(0, 300)
+        assert lib.ix_echo_voice() == (voice + 1) % 12 and lib.sl_rec_on()
+        assert lib.ix_echo_mode() == mode
         key(2, 0); assert lib.sl_voice_playing() and lib.ix_echo_state() == 2
-        played = feed(200)
+        played = feed(400)
         assert np.any(played), 'The real voice mixer never produced audio'
         _, text = frame('08-echo-playing')
         assert '停止' in text and 'ADPCM' not in text and '310:录音' not in text
-        tap(0, 300); tap(1)
-        assert lib.ix_echo_voice() == voice and lib.ix_echo_mode() == mode
+        tap(0, 300)
+        assert lib.ix_echo_voice() == (voice + 2) % 12 and lib.sl_voice_playing()
+        assert lib.ix_echo_mode() == mode
+        assert np.any(feed(250)), 'Changing voice did not replay the retained recording'
+        frame('08b-voice-replayed')
         key(2, 1)
         assert not lib.sl_voice_playing() and not lib.sl_rec_on() and lib.ix_echo_state() == 0
         key(2, 0); assert not lib.sl_rec_on()
@@ -185,25 +188,44 @@ def main():
         assert lib.sl_voice_playing()
         feed(1600)
         assert not lib.sl_voice_playing() and lib.ix_echo_state() == 0
-        print('PASS manual recording, state-specific hints, locked active voice/mode, stop without re-record and natural completion')
+        print('PASS manual recording, live voice selection/replay, state-specific hints, stop without re-record and natural completion')
 
         tap(1); feed(500)
         assert lib.ix_echo_mode() and lib.ix_echo_state() == 0
         feed(400, True); assert lib.ix_echo_state() == 1
         _, text = frame('10-auto-recording')
-        assert '310:松开' not in text and '310:录音' not in text
+        assert '310:松开' not in text and '310:录音' not in text and '310:声音' in text
+        voice = lib.ix_echo_voice()
+        tap(0, 300)
+        assert lib.ix_echo_voice() == (voice + 1) % 12 and lib.sl_rec_on()
+        tap(1)
+        assert not lib.ix_echo_mode() and lib.ix_echo_state() == 0 and not lib.sl_rec_on()
+        frame('10b-auto-recording-escape')
+        tap(1); feed(500); feed(400, True)
+        assert lib.ix_echo_mode() and lib.ix_echo_state() == 1
         for _ in range(80):
             feed(20)
             if lib.ix_echo_state() == 2:
                 break
         assert lib.sl_voice_playing() and lib.ix_echo_state() == 2
-        _, text = frame('11-auto-playing'); assert '停止' in text
+        _, text = frame('11-auto-playing'); assert '停止' in text and '310:声音' in text
+        voice = lib.ix_echo_voice(); tap(0, 300)
+        assert lib.ix_echo_voice() == (voice + 1) % 12 and lib.sl_voice_playing()
+        tap(1)
+        assert not lib.ix_echo_mode() and lib.ix_echo_state() == 0 and not lib.sl_voice_playing()
+        frame('11b-auto-playing-escape')
+        tap(1); feed(500); feed(400, True)
+        for _ in range(80):
+            feed(20)
+            if lib.ix_echo_state() == 2:
+                break
+        assert lib.sl_voice_playing() and lib.ix_echo_mode()
         tap(2); assert lib.ix_echo_state() == 0 and not lib.sl_voice_playing() and not lib.sl_rec_on()
         feed(300); assert lib.ix_echo_state() == 0
         feed(400, True); assert lib.ix_echo_state() == 1
         tap(0); step(100); tap(0)
         assert lib.host_scene() == b'menu' and not lib.sl_rec_on() and not lib.sl_voice_playing()
-        print('PASS auto recording/playback, stop cooldown and recording teardown on return')
+        print('PASS live selection and one-button mode escape during auto recording/playback, stop cooldown and teardown')
         sheet = Image.new('RGB', (240 * 4, 320 * ((len(screenshots) + 3) // 4)), '#0a0716')
         for i, image in enumerate(screenshots):
             sheet.paste(image, ((i % 4) * 240, (i // 4) * 320))

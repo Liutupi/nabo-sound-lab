@@ -598,7 +598,7 @@ const CHROMA={...MODEFUL,id:'chroma',name:'和弦环',en:'CHORD RING',ic:'✲',m
     fw:['2048 个采样降到 8 kHz 后做 1024 点 FFT，每 100 ms 一次（≈7.8 Hz 分辨率，低音才分得清）','内存：1024 点 int32 复数工作区 8 KB，和 512 点 FFT 共用','实验性：混响大或鼓声重时容易猜错，需要真机试']}};
 
 const ECHO={id:'echo',name:'复读 NABO',en:'ECHO NABO',ic:'◉',v:0,state:'idle',recStart:0,pcm:null,env:null,playT:0,playLen:0,bytes:0,
-  m:0,modes:['按住说','自动复读'],lastLoud:0,ended:0,up(){if(this.state!=='idle')return;this.v=(this.v+1)%VOICES.length;toast(VOICES[this.v].n)},down(){if(this.state!=='idle')return;this.m^=1;toast(this.modes[this.m])},
+  m:0,modes:['按住说','自动复读'],lastLoud:0,ended:0,up(){this.v=(this.v+1)%VOICES.length;if(this.state==='play'){this.stopPlay();this.playRecorded()}},down(){rec.on=false;if(this.state==='play')this.stopPlay();this.state='idle';this.ended=nowMs();this.m^=1},
   startRec(){const pre=Math.round(SR*0.15);rec.buf=new Float32Array(SR*3);rec.buf.set(lastN(pre,new Float32Array(pre)));rec.n=pre;rec.on=true;this.state='rec';this.recStart=nowMs();this.lastLoud=nowMs()},
   stopPlay(){if(this.playSource){this.playGain.gain.setValueAtTime(1,AC.currentTime);this.playGain.gain.linearRampToValueAtTime(0,AC.currentTime+.005);this.playSource.stop(AC.currentTime+.005);this.playSource=null;S.muteUntil=AC.currentTime+.05}this.state='idle';this.ended=nowMs()},
   leave(){rec.on=false;if(this.state==='play')this.stopPlay();this.state='idle'},
@@ -606,7 +606,8 @@ const ECHO={id:'echo',name:'复读 NABO',en:'ECHO NABO',ic:'◉',v:0,state:'idle
     if(this.m===1){toast('自动模式：直接说话就行');return}this.startRec()},
   okUp(){if(this.state!=='rec')return;rec.on=false;const raw=rec.buf.subarray(0,rec.n);
     if(rec.n<SR*0.25){this.state='idle';if(!this.m)toast('太短了，按住说话');return}
-    const R=renderVoice(raw,this.v);this.bytes=adpcmBytes(R.d.length);const x=R.out;
+    this.playRecorded()},
+  playRecorded(){const raw=rec.buf.subarray(0,rec.n);const R=renderVoice(raw,this.v);this.bytes=adpcmBytes(R.d.length);const x=R.out;
     const fr=Math.round(SR*0.02),e=new Float32Array(Math.ceil(x.length/fr));for(let i=0;i<e.length;i++){let s=0;for(let k=0;k<fr;k++){const v=x[i*fr+k]||0;s+=v*v}e[i]=Math.sqrt(s/fr)}
     this.env=e;this.pcm=x;this.playLen=x.length/SR*1000;playPCM(x,this);this.playT=nowMs();this.state='play'},
   draw(t){const now=nowMs();
@@ -626,7 +627,7 @@ const ECHO={id:'echo',name:'复读 NABO',en:'ECHO NABO',ic:'◉',v:0,state:'idle
     else{nabo('N-IDLE',cx,cy,t,{size:120});T(src.kind==='mic'?(this.m?'直接说话，说完 NABO 就学':'按住 OK 说一句话'):'先在右侧打开麦克风',cx,224,13,C.gold)}
     const vo=VOICES[this.v];rr(20,244,200,50,10);c.fillStyle=C.panel;c.fill();
     T('◀',34,262,12,C.dim);T('▶',206,262,12,C.dim);T(vo.n,cx,262,18,C.cyan);T(vo.d,cx,282,10,C.dim,'center',F.sans);
-    hintK(this.state==='play'?[['OK','停止']]:this.state==='rec'?(this.m?[]:[['OK','松开']]):[['▲','声音'],['▼',this.m?'按住':'自动'],!this.m&&['OK','录音']])},
+    hintK([['▲','声音'],['▼',this.m?'按住':'自动'],(this.state==='play'||!this.m)&&['OK',this.state==='play'?'停止':this.state==='rec'?'松开':'录音']])},
   info:{d:'会说话的汤姆猫玩法：按住 OK 说一句（最长 3 秒），松手后 NABO 用选好的声音学回来。',
     k:[['按住 OK','录音，松手就复读'],['▲ / ▼','花栗鼠 / 大叔 / 机器人 / 倒放 / 山谷回声 / 没电了 / 颤音 / 外星人 / 对讲机 / 合唱团 / 卡带结巴 / 原声']],
     fw:['录音存 8 kHz IMA ADPCM：3 秒 ≈ 12 KB，没有 PSRAM 也放得下','播放时麦克风静音，防止啸叫','“原声”可以直接听到工牌录音音质，原型里就是按这个链路算的']}};
@@ -1117,7 +1118,7 @@ BEAT.info.k=[['▲（青）','灵敏度；节拍器开着时每次 +5 BPM'],['�
 PITCH.info.k=[['▲（青）','纵轴 20 / 12 / 32 个半音'],['▼（绿）','音名 / 简谱 / 唱名'],['OK（白）','冻结']];
 CHROMA.info.k=[['▲（青）','灵敏度'],['▼（绿）','五度圈 / 半音排列']];
 ECHO.info.d='会说话的汤姆猫玩法：说一句（最长 3 秒），NABO 用选好的声音学回来。自动复读模式不用按键，你说完它就学。';
-ECHO.info.k=[['▲（青）','空闲时换声音（12 种）'],['▼（绿）','空闲时切换按住说 / 自动复读'],['按住 OK','录音，松手复读'],['播放中 OK','停止复读，下一次按住再录音']];
+ECHO.info.k=[['▲（青）','换声音，播放中切换会重播'],['▼（绿）','随时切换按住说 / 自动复读'],['按住 OK','录音，松手复读'],['播放中 OK','停止复读，下一次按住再录音']];
 {const v=store.get('volume',80);S.volume=Number.isInteger(v)&&v>=0&&v<=100&&v%10===0?v:80;}
 go(new URLSearchParams(location.search).get('screen')==='menu'?MENU:SPLASH);requestAnimationFrame(frame);
 </script>

@@ -23,9 +23,13 @@ binary or its device-validation record.
   and stop-OK while playing in either manual or automatic mode. OK during playback
   stops using the existing audio fade. Releasing that press does not start or
   stop a new recording; the next fresh press can record in manual mode.
-- Voice and recording mode can change only while idle, so the displayed voice
-  and animation remain consistent with the active audio. Automatic mode retains
-  its cooldown after playback/stop, and leaving stops recording/playback.
+- Voice selection remains available during recording and playback. Selecting a
+  voice during playback replays the retained recording with that voice, keeping
+  sound, name and animation consistent. Mode switching is always available and
+  first cancels transient recording/playback, so continuous automatic activity
+  cannot trap the selector. Automatic mode retains its cooldown; leaving stops
+  recording/playback. Voice changes update the visible card directly instead of
+  covering the controls with a notification.
 - The browser prototype demonstrates the same controls and persists its volume
   locally. Its older placeholder artwork remains a prototype limitation; it is
   not a current firmware artwork or physical-audio acceptance reference.
@@ -51,7 +55,7 @@ temporary; snapshots go to ignored `out/interaction-host/`.
 Coverage includes immediate feedback and expiry, duplicate press suppression,
 uint32 clock wrap, single/double-UP separation, both volume limits, save/apply
 hooks, manual and automatic recording/playback, stopping without accidentally
-recording, natural completion, active voice/mode locking and return teardown.
+recording, natural completion, live voice replay, escape from active automatic recording/playback and return teardown.
 Every captured frame checks missing glyphs, visible text bounds, display-list
 capacity and incremental/full pixel equality. Tests do not open serial ports or
 flash a device. Physical buttons, codec volume, Chinese panel rendering and
