@@ -114,9 +114,17 @@ const sl_scene_t SC_MENU = {.id = "menu", .name = "菜单", .up_now = true, .up 
 static const int16_t A4L[] = {440, 441, 442, 443, 444, 445, 446, 415, 430, 432, 435, 438};
 static int s_sel;
 static uint32_t s_blink_at;
-static bool s_blink;
-static void s_up(void) { s_sel = (s_sel + 5) % 6; }
-static void s_down(void) { s_sel = (s_sel + 1) % 6; }
+static bool s_blink, s_volume_edit;
+static void s_enter(void) { s_volume_edit = false; }
+static void s_volume_step(int delta) {
+  int volume = fx_clamp((int)SET.volume + delta, 0, 100);
+  if (volume == SET.volume) return;
+  SET.volume = (uint8_t)volume;
+  sl_volume_apply(SET.volume); sl_settings_save();
+}
+static void s_up(void) { if (s_volume_edit) s_volume_step(-10); else s_sel = (s_sel + 5) % 6; }
+static void s_down(void) { if (s_volume_edit) s_volume_step(10); else s_sel = (s_sel + 1) % 6; }
+static bool s_back(void) { if (!s_volume_edit) return false; s_volume_edit = false; return true; }
 static void cycle_sens(bool announce) {
   static const int16_t L[] = {0, 6, 12, -12, -6};
   int i = 0; while (i < 5 && L[i] != SET.sens) i++;
@@ -126,7 +134,7 @@ static void cycle_sens(bool announce) {
 }
 void sl_cycle_sens(void) { cycle_sens(true); }
 static void s_ok(void) {
-  if (s_sel == 0) { SET.volume = (uint8_t)(((SET.volume / 10 + 1) % 11) * 10); sl_volume_apply(SET.volume); }
+  if (s_sel == 0) { s_volume_edit = !s_volume_edit; return; }
   else if (s_sel == 1) { int i = 0; while (i < 12 && A4L[i] != SET.a4) i++; SET.a4 = A4L[(i + 1) % 12]; }
   else if (s_sel == 2) { SET.calm = !SET.calm; s_blink_at = VT; s_blink = true; }
   else if (s_sel == 3) SET.quiet = SET.quiet >= 80 ? 40 : SET.quiet + 5;
@@ -135,7 +143,7 @@ static void s_ok(void) {
   sl_settings_save();
 }
 static void settings_draw(void) {
-  header("设置", "SETTINGS");
+  header("设置", s_volume_edit ? "调整音量" : "SETTINGS");
   char v[6][24];
   snprintf(v[0], 24, "%u%%", (unsigned)SET.volume);
   snprintf(v[1], 24, "%d Hz", SET.a4); snprintf(v[2], 24, "%s", SET.calm ? "开" : "关");
@@ -159,6 +167,7 @@ static void settings_draw(void) {
   if (s_blink) { int d = (int)(VT - s_blink_at); if (d < 300) nt = (7 * 1000 + 11) / 12 + d; else s_blink = false; }
   nabo("S-IDLE", 56, 200, 255, nt);
   static const hint_t H[] = {{"▲▼", "选择"}, {"OK", "修改"}};
-  hintK(H, 2, true);
+  static const hint_t V[] = {{"▲", "减"}, {"▼", "加"}, {"OK", "完成"}};
+  if (s_volume_edit) hintK(V, 3, true); else hintK(H, 2, true);
 }
-const sl_scene_t SC_SETTINGS = {.id = "settings", .name = "设置", .en = "SETTINGS", .ic = "⚙", .up = s_up, .down = s_down, .ok = s_ok, .draw = settings_draw};
+const sl_scene_t SC_SETTINGS = {.id = "settings", .name = "设置", .en = "SETTINGS", .ic = "⚙", .enter = s_enter, .back = s_back, .up = s_up, .down = s_down, .ok = s_ok, .draw = settings_draw};

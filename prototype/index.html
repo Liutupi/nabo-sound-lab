@@ -141,8 +141,8 @@ function nabo(id,cx,cy,t,o={}){
 }
 
 // ================= 音频输入 =================
-let SR=16000,HOP=320,AC=null,inBus=null,proc=null,src={kind:'none',stop:null};
-const S={gain:1,cal:110,quiet:60,rgb:true,muteUntil:0,toast:'',toastT:0,a4:440,calm:false,sens:0};
+let SR=16000,HOP=320,AC=null,inBus=null,outputBus=null,proc=null,src={kind:'none',stop:null};
+const S={gain:1,cal:110,quiet:60,rgb:true,muteUntil:0,toast:'',toastT:0,a4:440,calm:false,sens:0,volume:80};
 const RN=8192,ring=new Float32Array(RN);let wp=0,hopAcc=0;
 const rec={on:false,buf:null,n:0};
 function pushBlock(x,muted){
@@ -159,6 +159,7 @@ async function ensureAC(){
     AC=new (window.AudioContext||window.webkitAudioContext)({sampleRate:16000});
     SR=AC.sampleRate;HOP=Math.round(SR*0.02);
     inBus=AC.createGain();
+    outputBus=AC.createGain();outputBus.gain.value=S.volume/100;outputBus.connect(AC.destination);
     proc=AC.createScriptProcessor(512,1,1);
     proc.onaudioprocess=e=>{if(AC.currentTime>=S.muteUntil)pushBlock(e.inputBuffer.getChannelData(0),false);e.outputBuffer.getChannelData(0).fill(0)}; // 发声时整帧跳过分析（固件同），不送 0，避免恢复时出现假起音
     inBus.connect(proc);proc.connect(AC.destination);
@@ -185,7 +186,7 @@ async function useSource(kind){
 let noiseBuf=null;
 function startDemo(){
   if(!noiseBuf){noiseBuf=AC.createBuffer(1,SR/2,SR);const d=noiseBuf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1}
-  const out=AC.createGain();out.gain.value=0.55;out.connect(inBus);out.connect(AC.destination);
+  const out=AC.createGain();out.gain.value=0.55;out.connect(inBus);out.connect(outputBus);
   const bpm=118,s16=60/bpm/4,chords=[[48,52,55],[45,48,52],[41,45,48],[43,47,50]];
   let next=AC.currentTime+0.1,step=0;
   const env=(g,t,a,d,v)=>{g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(v,t+a);g.gain.exponentialRampToValueAtTime(0.0001,t+a+d)};
@@ -204,7 +205,7 @@ function startDemo(){
 }
 function startSweep(){
   const o=AC.createOscillator(),g=AC.createGain(),mon=AC.createGain();g.gain.value=0.4;mon.gain.value=0.25;
-  o.connect(g);g.connect(inBus);g.connect(mon);mon.connect(AC.destination);
+  o.connect(g);g.connect(inBus);g.connect(mon);mon.connect(outputBus);
   const sched=()=>{const t=AC.currentTime;o.frequency.cancelScheduledValues(t);o.frequency.setValueAtTime(80,t);o.frequency.exponentialRampToValueAtTime(1600,t+8)};
   o.start();sched();const id=setInterval(sched,8000);
   return()=>{clearInterval(id);o.stop();g.disconnect();mon.disconnect()};
@@ -323,15 +324,16 @@ function chromaStep(){
 }
 
 // ================= 播放（复读、节拍器） =================
-function playPCM(x){
+function playPCM(x,owner=null){
   const buf=AC.createBuffer(1,x.length,SR);buf.copyToChannel(x,0);
-  const s=AC.createBufferSource();s.buffer=buf;s.connect(AC.destination);s.start();
+  const s=AC.createBufferSource(),g=AC.createGain();s.buffer=buf;s.connect(g).connect(outputBus);s.start();
+  if(owner){owner.playSource=s;owner.playGain=g;}
   S.muteUntil=AC.currentTime+x.length/SR+0.15;return AC.currentTime;
 }
 function click(accent,at){
   const t=at||AC.currentTime+0.01,o=AC.createOscillator(),g=AC.createGain();
   o.frequency.value=accent?1760:1320;g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(0.5,t+0.002);g.gain.exponentialRampToValueAtTime(0.0001,t+0.025);
-  o.connect(g).connect(AC.destination);o.start(t);o.stop(t+0.03);S.muteUntil=Math.max(S.muteUntil,t+0.035); // 咔嗒 25 ms，只跳过约 35 ms
+  o.connect(g).connect(outputBus);o.start(t);o.stop(t+0.03);S.muteUntil=Math.max(S.muteUntil,t+0.035); // 咔嗒 25 ms，只跳过约 35 ms
 }
 // ================= 复读链路（固件 nabo_voice 的参考实现） =================
 // 录音：16 kHz → 两两平均（整数四舍五入）降到 8 kHz → IMA ADPCM 4 bit，每 256 个采样一块（块头存预测值和步长下标，可以随机访问）
@@ -392,7 +394,9 @@ function hintK(parts,back=true){c.fillStyle=C.panel;c.fillRect(0,304,W,16);
   const it=parts.filter(Boolean);if(back)it.push(['▲▲','返回']);
   const m=(s,f)=>{c.font=`10px ${f}`;return c.measureText(s).width};
   const ws=it.map(([k,l])=>m(k,F.mono)+3+m(l,F.sans)),tot=ws.reduce((a,b)=>a+b,0)+10*(it.length-1);let x=Math.max(4,120-tot/2);
-  it.forEach(([k,l],i)=>{T(k,x,312,10,KC[k]||C.dim,'left',F.mono);T(l,x+m(k,F.mono)+3,312,10,k==='▲▲'?C.dark:C.dim,'left',F.sans);x+=ws[i]+10})}
+  it.forEach(([k,l],i)=>{const lit=hintLit(k),color=KC[k]||C.dim;
+    if(lit){c.fillStyle=color;c.fillRect(x-1,305,m(k,F.mono)+2,14)}
+    T(k,x,312,10,lit?C.bg:color,'left',F.mono);T(l,x+m(k,F.mono)+3,312,10,k==='▲▲'?C.dark:C.dim,'left',F.sans);x+=ws[i]+10})}
 function mulberry32(a){return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
 const store={get(k,d){try{const v=localStorage.getItem('nabo-lab-'+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem('nabo-lab-'+k,JSON.stringify(v))}catch(e){}}};
 const SENS=[0,6,12,-12,-6];
@@ -594,21 +598,22 @@ const CHROMA={...MODEFUL,id:'chroma',name:'和弦环',en:'CHORD RING',ic:'✲',m
     fw:['2048 个采样降到 8 kHz 后做 1024 点 FFT，每 100 ms 一次（≈7.8 Hz 分辨率，低音才分得清）','内存：1024 点 int32 复数工作区 8 KB，和 512 点 FFT 共用','实验性：混响大或鼓声重时容易猜错，需要真机试']}};
 
 const ECHO={id:'echo',name:'复读 NABO',en:'ECHO NABO',ic:'◉',v:0,state:'idle',recStart:0,pcm:null,env:null,playT:0,playLen:0,bytes:0,
-  m:0,modes:['按住说','自动复读'],lastLoud:0,up(){this.v=(this.v+1)%VOICES.length;toast(VOICES[this.v].n)},down(){this.m^=1;toast(this.modes[this.m])},
+  m:0,modes:['按住说','自动复读'],lastLoud:0,ended:0,up(){if(this.state!=='idle')return;this.v=(this.v+1)%VOICES.length;toast(VOICES[this.v].n)},down(){if(this.state!=='idle')return;this.m^=1;toast(this.modes[this.m])},
   startRec(){const pre=Math.round(SR*0.15);rec.buf=new Float32Array(SR*3);rec.buf.set(lastN(pre,new Float32Array(pre)));rec.n=pre;rec.on=true;this.state='rec';this.recStart=nowMs();this.lastLoud=nowMs()},
-  leave(){rec.on=false;if(this.state==='rec')this.state='idle'},
-  async okDown(){if(src.kind!=='mic'){toast('复读要用麦克风');return}if(this.state!=='idle')return;
+  stopPlay(){if(this.playSource){this.playGain.gain.setValueAtTime(1,AC.currentTime);this.playGain.gain.linearRampToValueAtTime(0,AC.currentTime+.005);this.playSource.stop(AC.currentTime+.005);this.playSource=null;S.muteUntil=AC.currentTime+.05}this.state='idle';this.ended=nowMs()},
+  leave(){rec.on=false;if(this.state==='play')this.stopPlay();this.state='idle'},
+  async okDown(){if(this.state==='play'){this.stopPlay();return}if(src.kind!=='mic'){toast('复读要用麦克风');return}if(this.state!=='idle')return;
     if(this.m===1){toast('自动模式：直接说话就行');return}this.startRec()},
   okUp(){if(this.state!=='rec')return;rec.on=false;const raw=rec.buf.subarray(0,rec.n);
     if(rec.n<SR*0.25){this.state='idle';if(!this.m)toast('太短了，按住说话');return}
     const R=renderVoice(raw,this.v);this.bytes=adpcmBytes(R.d.length);const x=R.out;
     const fr=Math.round(SR*0.02),e=new Float32Array(Math.ceil(x.length/fr));for(let i=0;i<e.length;i++){let s=0;for(let k=0;k<fr;k++){const v=x[i*fr+k]||0;s+=v*v}e[i]=Math.sqrt(s/fr)}
-    this.env=e;this.pcm=x;this.playLen=x.length/SR*1000;playPCM(x);this.playT=nowMs();this.state='play'},
+    this.env=e;this.pcm=x;this.playLen=x.length/SR*1000;playPCM(x,this);this.playT=nowMs();this.state='play'},
   draw(t){const now=nowMs();
     if(this.state==='rec'&&now-this.recStart>3000)this.okUp();
-    if(this.m===1&&src.kind==='mic'){if(this.state==='idle'&&AC&&AC.currentTime>S.muteUntil+0.25&&A.db>-38)this.startRec();
+    if(this.m===1&&src.kind==='mic'){if(this.state==='idle'&&now-this.ended>400&&AC&&AC.currentTime>S.muteUntil+0.25&&A.db>-38)this.startRec();
       else if(this.state==='rec'){if(A.db>-46)this.lastLoud=now;else if(now-this.lastLoud>650)this.okUp()}}
-    if(this.state==='play'&&now-this.playT>this.playLen+150)this.state='idle';
+    if(this.state==='play'&&now-this.playT>this.playLen+150){this.playSource=null;this.state='idle';this.ended=now}
     header(this.name,this.state==='rec'?'录音中':this.state==='play'?'复读中':this.modes[this.m]);
     const cx=120,cy=140;
     if(this.state==='rec'){const p=(now-this.recStart)/3000,lv=clamp((A.db+60)/50,0,1);
@@ -617,11 +622,11 @@ const ECHO={id:'echo',name:'复读 NABO',en:'ECHO NABO',ic:'◉',v:0,state:'idle
       nabo('N-IDLE',cx,cy,t,{size:120});T('● REC '+((now-this.recStart)/1000).toFixed(1)+' s',cx,224,13,C.red,'center',F.mono)}
     else if(this.state==='play'){const i=Math.floor((now-this.playT)/20),e=this.env&&this.env[i]||0,k=clamp(e*3,0,1);
       for(let r=0;r<3;r++){c.strokeStyle=mix('#35f0dc',C.bg,0.3+r*0.25);c.lineWidth=2;c.beginPath();c.arc(cx,cy,64+r*12+k*16,0,7);c.stroke()}
-      nabo('N-IDLE',cx,cy,t,{size:120,sx:1-k*0.06,sy:1+k*0.1});T(`ADPCM ${(this.bytes/1024).toFixed(1)} KB`,cx,224,10,C.dim,'center',F.mono)}
+      nabo('N-IDLE',cx,cy,t,{size:120,sx:1-k*0.06,sy:1+k*0.1});T('NABO 正在复读',cx,224,13,C.cyan,'center',F.sans)}
     else{nabo('N-IDLE',cx,cy,t,{size:120});T(src.kind==='mic'?(this.m?'直接说话，说完 NABO 就学':'按住 OK 说一句话'):'先在右侧打开麦克风',cx,224,13,C.gold)}
     const vo=VOICES[this.v];rr(20,244,200,50,10);c.fillStyle=C.panel;c.fill();
     T('◀',34,262,12,C.dim);T('▶',206,262,12,C.dim);T(vo.n,cx,262,18,C.cyan);T(vo.d,cx,282,10,C.dim,'center',F.sans);
-    hintK([['▲','声音'],['▼',this.m?'自动':'按住'],!this.m&&['OK','按住录音']])},
+    hintK(this.state==='play'?[['OK','停止']]:this.state==='rec'?(this.m?[]:[['OK','松开']]):[['▲','声音'],['▼',this.m?'按住':'自动'],!this.m&&['OK','录音']])},
   info:{d:'会说话的汤姆猫玩法：按住 OK 说一句（最长 3 秒），松手后 NABO 用选好的声音学回来。',
     k:[['按住 OK','录音，松手就复读'],['▲ / ▼','花栗鼠 / 大叔 / 机器人 / 倒放 / 山谷回声 / 没电了 / 颤音 / 外星人 / 对讲机 / 合唱团 / 卡带结巴 / 原声']],
     fw:['录音存 8 kHz IMA ADPCM：3 秒 ≈ 12 KB，没有 PSRAM 也放得下','播放时麦克风静音，防止啸叫','“原声”可以直接听到工牌录音音质，原型里就是按这个链路算的']}};
@@ -986,18 +991,23 @@ const RANGE={id:'range',name:'声部卡',en:'RANGE',ic:'↕',step:'low',low:null
 
 // ================= 设置与开机画面 =================
 const A4L=[440,441,442,443,444,445,446,415,430,432,435,438];
-const SETTINGS={id:'settings',name:'设置',en:'SETTINGS',ic:'⚙',noSrc:true,sel:0,qr:false,
-  rows(){return[['A4 基准',S.a4+' Hz'],['减弱闪烁',S.calm?'开':'关'],['安静阈值',S.quiet+' dB'],['dB 校准','+'+S.cal],['频谱灵敏度',(S.sens>0?'+':'')+S.sens+' dB']]},
-  up(){this.sel=(this.sel+4)%5},down(){this.sel=(this.sel+1)%5},
-  ok(){const s=this.sel;
-    if(s===0)S.a4=A4L[(A4L.indexOf(S.a4)+1)%A4L.length];else if(s===1)S.calm=!S.calm;else if(s===2)S.quiet=S.quiet>=80?40:S.quiet+5;
-    else if(s===3)S.cal=S.cal>=130?90:S.cal+5;else cycleSens();syncSliders()},
-  draw(t){header(this.name,'SETTINGS');
-    this.rows().forEach(([k,v],i)=>{const y=34+i*36,on=i===this.sel;rr(10,y,220,32,7);c.fillStyle=on?C.cyan:C.panel;c.fill();
-      T(k,22,y+16,13,on?C.bg:C.white,'left',F.sans);T(v,218,y+16,12,on?C.bg:C.cyan,'right',F.mono)});
-    T('A4 可选 415–446 Hz',120,256,9,C.dim,'center',F.sans);T('减弱闪烁：关掉频闪、红框闪烁和火苗跳动',120,272,9,C.dim,'center',F.sans);
-    hintK([['▲▼','选择'],['OK','修改']])},
-  info:{d:'全局设置，固件里存 NVS。',k:[['▲ / ▼','选择'],['OK','改值（循环）']],fw:['A4 基准影响调音器、走钢丝、声部卡、音准曲线','减弱闪烁：频闪条改成静态箭头、红框不闪、火苗不跳、节拍圆环不放']}};
+const SETTINGS={id:'settings',name:'设置',en:'SETTINGS',ic:'⚙',noSrc:true,sel:0,volumeEdit:false,
+  enter(){this.volumeEdit=false},
+  rows(){return[['音量',S.volume+'%'],['A4 基准',S.a4+' Hz'],['减弱闪烁',S.calm?'开':'关'],['安静阈值',S.quiet+' dB'],['dB 校准','+'+S.cal],['频谱灵敏度',(S.sens>0?'+':'')+S.sens+' dB']]},
+  volumeStep(delta){const v=clamp(S.volume+delta,0,100);if(v===S.volume)return;S.volume=v;if(outputBus)outputBus.gain.setValueAtTime(v/100,AC.currentTime);store.set('volume',v)},
+  up(){if(this.volumeEdit)this.volumeStep(-10);else this.sel=(this.sel+5)%6},
+  down(){if(this.volumeEdit)this.volumeStep(10);else this.sel=(this.sel+1)%6},
+  back(){if(!this.volumeEdit)return false;this.volumeEdit=false;return true},
+  ok(){const s=this.sel;if(s===0){this.volumeEdit=!this.volumeEdit;return}
+    if(s===1)S.a4=A4L[(A4L.indexOf(S.a4)+1)%A4L.length];else if(s===2)S.calm=!S.calm;else if(s===3)S.quiet=S.quiet>=80?40:S.quiet+5;
+    else if(s===4)S.cal=S.cal>=130?90:S.cal+5;else cycleSens();syncSliders()},
+  draw(t){header(this.name,this.volumeEdit?'调整音量':'SETTINGS');
+    this.rows().forEach(([k,v],i)=>{const y=34+i*31,on=i===this.sel;rr(10,y,220,29,7);c.fillStyle=on?C.cyan:C.panel;c.fill();
+      T(k,22,y+14,13,on?C.bg:C.white,'left',F.sans);T(v,218,y+14,16,on?C.bg:C.cyan,'right',F.mono)});
+    const help=[['0-100% 音量','0% 为静音'],['A4 415-446 Hz','影响音高基准'],['可关闭抖动闪光','减少抖动闪烁'],['安静阈值 40-80','影响声音提醒'],['环境音量校准','dBFS + 校准值'],['0/+6/+12/-12/-6','调整声音灵敏度']];
+    T(help[this.sel][0],12,239,13,C.dim,'left',F.sans);T(help[this.sel][1],12,264,13,C.dim,'left',F.sans);
+    hintK(this.volumeEdit?[['▲','减'],['▼','加'],['OK','完成']]:[['▲▼','选择'],['OK','修改']])},
+  info:{d:'全局设置；音量0–100%，每档10%，0%静音。固件存NVS，浏览器音量存本机。',k:[['▲ / ▼','选择；音量调整中减 / 加'],['OK','进入音量调整 / 完成'],['双击 ▲','返回设置列表，再双击返回菜单']],fw:['音量到0%或100%停止，不绕回','实体音量和听感须上板验证','A4 基准影响音高工具']}};
 const SPLASH={id:'splash',name:'开机',noSrc:true,t0:0,
   anyKey(k){if(k==='ok'&&nowMs()-this.t0>500)go(MENU)},
   draw(){const now=nowMs();if(!this.t0)this.t0=now;const t=now-this.t0,out=x=>1-(1-clamp(x,0,1))**3;
@@ -1050,7 +1060,7 @@ const MENU={id:'menu',sel:1,scroll:0,
     k:[['▲ / ▼','选择'],['OK','进入'],['工具里双击 ▲','回到这里']],
     fw:['独立离线固件：开机直接进菜单，不配网','所有工具共用 nabo_mic 一个采集/分析任务','5 分钟无操作深睡（麦克风工具常开时可设“常亮”）']}};
 
-function go(s){if(scr&&scr.leave)scr.leave();scr=s;showInfo()}
+function go(s){if(scr&&scr.leave)scr.leave();if(K.upTimer)clearTimeout(K.upTimer);K.upTimer=null;K.upT=0;scr=s;if(scr.enter)scr.enter();showInfo()}
 function press0(){}
 function back(){if(scr===MENU)return;if(scr.back&&scr.back())return;const r=scr.ret;scr.ret=null;go(r||MENU)}
 function showInfo(){const i=scr.info,el=document.getElementById('info');
@@ -1058,16 +1068,18 @@ function showInfo(){const i=scr.info,el=document.getElementById('info');
   <table>${i.k.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('')}</table><h2>固件实现要点</h2><ul>${i.fw.map(x=>`<li>${x}</li>`).join('')}</ul>`}
 
 // ================= 按键：▲ 单击 / 双击返回；OK 支持按住 =================
-const K={upT:0,upTimer:null,okHeld:false};
+const K={upT:0,upTimer:null,okHeld:false,held:{},feedback:{}};
+function hintLit(label){const keys=label==='▲'?['up']:label==='▼'?['down']:label==='OK'?['ok']:label==='▲▼'?['up','down']:[];return keys.some(k=>K.held[k]||(K.feedback[k]!==undefined&&nowMs()-K.feedback[k]<160)||(k==='up'&&K.upTimer!==null))}
 function press(k){
+  if(K.held[k])return;K.held[k]=true;K.feedback[k]=nowMs();S.toast='';
   if(scr.anyKey){scr.anyKey(k);return}
   if(k==='up'){if(scr===MENU){MENU.up();return}
-    const n=nowMs();if(n-K.upT<300){clearTimeout(K.upTimer);K.upTimer=null;K.upT=0;back();return}
+    const n=nowMs();if(K.upTimer!==null&&n-K.upT<300){clearTimeout(K.upTimer);K.upTimer=null;K.upT=0;back();return}
     K.upT=n;K.upTimer=setTimeout(()=>{K.upTimer=null;scr.up&&scr.up()},300)}
   else if(k==='down'){scr.down&&scr.down()}
   else if(k==='ok'){if(K.okHeld)return;K.okHeld=true;if(scr.okDown)scr.okDown();else scr.ok&&scr.ok()}
 }
-function release(k){if(k==='ok'){K.okHeld=false;scr.okUp&&scr.okUp()}}
+function release(k){K.held[k]=false;if(k==='ok'){K.okHeld=false;scr.okUp&&scr.okUp()}}
 document.querySelectorAll('.keys button').forEach(b=>{const k=b.dataset.k;
   b.addEventListener('pointerdown',e=>{e.preventDefault();b.classList.add('on');press(k)});
   ['pointerup','pointerleave','pointercancel'].forEach(ev=>b.addEventListener(ev,()=>{if(b.classList.contains('on')){b.classList.remove('on');release(k)}}))});
@@ -1105,7 +1117,8 @@ BEAT.info.k=[['▲（青）','灵敏度；节拍器开着时每次 +5 BPM'],['�
 PITCH.info.k=[['▲（青）','纵轴 20 / 12 / 32 个半音'],['▼（绿）','音名 / 简谱 / 唱名'],['OK（白）','冻结']];
 CHROMA.info.k=[['▲（青）','灵敏度'],['▼（绿）','五度圈 / 半音排列']];
 ECHO.info.d='会说话的汤姆猫玩法：说一句（最长 3 秒），NABO 用选好的声音学回来。自动复读模式不用按键，你说完它就学。';
-ECHO.info.k=[['▲（青）','换声音（12 种）'],['▼（绿）','按住说 / 自动复读'],['按住 OK','录音，松手复读']];
+ECHO.info.k=[['▲（青）','空闲时换声音（12 种）'],['▼（绿）','空闲时切换按住说 / 自动复读'],['按住 OK','录音，松手复读'],['播放中 OK','停止复读，下一次按住再录音']];
+{const v=store.get('volume',80);S.volume=Number.isInteger(v)&&v>=0&&v<=100&&v%10===0?v:80;}
 go(new URLSearchParams(location.search).get('screen')==='menu'?MENU:SPLASH);requestAnimationFrame(frame);
 </script>
 </body>

@@ -1014,3 +1014,16 @@
 !/.github/workflows/
 /.github/workflows/*
 !/.github/workflows/microphone-dsp.yml
+
+# Button/playback/volume interaction regression sources, never their outputs.
+!/tests/interaction_host/
+/tests/interaction_host/*
+!/tests/interaction_host/probe.c
+!/tests/interaction_host/run_tests.py
+!/tests/interaction_host/test_prototype.js
+!/tests/interaction_host/README.md
+!/tests/interaction_host/README.zh_CN.md
+
+# Paired current overview and build instructions.
+!/README.zh_CN.md
+!/docs/BUILD.zh_CN.md

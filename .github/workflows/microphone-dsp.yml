@@ -1,15 +1,25 @@
-name: Microphone DSP
+name: Firmware host checks
 
 on:
   push:
     paths:
       - 'firmware/main/mic/**'
+      - 'firmware/main/ui/**'
+      - 'firmware/main/gfx/**'
+      - 'firmware/main/voice/**'
+      - 'firmware/assets/soundlab_assets.bin'
+      - 'tests/interaction_host/**'
       - 'prototype/index.html'
       - 'tests/mic_host/**'
       - '.github/workflows/microphone-dsp.yml'
   pull_request:
     paths:
       - 'firmware/main/mic/**'
+      - 'firmware/main/ui/**'
+      - 'firmware/main/gfx/**'
+      - 'firmware/main/voice/**'
+      - 'firmware/assets/soundlab_assets.bin'
+      - 'tests/interaction_host/**'
       - 'prototype/index.html'
       - 'tests/mic_host/**'
       - '.github/workflows/microphone-dsp.yml'
@@ -38,3 +48,25 @@ jobs:
           CC: gcc
           NM_UBSAN: '1'
         run: python tests/mic_host/test_pitch.py
+
+  interaction:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+      - run: python -m pip install numpy Pillow
+      - name: UI/audio integration, glyphs and pixel equality
+        env:
+          CC: gcc
+          NABO_UBSAN: '1'
+        run: python tests/interaction_host/run_tests.py
+      - name: Prototype interaction regression
+        run: node tests/interaction_host/test_prototype.js

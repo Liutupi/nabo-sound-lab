@@ -27,6 +27,8 @@ extern const sl_scene_t SC_BOOT, SC_MENU;
 static const sl_scene_t *g_scene;
 static uint32_t g_t0, g_up_t, g_toast_t, g_rng = 20261023;
 static bool g_held[3], g_up_pending;
+static bool g_key_seen[3];
+static uint32_t g_key_feedback_at[3];
 static uint32_t g_key_ms;
 static char g_toast[48];
 
@@ -55,6 +57,8 @@ bool sl_ui_init(const uint8_t *blob, uint32_t size, uint32_t seed) {
             fc_font_open("font/sans14", &F_SANS14) & fc_font_open("font/mono14", &F_MONO14) & fc_font_open("font/mono22", &F_MONO22) &
             fc_font_open("font/mono48", &F_MONO48) & fc_font_open("font/disp56", &F_DISP56);
   g_rng = seed ? seed : 1; VT = 0; g_scene = NULL;
+  memset(g_held, 0, sizeof g_held); memset(g_key_seen, 0, sizeof g_key_seen);
+  g_up_pending = false; g_toast[0] = 0;
   g_on_w = g_on_r = g_on_dropped = 0; g_on_dispatch_db = NM_DB_NONE;
   sl_audio_init();
   return ok;
@@ -87,6 +91,10 @@ void sl_ui_key_at(int k, bool down, uint32_t pressed_ms) {
   if (k < 0 || k > 2 || g_held[k] == down) return;
   g_key_ms = pressed_ms;
   g_held[k] = down;
+  if (down) {
+    g_key_seen[k] = true; g_key_feedback_at[k] = VT;
+    g_toast[0] = 0;  /* A fresh action restores its hints instead of hiding behind an old toast. */
+  }
   const sl_scene_t *s = g_scene;
   if (!down) { if (k == K_OK && s->ok_up) s->ok_up(); return; }
   if (k == K_UP) {
@@ -200,6 +208,20 @@ void header(const char *title, const char *mode) {
   if (mode && *mode) T(&F_SANS14, mode, 232, 13, C_CYAN, AL_R);
 }
 
+/* Acknowledge the press in the next frame, including while UP waits for
+ * double-click disambiguation. Do not run a saving/playing callback early. */
+static bool key_lit(int key) {
+  return g_held[key] || (g_key_seen[key] && VT - g_key_feedback_at[key] < 160) ||
+         (key == K_UP && g_up_pending);
+}
+static bool hint_lit(const char *key) {
+  if (!strcmp(key, "OK")) return key_lit(K_OK);
+  if (!strcmp(key, "▲")) return key_lit(K_UP);
+  if (!strcmp(key, "▼")) return key_lit(K_DOWN);
+  if (!strcmp(key, "▲▼")) return key_lit(K_UP) || key_lit(K_DOWN);
+  return false;  /* A single UP is not the double-UP return action. */
+}
+
 void hintK(const hint_t *h, int n, bool back) {
   hint_t it[6]; int m = 0;
   for (int i = 0; i < n && m < 5; i++) if (h[i].key) it[m++] = h[i];
@@ -245,7 +267,9 @@ void hintK(const hint_t *h, int n, bool back) {
     for (int i = row_first[row]; i < row_end[row]; i++) {
       const char *k = it[i].key;
       uint16_t kc = !strcmp(k, "▼") ? C_GREEN : !strcmp(k, "OK") ? C_WHITE : !strcmp(k, "▲▲") ? C_GOLD : C_CYAN;
-      T(&F_SANS16, k, x, y, kc, AL_L);
+      bool lit = hint_lit(k);
+      if (lit) fc_rect(x - 1, y - 9, fc_text_width(&F_SANS16, k) + 2, 18, kc, 255);
+      T(&F_SANS16, k, x, y, lit ? C_BG : kc, AL_L);
       T(&F_SANS16, it[i].label, x + fc_text_width(&F_SANS16, k) + key_gap, y, C_WHITE, AL_L);
       x += ws[i] + gap;
     }

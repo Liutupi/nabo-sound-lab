@@ -9,9 +9,9 @@ static const char *VD[NV_COUNT] = {"快 1.5 倍，音调升高", "慢 0.72 倍�
                                    "越说越慢、越说越低，最后没电", "6 Hz 颤音，像在发抖", "升调 + 快速颤音", "窄带 + 失真 + 呲啦声", "三个 NABO 一起说",
                                    "随机重复片段，像卡带", "只经过 8 kHz ADPCM，听听工牌的录音音质"};
 enum { E_IDLE, E_REC, E_PLAY };
-static int e_v, e_m, e_state, e_bytes; static uint32_t e_t0, e_loud, e_end;
-static void e_up(void) { e_v = (e_v + 1) % NV_COUNT; toast(VN[e_v]); }
-static void e_down(void) { e_m ^= 1; toast(e_m ? "自动复读" : "按住说"); }
+static int e_v, e_m, e_state; static uint32_t e_t0, e_loud, e_end;
+static void e_up(void) { if (e_state != E_IDLE) return; e_v = (e_v + 1) % NV_COUNT; toast(VN[e_v]); }
+static void e_down(void) { if (e_state != E_IDLE) return; e_m ^= 1; toast(e_m ? "自动复读" : "按住说"); }
 static void e_start(void) {
   static int16_t pre[2400];
   sl_mic_last(pre, 2400);   /* 0.15 秒预卷 */
@@ -21,9 +21,15 @@ static void e_stop(void) {
   if (e_state != E_REC) return;
   sl_rec_end();
   if (sl_rec_samples16() < 4000) { e_state = E_IDLE; if (!e_m) toast("太短了，按住说话"); return; }
-  e_bytes = sl_rec_bytes(); sl_voice_play(e_v); e_state = E_PLAY; e_t0 = VT;
+  sl_voice_play(e_v); e_state = E_PLAY; e_t0 = VT;
 }
-static void e_ok_down(void) { if (e_m) { toast("自动模式：直接说话就行"); return; } if (e_state == E_IDLE) e_start(); }
+static void e_ok_down(void) {
+  if (e_state == E_PLAY) {
+    sl_audio_stop_all(); e_state = E_IDLE; e_end = VT; return;
+  }
+  if (e_m) { toast("自动模式：直接说话就行"); return; }
+  if (e_state == E_IDLE) e_start();
+}
 static void e_ok_up(void) { if (!e_m) e_stop(); }
 static void e_leave(void) { if (e_state == E_REC) sl_rec_end(); sl_audio_stop_all(); e_state = E_IDLE; }
 static void e_update(int dt) {
@@ -61,7 +67,7 @@ static void e_draw(void) {
     else if (e_v == NV_CHORUS) { nabo_sq("S-TALK", 76, cx - 66, cy + 22, tt + 300, sx, sy, 0); nabo_sq("S-TALK", 76, cx + 66, cy + 22, tt + 600, sx, sy, 0); nabo_sq("S-TALK", 120, cx, cy, tt, sx, sy, 0); }
     else nabo_sq("S-TALK", 120, cx + dx, cy, tt < 0 ? 100000 + tt : tt, sx, sy, 0);
     if (e_v == NV_WALKIE) for (int y = cy - 60; y < cy + 60; y += 3) fc_rect(cx - 60, y, 120, 1, RGB(0, 0, 0), 120);
-    TF(&F_MONO14, cx, 224, C_DIM, AL_C, "ADPCM %d.%d KB", e_bytes / 1024, e_bytes % 1024 * 10 / 1024);
+    T(&F_SANS16, "NABO 正在复读", cx, 224, C_CYAN, AL_C);
   } else {
     nabo("S-MIC-IDLE", 120, cx, cy, t);
     T(&F_DISP18, e_m ? "直接说话，说完 NABO 就学" : "按住 OK 说一句话", cx, 224, C_GOLD, AL_C);
@@ -70,8 +76,14 @@ static void e_draw(void) {
   T(&F_SANS14, "◀", 30, 258, C_DIM, AL_C); T(&F_SANS14, "▶", 210, 258, C_DIM, AL_C);
   T(&F_DISP18, VN[e_v], cx, 258, C_CYAN, AL_C);
   T(&F_SANS14, VD[e_v], cx, 280, C_DIM, AL_C);
-  hint_t H[] = {{"▲", "声音"}, {"▼", e_m ? "自动" : "按住"}, {e_m ? NULL : "OK", "录音"}};
-  hintK(H, 3, true);
+  if (e_state == E_PLAY) {
+    static const hint_t H[] = {{"OK", "停止"}}; hintK(H, 1, true);
+  } else if (e_state == E_REC) {
+    static const hint_t H[] = {{"OK", "松开"}}; hintK(H, e_m ? 0 : 1, true);
+  } else {
+    hint_t H[] = {{"▲", "声音"}, {"▼", e_m ? "按住" : "自动"}, {e_m ? NULL : "OK", "录音"}};
+    hintK(H, 3, true);
+  }
 }
 const sl_scene_t SC_ECHO = {.id = "echo", .name = "复读 NABO", .en = "ECHO NABO", .ic = "◉", .mic = 0, .up = e_up, .down = e_down,
                             .ok_down = e_ok_down, .ok_up = e_ok_up, .leave = e_leave, .update = e_update, .draw = e_draw};

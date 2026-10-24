@@ -1,63 +1,123 @@
-# NABO 声音实验室
+<p align="right"><a href="README.zh_CN.md">简体中文</a> · <strong>English</strong></p>
 
-戴上耳机，和 NABO 一起玩音乐。用于 FoloToy AI Passport 工牌的独立离线固件，ESP32-C3 / 8MB Flash / 240×320 / ES8311。
+# NABO Sound Lab
 
-**无线对战预览版：v0.2.0-preview.1。** 两块工牌直连，三轮比节奏；无需路由器、互联网或账号。内部版本为已实测的0.2.0-dev，实体手感、视听同步和距离测试仍待验。单机离线，对战内临时开启ESP-NOW；不包含小智聊天功能。
+Put on your headphones and play music with NABO. An independent offline firmware
+for the FoloToy AI Passport badge: ESP32-C3, 8 MB Flash, 240×320 display and ES8311.
 
-[下载无线对战预览版](https://github.com/Liutupi/nabo-sound-lab/releases/tag/v0.2.0-preview.1) · [预览版安装](docs/FLASHING_0_2_0_PREVIEW.md) · [发布说明](docs/RELEASE_v0.2.0-preview.1.md) · [稳定版v0.1.2](https://github.com/Liutupi/nabo-sound-lab/releases/tag/v0.1.2) · [构建说明](docs/BUILD.md)
+**Wireless duel preview: v0.2.0-preview.1.** Two badges connect directly for three
+rhythm rounds, without a router, internet or account. The tested internal version
+is 0.2.0-dev. Physical key feel, audiovisual synchronization and range remain
+unverified. Single-player use is offline; duels temporarily enable ESP-NOW.
+The firmware does not include Xiaozhi chat.
 
-开发分支新增「玩 → 无线对战」：两块工牌直连，同一谱面，四拍预备后看拍点按OK，三轮比节奏。不唱歌、不辨音高，静音也能玩。[可玩双屏原型](prototype/wireless-duel.html) · [规则与开发版验收](docs/WIRELESS_DUEL.md)。0.2.0-dev与正式v0.1.2分开，设备验证状态见[开发记录](docs/VALIDATION_0_2_0_DEV.json)。
+[Download duel preview](https://github.com/Liutupi/nabo-sound-lab/releases/tag/v0.2.0-preview.1) · [Preview installation](docs/FLASHING_0_2_0_PREVIEW.md) · [Release notes](docs/RELEASE_v0.2.0-preview.1.md) · [Stable v0.1.2](https://github.com/Liutupi/nabo-sound-lab/releases/tag/v0.1.2) · [Build guide](docs/BUILD.md)
 
-2026-10-24已在两块真实C3完成12局、36轮受控联机测试，含连续10局、轮换房主和静音得分，约30FPS；突然断联后正确作废。[双机实测总览](docs/images/duel-device-real-rf-overview.png)。实体按键手感、音效同步和距离测试待验，正式发布仍为v0.1.2。
+**Unreleased source improvements:** common button hints highlight immediately;
+echo controls follow the recording/playback state and OK stops playback; volume
+supports UP to decrease and DOWN to increase, stopping at 0% and 100%. Existing
+NABO artwork and colors are preserved. See [controls and tests](tests/interaction_host/README.md)
+and [pitch ambiguity rejection](tests/mic_host/README.md). These source changes
+are not included in the frozen Release images below and require separate device
+acceptance.
 
-![NABO 音乐人](docs/images/nabo-musician.png)
+The development menu includes wireless duels: both badges use the same chart,
+with four count-in beats and three rounds of OK taps. Singing and pitch detection
+are unnecessary; muted play works. [Interactive two-screen prototype](prototype/wireless-duel.html) · [Rules and development acceptance](docs/WIRELESS_DUEL.md).
+The 0.2.0-dev and stable v0.1.2 identities remain separate; see the
+[development validation record](docs/VALIDATION_0_2_0_DEV.json).
 
-## 可以玩什么
+On 2026-10-24, two real C3 badges completed 12 controlled matches and 36 rounds,
+including 10 consecutive matches, host rotation and muted scoring, at approximately
+30 FPS. A sudden disconnect correctly invalidated the match.
+[Two-device overview](docs/images/duel-device-real-rf-overview.png).
+Physical key feel, audio synchronization and range remain pending; v0.1.2 is still
+the stable release.
 
-| 分组 | 内容 |
-|---|---|
-| 双机对战（预览） | 四位房号直连、看拍点按OK、三轮累计、音效可关、断联作废 |
-| 玩声音 | 12种变声复读、喊叫跑酷、吹蜡烛、长音走钢丝、声部卡、哼歌飞行、拍手节奏、采样琴 |
-| 看声音 | 频谱仪、声纹瀑布、示波器、和弦环、分贝计 |
-| 练音乐 | 调音器、吉他工具箱、节拍检测、音准曲线 |
-| 设置 | 音量、A4基准、减弱闪烁、安静阈值、dB校准、频谱灵敏度 |
+![NABO musician](docs/images/nabo-musician.png)
 
-首页使用与 NABO 赛博算命机相同的“阳光小男孩”音色，说“那波，陪你玩音乐！”。音量0–100%，每档10%，0%静音，默认80%，自动保存。▲▼选择，OK操作，双击▲返回；每页底栏显示当前玩法操作。采样琴中三键用于弹奏，长按OK采样。
+## What can you play?
 
-“NABO 音乐人”造型和全部道具沿用项目定稿；主要中文操作提示16px，设置数值22px。约五分钟无操作后休眠，实体OK唤醒。
+| Group | Features |
+| --- | --- |
+| Wireless duel preview | Four-digit rooms, beat-following OK taps, three rounds, optional sound, disconnect invalidation |
+| Sound toys | 12 echo voices, voice-controlled running, candle blowing, tightrope singing, vocal range card, humming flight, clap rhythm, sampler piano |
+| Sound visualization | Spectrum, waterfall, oscilloscope, chord circle, sound-level display |
+| Music practice | Tuner, guitar toolbox, beat detection, pitch trace |
+| Settings | Volume, A4 reference, reduced flashing, quiet threshold, dB calibration, spectrum sensitivity |
 
-## 固件下载与安装
+The home greeting uses the same sunny young-boy voice as the NABO fortune machine:
+NABO invites you to play music. Volume is 0–100% in 10% steps, default 80%, saved
+automatically; 0% is mute. UP/DOWN select and OK acts; double-UP returns. Each page
+shows its current controls. Sampler piano uses all three keys for notes; hold OK
+to record. In current source, OK on the volume row enters adjustment, UP decreases,
+DOWN increases and OK finishes; double-UP leaves adjustment before the settings page.
 
-无线对战下载v0.2.0-preview.1的完整ZIP，按[预览版安装说明](docs/FLASHING_0_2_0_PREVIEW.md)操作。内部显示0.2.0-dev为正常现象。已安装声音实验室且布局相同的设备升级app和assets；其他玩法先备份，再安装配套完整布局。预览版已做真实双机受控测试，实体手感、视听同步、距离及完整merged一次直刷仍待验。
+The finalized NABO musician and props are retained. Main Chinese instructions use
+16 px text and setting values use 22 px. After approximately five minutes of
+inactivity the badge sleeps; the physical OK key wakes it.
 
-### 稳定版v0.1.2
+## Firmware downloads and installation
 
-首次安装下载 **nabo-soundlab-0.1.2-merged.bin**，从0x0写入，选择ESP32-C3和8MB Flash。此安装会替换原有玩法，先自行备份。已有相同分区的声音实验室0.1.1/0.1.2，按刷机说明只升级app和assets以保留设置。不要把其他玩法的分区地址直接套用到本项目。
+Download the complete v0.2.0-preview.1 ZIP and follow the
+[preview installation guide](docs/FLASHING_0_2_0_PREVIEW.md). Seeing internal version
+0.2.0-dev is expected. Existing Sound Lab installations with the same layout can
+upgrade app and assets; other applications require the complete matching layout
+and appropriate handling of their stored data. The preview has controlled real
+two-device evidence; physical feel, audiovisual synchronization, range and a
+single merged-image installation remain unverified.
 
-Release 同时提供完整ZIP、分立镜像、manifest.json和SHA256SUMS.txt。发布的是已验证的冻结二进制，未为发布重新编译。当前实物验证覆盖r4 app和assets；实物保留旧boot，完整包包含匹配构建输出的新boot，未另做整包首次安装的端到端实测。
+### Stable v0.1.2
 
-## 稳定版v0.1.2的实测范围
+For first installation, flash **nabo-soundlab-0.1.2-merged.bin** at 0x0, selecting
+ESP32-C3 and 8 MB Flash. This replaces the previous application; preserve any
+needed data first. With the same Sound Lab 0.1.1/0.1.2 partition layout, follow the
+installation instructions to upgrade app/assets while retaining settings. Do not
+reuse addresses from other applications.
 
-0/40/80%经三次受控芯片重启后读取一致；12种变声录放完成，音频API读写错误0；首录处理峰值0.680ms。四个正式性能窗口30.30FPS、慢帧0；实际变声演出仍有慢帧。
+The Release also includes a complete ZIP, separate images, manifest.json and
+SHA256SUMS.txt. These are frozen verified binaries, not rebuilt for publication.
+Device validation covers the r4 app and assets with the existing bootloader;
+the complete package contains the matching build's newer bootloader. First-time
+installation of that complete package has not received a separate end-to-end
+device test.
 
-仍开放：含噪440Hz输入曾误判为约147Hz；旧修订出现过一次无人操作异常返回/重启，原因未定位，后续观察未复现；新版变声是否还存在爆破声，尚待实物听感确认。本固件不作专业调音或声级测量精度承诺。详情及数据边界见[验证记录](docs/VALIDATION_v0.1.2.md)。
+## Stable v0.1.2 validation scope
 
-![实际C3设置页九状态总览](docs/images/settings-overview.png)
+Volume 0/40/80% survived three controlled chip resets. All 12 voices completed
+recording/playback with zero audio API read/write errors; the first recording
+processing peak was 0.680 ms. Four formal performance windows reached 30.30 FPS
+without slow frames; actual voice performances still had slow frames.
 
-以上为C3实际送屏缓冲，原尺寸240×320，非实物面板光学照片；总览底色#0A0716，各帧采集时点不同。
+Open items: noisy 440 Hz input was once identified near 147 Hz; an older revision
+unexpectedly returned/rebooted while idle, with the cause still unknown and no
+recurrence in subsequent observation; subjective popping in the newer voice
+revision still needs listening checks. The firmware does not promise professional
+tuning or sound-level accuracy. See the [validation record](docs/VALIDATION_v0.1.2.md)
+for evidence and limits; later source changes do not rewrite that historical scope.
 
-## 源码结构
+![Nine settings states from the C3 display buffer](docs/images/settings-overview.png)
 
-| 目录 | 内容 |
-|---|---|
-| firmware/ | 应用、BSP、配置、已冻结素材包 |
-| prototype/ | 浏览器原型；新增硬件音量设置尚未同步到原型 |
-| game-art/soundlab/ | 定稿造型、道具、起始图、38段源视频、运行时精灵及字体 |
-| tools/、tests/ | 素材工具和宿主测试源码 |
-| docs/ | 刷机、构建、实测、发布说明与原尺寸截图 |
+These are actual 240×320 C3 display buffers, not optical panel photographs. The
+contact sheet background is #0A0716; frames were captured at different times.
 
-本机设备备份、NVS、环境录音、原始设备日志、生成服务任务元数据和缓存未上传。源码MIT；NABO形象和美术不随MIT授权，见[NOTICE](NOTICE.md)及[第三方说明](THIRD_PARTY_NOTICES.md)。本项目与FoloToy官方无关联。
+## Source layout
 
-## 社区展示材料
+| Directory | Contents |
+| --- | --- |
+| firmware/ | Application, BSP, configuration and frozen asset pack |
+| prototype/ | Browser prototypes; volume controls are synchronized, older placeholder artwork is not firmware artwork acceptance |
+| game-art/soundlab/ | Final character, props, starting images, 38 source videos, runtime sprites and fonts |
+| tools/, tests/ | Asset tools and host-test sources |
+| docs/ | Installation, builds, validation, releases and native-resolution screenshots |
 
-[五张宣传图与玩法介绍](docs/community/v0.1.2/README.md)。已提交AI Passport玩法社区审核，状态与固件验证范围见材料说明。
+Local device backups, NVS, environmental recordings, raw device logs, generation
+job metadata and caches are not uploaded. Source code is MIT; NABO artwork is not
+licensed under MIT. See [NOTICE](NOTICE.md) and [third-party notices](THIRD_PARTY_NOTICES.md).
+This project is not affiliated with FoloToy.
+
+## Community presentation
+
+[Five promotional images and gameplay introduction](docs/community/v0.1.2/README.md).
+The application was submitted to the AI Passport community; the presentation
+notes describe submission status and firmware validation scope.
