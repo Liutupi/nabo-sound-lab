@@ -1003,3 +1003,14 @@
 !/docs/RELEASE_v0.2.0-preview.1.md
 !/docs/ART_DELIVERY_0_2_0_PREVIEW.json
 !/CHANGELOG.md
+
+# Self-contained microphone DSP regressions and their narrow CI entry point.
+!/tests/mic_host/test_pitch.py
+!/tests/mic_host/pitch_reference.js
+!/tests/mic_host/README.md
+!/tests/mic_host/README.zh_CN.md
+!/.github/
+/.github/*
+!/.github/workflows/
+/.github/workflows/*
+!/.github/workflows/microphone-dsp.yml

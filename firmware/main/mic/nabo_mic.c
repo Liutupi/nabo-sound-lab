@@ -152,6 +152,21 @@ static void yin(nm_state_t *st, const int16_t *x, uint16_t *f_x10, uint16_t *con
     }
     int best = found;
     if (best < 0) { *f_x10 = 0; *conf = 0; return; }
+    // A noisy first-period valley can narrowly miss 0.15 while a multiple
+    // crosses it. Do not report a confident subharmonic when a shorter local
+    // minimum is almost as good (within 0.03 CMND) at an integer submultiple.
+    // Reject this ambiguous frame; choosing the shorter lag could instead
+    // octave-shift a real harmonic-rich low note. No extra difference sums.
+    for (int tau = tmin; tau + 1 < best; tau++) {
+        if (d[tau] <= d[tau - 1] && d[tau] < d[tau + 1] &&
+            d[tau] <= d[best] + 1966u) {
+            int multiple = (best + tau / 2) / tau;
+            int delta = best - multiple * tau;
+            if (multiple >= 2 && delta >= -multiple && delta <= multiple) {
+                *f_x10 = 0; *conf = 0; return;
+            }
+        }
+    }
     int64_t a = d[best - 1], b = d[best], c = d[best + 1], den = a - 2 * b + c;
     int64_t sh = den ? ((a - c) * 128) / den : 0;   // Q8
     sh = CLAMP(sh, -256, 256);

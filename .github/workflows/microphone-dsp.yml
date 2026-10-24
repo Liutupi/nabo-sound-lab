@@ -1,0 +1,38 @@
+name: Microphone DSP
+
+on:
+  push:
+    paths:
+      - 'firmware/main/mic/**'
+      - 'prototype/index.html'
+      - 'tests/mic_host/**'
+      - '.github/workflows/microphone-dsp.yml'
+  pull_request:
+    paths:
+      - 'firmware/main/mic/**'
+      - 'prototype/index.html'
+      - 'tests/mic_host/**'
+      - '.github/workflows/microphone-dsp.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pitch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: python -m pip install numpy
+      - name: Pitch accuracy, C/JS parity and deliberate regression
+        env:
+          CC: gcc
+          NM_UBSAN: '1'
+        run: python tests/mic_host/test_pitch.py

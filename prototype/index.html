@@ -282,6 +282,13 @@ function yin(x){
   let best=-1;
   for(let tau=tmin;tau<tmax;tau++){if(d[tau]<0.15){while(tau+1<tmax&&d[tau+1]<d[tau])tau++;best=tau;break}}
   if(best<0)return{f:0,c:0};
+  // Keep the firmware's conservative noisy-subharmonic rejection in sync.
+  for(let tau=tmin;tau+1<best;tau++){
+    if(d[tau]<=d[tau-1]&&d[tau]<d[tau+1]&&d[tau]<=d[best]+1966/65536){
+      const multiple=Math.floor((best+Math.floor(tau/2))/tau);
+      if(multiple>=2&&Math.abs(best-multiple*tau)<=multiple)return{f:0,c:0};
+    }
+  }
   const a=d[best-1],b=d[best],cc=d[best+1],den=a-2*b+cc,sh=den!==0?0.5*(a-cc)/den:0;
   return{f:SR/(best+clamp(sh,-1,1)),c:1-b};
 }

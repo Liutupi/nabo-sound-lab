@@ -6,12 +6,14 @@ SRC = HERE.parents[1] / 'firmware' / 'main' / 'mic'
 LIB = HERE / 'build' / 'libnm.so'
 NN = ['C','C♯','D','D♯','E','F','F♯','G','G♯','A','A♯','B']
 
-def build():
-    LIB.parent.mkdir(exist_ok=True)
-    import os
+def build(directory=None, source=None):
+    import os, shlex
+    target = pathlib.Path(directory) / LIB.name if directory is not None else LIB
+    target.parent.mkdir(exist_ok=True)
     extra = ['-fsanitize=undefined', '-fno-sanitize-recover=all'] if os.environ.get('NM_UBSAN') else []
-    subprocess.check_call(['gcc', '-O2', *extra, '-shared', '-fPIC', '-Wall', '-I', str(SRC), str(SRC / 'nabo_mic.c'), str(HERE / 'nm_shim.c'), '-o', str(LIB), '-lm'])
-    return C.CDLL(str(LIB))
+    compiler = shlex.split(os.environ.get('CC', 'cc'))
+    subprocess.check_call([*compiler, '-O2', *extra, '-shared', '-fPIC', '-Wall', '-I', str(SRC), str(source or SRC / 'nabo_mic.c'), str(HERE / 'nm_shim.c'), '-o', str(target), '-lm'])
+    return C.CDLL(str(target))
 
 def run_c(lib, x):
     hops = len(x) // 320
@@ -59,8 +61,12 @@ def compare(name, g, c):
     return fails
 
 def main():
+    signals = sorted((HERE / 'signals').glob('*.npy'))
+    if not signals:
+        raise RuntimeError('No signal fixtures. Run gen_signals.py and record_golden.js first; '
+                           'or run test_pitch.py for the self-contained pitch regression suite.')
     lib = build(); allf = []
-    for f in sorted((HERE / 'signals').glob('*.npy')):
+    for f in signals:
         g = json.loads((HERE / 'golden' / (f.stem + '.json')).read_text())
         c = run_c(lib, np.load(f))
         print(f'[{f.stem}] {len(g)} 帧，nm_state_t = {c["size"]} 字节')
