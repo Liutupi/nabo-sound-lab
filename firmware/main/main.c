@@ -35,6 +35,7 @@
 
 #include "ui/sl_ui.h"
 #include "ui/sc_newgames.h"
+#include "ui/sc_circus.h"
 #include "ui/sc_duel.h"
 #include "link/sd_radio.h"
 
@@ -114,6 +115,7 @@ static void save_now(void)
     nvs_set_blob(h, "set", &SET, sizeof SET);
     nvs_set_u8(h, "vol", SET.volume);
     nvs_set_blob(h, "rec", &REC, sizeof REC);
+    nvs_set_u16(h, "circus", CIRCUS_BEST);   /* 新键；旧版本固件忽略它，rec 的格式不变 */
     nvs_commit(h);
     nvs_close(h);
     atomic_store(&s_save_pending, false);
@@ -130,6 +132,8 @@ static void load_nvs(void)
     if (nvs_get_u8(h, "vol", &volume) == ESP_OK && volume <= 100 && volume % 10 == 0) SET.volume = volume;
     n = sizeof r;
     if (nvs_get_blob(h, "rec", &r, &n) == ESP_OK && n == sizeof r && r.rope_n <= 12) REC = r;
+    uint16_t best = 0;
+    if (nvs_get_u16(h, "circus", &best) == ESP_OK && best <= 400) CIRCUS_BEST = best;
     nvs_close(h);
 }
 
@@ -238,6 +242,7 @@ static void command(char *cmd, char *out, size_t n)
                  (unsigned)s_input_diag, (unsigned)s_input_diag_drop);
         size_t used = strlen(out);
         if (used + 2 < n) { out[used++] = ' '; sl_newgames_status(out + used, n - used); }
+        if (!strcmp(sl_ui_scene()->id, "circus")) { used = strlen(out); if (used + 2 < n) { out[used++] = ' '; sl_circus_status(out + used, n - used); } }
         if (!strcmp(sl_ui_scene()->id,"duel")) { used = strlen(out); if (used+2<n) {out[used++]=' ';sl_duel_status(out+used,n-used);} }
     }
 }

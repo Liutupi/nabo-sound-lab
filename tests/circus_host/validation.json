@@ -1,0 +1,17 @@
+{
+  "scope": "host only: circus rules, C/JS parity and UI with synthetic sound",
+  "c_js_snapshots": 583,
+  "exact_parity": true,
+  "mutations_rejected": 4,
+  "ui_round": {
+    "candle": 100,
+    "rope": 100,
+    "flight": 58,
+    "clap": 100,
+    "total": 358,
+    "frames": 966
+  },
+  "assets_changed": false,
+  "device_tested": false,
+  "esp32_built": false
+}

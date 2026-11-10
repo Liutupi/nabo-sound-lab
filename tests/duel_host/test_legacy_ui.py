@@ -31,7 +31,7 @@ OUT = ROOT / 'device-validation/duel-0.2.0'
 SHOTS = OUT / 'legacy-ui-shots'
 TCC = find_tcc()
 PROFILES = (('normal', 0), ('largest-13824', 13824), ('largest-7680', 7680))
-ENTRIES = ('echo', 'shout', 'candle', 'rope', 'range', 'flight', 'clap', 'sampler',
+ENTRIES = ('circus', 'echo', 'shout', 'candle', 'rope', 'range', 'flight', 'clap', 'sampler',
            'duel', 'spec', 'water', 'scope', 'chroma', 'db', 'tuner', 'guitar', 'beat', 'pitch', 'settings')
 
 SHIM = r'''
