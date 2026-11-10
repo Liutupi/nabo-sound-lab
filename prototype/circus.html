@@ -1,0 +1,66 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>NABO · 声音挑战赛</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,sans-serif;background:#0a0716;color:#ece8ff}body{margin:24px auto;max-width:930px;padding:0 20px}h1{font-size:24px;margin:8px 0}p,li{line-height:1.6;color:#b9b0d5}button,a{font:inherit}button,a.tab{border:1px solid #65558c;border-radius:10px;background:#151030;color:inherit;padding:10px 16px;cursor:pointer;text-decoration:none;user-select:none}button:hover{border-color:#35f0dc}button.on{background:#35f0dc;color:#0a0716}.controls{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0}.layout{display:flex;gap:30px;align-items:flex-start;flex-wrap:wrap}canvas{width:360px;height:480px;max-width:100%;background:#0a0716;border:1px solid #65558c;border-radius:12px}.side{flex:1;min-width:260px}label{display:block;margin:12px 0;color:#b9b0d5}input[type=range]{width:100%}.small{font-size:14px}
+</style>
+<h1>NABO 声音挑战赛 · 规则原型</h1>
+<p>吹蜡烛、走钢丝、哼歌飞行、拍手节奏四关连玩，一局约两分钟，合计 400 分。本页运行的规则与固件 <code>circus_model.c</code> 逐步相同；声音输入用按钮和滑杆模拟，只用于检查规则和流程，不代表真实麦克风效果。</p>
+<p><a class="tab" href="index.html?screen=menu">← 返回声音实验室主菜单</a></p>
+<div class="layout"><div><canvas id="lcd" width="480" height="640" aria-label="240×320 游戏画面"></canvas>
+<div class="controls"><button id="ok">OK（回车）</button><button id="skip">▼ 跳过本关（S）</button></div></div>
+<div class="side">
+<div class="controls"><button id="blow">按住吹气（B）</button><button id="hum">按住哼唱（H）</button><button id="clap">拍一下（C）</button></div>
+<label>哼唱音高：<span id="pitchval"></span><input id="pitch" type="range" min="48" max="72" value="60" step=".05"></label>
+<label>吹气力度：<span id="blowval"></span><input id="force" type="range" min="150" max="1000" value="700" step="10"></label>
+<ul class="small"><li>吹蜡烛：1.5 秒内吹灭 6 根得 100 分，越慢越低；12 秒没吹完按已灭的根数给分，最多 33 分。</li>
+<li>走钢丝：连续出声 0.16 秒锁定目标音，之后累计唱满 6 秒走到头；偏离越大分数越低，限时 14 秒。</li>
+<li>哼歌飞行：连续哼 0.3 秒自动起飞，哼高向上、哼低向下，穿过 12 道门，3 次机会。</li>
+<li>拍手节奏：先听 4 拍，再拍 16 拍；±45 毫秒精准，±120 毫秒命中。</li>
+<li>合计 340 分以上 5 个音符，260、160、80 分依次递减。</li></ul></div></div>
+<script src="new-games-model.js"></script><script src="circus-model.js"></script><script>
+'use strict';
+const K=NaboCircus,$=s=>document.querySelector(s),ctx=$('#lcd').getContext('2d');ctx.scale(2,2);
+const BG='#0a0716',PANEL='#151030',LINE='#2b2350',WHITE='#ece8ff',DIM='#8a80b8',DARK='#4a4170',MAG='#ff3da6',CYAN='#35f0dc',GOLD='#ffc94a',GREEN='#5cff8a',PURPLE='#8a5cff',RED='#ff4d5e';
+const NAME=['吹蜡烛','走钢丝','哼歌飞行','拍手节奏'],TIP=['对着工牌用力吹','唱一个长音，保持稳定','哼高向上，哼低向下','先听四拍，再跟光圈拍'],RANK=['再练一次','稳定发挥','节奏高手','金牌音乐人'];
+let game=new K.Circus((Date.now()>>>0)||1),held={blow:false,hum:false},clapOrigin=0,feedback=0,feedbackAt=0,last=performance.now(),best=0,newBest=false;
+try{best=+localStorage.getItem('nabo-circus-best')||0;}catch(e){}
+const clapMs=()=>Math.trunc(performance.now()-clapOrigin);
+function events(ev){
+  if(ev&K.EV_PLAY){feedback=0;if(game.stage===K.CLAP)clapOrigin=performance.now();}
+  if(ev&K.EV_FINAL)newBest=game.total>best;
+  if(ev&K.EV_FINAL&&newBest){best=game.total;try{localStorage.setItem('nabo-circus-best',best);}catch(e){}}
+}
+function hold(id,on){held[id]=on;$('#'+id).classList.toggle('on',on);}
+function clap(){const r=game.clapHit(clapMs());if(r){feedback=r;feedbackAt=performance.now();}}
+for(const id of ['blow','hum']){const b=$('#'+id);b.onpointerdown=()=>hold(id,true);b.onpointerup=b.onpointerleave=()=>hold(id,false);}
+$('#ok').onclick=()=>events(game.ok());$('#skip').onclick=()=>events(game.skip());$('#clap').onclick=clap;
+addEventListener('keydown',e=>{if(e.repeat)return;const k=e.key.toLowerCase();if(k==='enter')events(game.ok());else if(k==='s')events(game.skip());else if(k==='b')hold('blow',true);else if(k==='h')hold('hum',true);else if(k==='c')clap();});
+addEventListener('keyup',e=>{const k=e.key.toLowerCase();if(k==='b')hold('blow',false);if(k==='h')hold('hum',false);});
+function text(s,x,y,c,size=16,align='center'){ctx.fillStyle=c;ctx.font=`${size}px system-ui,sans-serif`;ctx.textAlign=align;ctx.textBaseline='middle';ctx.fillText(s,x,y);}
+function rect(x,y,w,h,c){ctx.fillStyle=c;ctx.fillRect(x,y,w,h);}
+function disc(x,y,r,c){ctx.fillStyle=c;ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.fill();}
+function bar(y,v,max,c){rect(20,y,200,6,PANEL);rect(20,y,200*Math.max(0,Math.min(max,v))/max,6,c);}
+function dots(){for(let i=0;i<4;i++)disc(84+i*24,40,5,i<game.stage||(i===game.stage&&game.phase>=K.SCORE)?GOLD:i===game.stage?CYAN:LINE);}
+function draw(){
+  rect(0,0,240,320,BG);rect(0,0,240,26,PANEL);
+  text(game.phase===K.PLAY?NAME[game.stage]:'声音挑战赛',8,13,WHITE,16,'left');
+  if(game.phase!==K.TITLE&&game.phase!==K.FINAL)text(`${game.stage+1} / 4`,232,13,CYAN,13,'right');
+  let hint='OK 开始';
+  if(game.phase===K.TITLE){text('四关连玩',120,146,WHITE,24);text('一局约两分钟',120,176,CYAN);text('吹蜡烛 · 走钢丝',120,212,DIM);text('哼歌飞行 · 拍手节奏',120,238,DIM);if(best)text(`最佳 ${best} 分`,120,272,GOLD);}
+  else if(game.phase===K.INTRO){dots();text(`第 ${game.stage+1} 关`,120,74,CYAN);text(NAME[game.stage],120,106,WHITE,24);text(TIP[game.stage],120,244,GOLD);bar(270,game.t,K.INTRO_MS,CYAN);hint='OK 跳过';}
+  else if(game.phase===K.PLAY){dots();hint='▼ 跳过';
+    if(game.stage===K.CANDLE){rect(60,236,160,56,'#ff7eb6');rect(86,198,108,40,'#ffe7c2');for(let i=0;i<K.CANDLES;i++){const x=140+(2*i-(K.CANDLES-1))*9;rect(x-2,178,5,20,i%2?CYAN:WHITE);if(game.life[i]>0)disc(x,172,4,GOLD);}text(game.blow_t0>=0?`还剩 ${game.lit} 根`:TIP[0],150,76,WHITE);bar(56,K.CANDLE_LIMIT_MS-game.t,K.CANDLE_LIMIT_MS,PURPLE);}
+    else if(game.stage===K.ROPE){const p=game.prog/K.ROPE_WALK_MS,x=45+p*153;rect(14,194,212,2,GOLD);ctx.save();ctx.translate(x,194);ctx.rotate(Math.max(-110,Math.min(110,game.cents*2))/163);rect(-6,-34,12,34,MAG);disc(0,-40,8,WHITE);rect(-24,-22,48,2,CYAN);ctx.restore();text(game.target?`走了 ${Math.trunc(p*100)}%`:TIP[1],120,82,WHITE);rect(30,262,180,10,PANEL);rect(93,262,54,10,'#173d2a');rect(119,260,2,14,WHITE);if(game.target)rect(118+Math.max(-100,Math.min(100,game.cents))*.9,259,5,16,Math.abs(game.cents)<30?GREEN:MAG);bar(56,K.ROPE_LIMIT_MS-game.t,K.ROPE_LIMIT_MS,PURPLE);}
+    else if(game.stage===K.FLIGHT){const f=game.flight;text(`穿门 ${f.cleared} / 12`,10,58,GOLD,16,'left');text(`生命 ${f.lives}`,230,58,MAG,16,'right');if(f.state){for(const g of f.gate){const x=g.xq/256,a=g.y-f.gap()/2+26,b=a+f.gap();rect(x,72,16,a-72,PURPLE);rect(x,b,16,294-b,PURPLE);}}disc(54,f.yq/256+26,12,f.flash_ms?RED:CYAN);if(!f.state){text('先哼一个音',120,152,WHITE);text(TIP[2],120,184,CYAN);}}
+    else{const c=game.clap,t=clapMs(),first=4*c.period;if(t<first){text('准备，先听四拍',120,76,WHITE);text(String(Math.max(1,4-Math.trunc(t/c.period))),120,140,GOLD,48);}else{text(`第 ${Math.min(16,c.judged+1)} / 16 拍`,120,70,CYAN);const ph=(t-first)%c.period,d=ph<c.period/2?ph:c.period-ph;ctx.strokeStyle=PURPLE;ctx.lineWidth=3;ctx.beginPath();ctx.arc(120,150,20+d*40/(c.period/2),0,7);ctx.stroke();ctx.strokeStyle=d<=120?CYAN:DIM;ctx.beginPath();ctx.arc(120,150,20,0,7);ctx.stroke();if(feedback&&performance.now()-feedbackAt<420)text(feedback===2?'精准':feedback===1?'命中':'多拍了',120,150,feedback>0?GREEN:MAG);text(`命中 ${c.hits} / 16`,157,236,GOLD);text(`连击 ${c.combo}`,157,264,CYAN);}}
+  }else if(game.phase===K.SCORE){const s=game.score[game.stage];dots();text(NAME[game.stage],120,76,WHITE,24);text(String(s),120,204,s>=60?GOLD:WHITE,48);text('本关得分',120,240,DIM);text(`合计 ${game.total} 分`,120,270,CYAN);hint=game.stage<3?'OK 下一关':'OK 看成绩';}
+  else{text(String(game.total),158,62,WHITE,48);text('合计 · 满分 400',158,96,DIM,13);for(let i=0;i<5;i++)text('♪',60+i*30,132,i<K.notes(game.total)?GOLD:DARK,24);text(RANK[K.rank(game.total)],120,168,CYAN,24);for(let i=0;i<4;i++){const y=198+i*18;text(NAME[i],44,y,DIM,13,'left');rect(112,y-3,80,6,PANEL);rect(112,y-3,80*game.score[i]/100,6,game.score[i]>=60?GOLD:PURPLE);text(String(game.score[i]),226,y,WHITE,13,'right');}text(newBest?'新纪录！拍照记录成绩':`最佳 ${best} 分`,120,282,newBest?GOLD:DIM);hint='OK 再来一局';}
+  text(hint+'   ▲▲ 返回',120,310,WHITE,14);
+}
+function loop(now){
+  const dt=Math.min(100,Math.round(now-last));last=now;
+  const midi=Math.round(+$('#pitch').value*100);$('#pitchval').textContent=(midi/100).toFixed(2);$('#blowval').textContent=$('#force').value;
+  events(game.step(dt,{blow:held.blow?+$('#force').value:0,midi100:held.hum?midi:0,voiced:held.hum,clap_ms:game.phase===K.PLAY&&game.stage===K.CLAP?clapMs():0}));
+  draw();requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+</script>

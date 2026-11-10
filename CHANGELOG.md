@@ -4,6 +4,8 @@
 
 ## Unreleased
 
+- Added the Sound Challenge: candle blowing, tightrope singing, humming flight and clap rhythm played back to back in about two minutes, scored out of 400 with a note rating, a title and a saved best total. It is the first menu entry. App only; the asset pack and existing NVS data are unchanged. Host tests only so far: no ESP32 build or device validation yet, see docs/SOUND_CHALLENGE.md.
+
 ## v0.2.0-preview.2 - 2026-10-24
 
 - Add immediate button feedback, state-specific Echo hints and OK playback stop without accidental recording.

@@ -138,6 +138,7 @@ def main():
         step(1); assert settings.volume == 70
         tap(2); go('menu')
         step(200); before, _ = frame()
+        tap(1)  # The first toy is the four-stage challenge; echo is now the second row.
         key(2, 1); assert lib.host_scene() == b'echo'
         key(2, 1); assert not lib.sl_rec_on(), 'Duplicate DOWN repeated the action'
         key(2, 0)

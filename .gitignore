@@ -1040,3 +1040,17 @@
 !/docs/FLASHING_0_2_0_PREVIEW_2.md
 !/docs/FLASHING_0_2_0_PREVIEW_2.zh_CN.md
 !/docs/VALIDATION_0_2_0_PREVIEW_2.json
+!/tests/circus_host/
+/tests/circus_host/*
+!/tests/circus_host/README.md
+!/tests/circus_host/test_circus.py
+!/tests/circus_host/test_model.c
+!/tests/circus_host/trace.js
+!/tests/circus_host/validation.json
+!/firmware/main/ui/circus_model.c
+!/firmware/main/ui/circus_model.h
+!/firmware/main/ui/sc_circus.c
+!/firmware/main/ui/sc_circus.h
+!/prototype/circus.html
+!/prototype/circus-model.js
+!/docs/SOUND_CHALLENGE.md
